@@ -6,4 +6,4 @@ package.authors = [ "youyuanwu@outlook.com" ]
 
 [workspace.dependencies]
 mssf-http = { path = "mssf-http" }
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1", default-features = false, features = ["macros"] }

@@ -11,5 +11,6 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
     --additional-properties=packageName=mssf-http,packageVersion=0.1.0
 
 sudo chown -R $(whoami) .
+cargo fmt
 ```
 See openapi codegen [rust docs](https://openapi-generator.tech/docs/generators/rust/)
