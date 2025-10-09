@@ -1,0 +1,9 @@
+[package]
+name = "mssf-http-tests"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+mssf-http = { workspace = true }
+tokio.workspace = true

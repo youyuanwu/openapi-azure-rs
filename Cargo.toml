@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = ["mssf-http" , "mssf-http-tests"]
+package.edition = "2024"
+package.authors = [ "youyuanwu@outlook.com" ]
+
+[workspace.dependencies]
+mssf-http = { path = "mssf-http" }
+tokio = { version = "1", features = ["full"] }
