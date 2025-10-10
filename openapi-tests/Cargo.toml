@@ -1,9 +1,10 @@
 [package]
-name = "mssf-http-tests"
+name = "openapi-tests"
 version = "0.1.0"
 edition.workspace = true
 authors.workspace = true
+publish = false
 
 [dependencies]
-mssf-http = { workspace = true }
+openapi-service-fabric = { workspace = true }
 tokio.workspace = true

@@ -1,9 +1,12 @@
 [workspace]
 resolver = "2"
-members = ["mssf-http" , "mssf-http-tests"]
+members = [
+  "openapi-service-fabric"
+  , "openapi-azure-storage-blob"
+  , "openapi-tests"]
 package.edition = "2024"
 package.authors = [ "youyuanwu@outlook.com" ]
 
 [workspace.dependencies]
-mssf-http = { path = "mssf-http" }
+openapi-service-fabric = { path = "openapi-service-fabric" }
 tokio = { version = "1", default-features = false, features = ["macros"] }

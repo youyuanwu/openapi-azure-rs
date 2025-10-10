@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use mssf_http::apis::configuration::Configuration;
+    use openapi_service_fabric::apis::configuration::Configuration;
 
     // Requires local onebox cluster running
     #[tokio::test]
@@ -10,7 +10,7 @@ mod tests {
             ..Default::default()
         };
         let api_version = "6.0";
-        let response = mssf_http::apis::node_api::get_node_info_list(
+        let response = openapi_service_fabric::apis::node_api::get_node_info_list(
             &configuration,
             api_version,
             None,
