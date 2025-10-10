@@ -6,6 +6,7 @@ members = [
   , "openapi-tests"]
 package.edition = "2024"
 package.authors = [ "youyuanwu@outlook.com" ]
+package.repository = "https://github.com/youyuanwu/openapi-azure-rs.git"
 
 [workspace.dependencies]
 openapi-service-fabric = { path = "openapi-service-fabric" }

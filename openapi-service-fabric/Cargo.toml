@@ -6,6 +6,7 @@ description = "Service Fabric REST Client APIs allows management of Service Fabr
 # Override this license by providing a License Object in the OpenAPI.
 license = "MIT"
 edition = "2021"
+repository.workspace = true
 readme = "README.md"
 documentation = "https://learn.microsoft.com/en-us/azure/service-fabric/service-fabric-overview"
 

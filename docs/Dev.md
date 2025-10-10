@@ -16,6 +16,7 @@ cargo fmt
 sed -i 's/license = "Unlicense"/license = "MIT"/' openapi-service-fabric/Cargo.toml
 sed -i '/edition = "2021"/a\documentation = "https://learn.microsoft.com/en-us/azure/service-fabric/service-fabric-overview"' openapi-service-fabric/Cargo.toml
 sed -i '/edition = "2021"/a\readme = "README.md"' openapi-service-fabric/Cargo.toml
+sed -i '/edition = "2021"/a\repository.workspace = true' openapi-service-fabric/Cargo.toml
 sed -i '/unused_imports)]/i\#![allow(clippy::needless_return)]' openapi-service-fabric/src/lib.rs
 ```
 
@@ -38,6 +39,7 @@ cargo fmt
 sed -i 's/license = "Unlicense"/license = "MIT"/' openapi-azure-storage-blob/Cargo.toml
 sed -i '/edition = "2021"/a\documentation = "https://learn.microsoft.com/en-us/azure/storage/blobs/"' openapi-azure-storage-blob/Cargo.toml
 sed -i '/edition = "2021"/a\readme = "README.md"' openapi-azure-storage-blob/Cargo.toml
+sed -i '/edition = "2021"/a\repository.workspace = true' openapi-azure-storage-blob/Cargo.toml
 sed -i '/unused_imports)]/i\#![allow(clippy::needless_return)]' openapi-azure-storage-blob/src/lib.rs
 ```
 See openapi codegen [rust docs](https://openapi-generator.tech/docs/generators/rust/)
