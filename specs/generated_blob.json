@@ -2244,9 +2244,7 @@
           }
         }
       }
-    }
-  },
-  "x-ms-paths": {
+    },
     "/{containerName}?restype=container": {
       "put": {
         "operationId": "Container_Create",

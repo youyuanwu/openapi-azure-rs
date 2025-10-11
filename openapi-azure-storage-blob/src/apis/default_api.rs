@@ -12,11 +12,101 @@ use super::{configuration, ContentType, Error};
 use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
+use tokio::fs::File as TokioFile;
+use tokio_util::codec::{BytesCodec, FramedRead};
+
+/// struct for typed errors of method [`append_blob_append_block`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AppendBlobAppendBlockError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`append_blob_append_block_from_url`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AppendBlobAppendBlockFromUrlError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`append_blob_create`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AppendBlobCreateError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`append_blob_seal`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AppendBlobSealError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_abort_copy_from_url`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobAbortCopyFromUrlError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_acquire_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobAcquireLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_break_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobBreakLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_change_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobChangeLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_copy_from_url`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobCopyFromUrlError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_create_snapshot`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobCreateSnapshotError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
 
 /// struct for typed errors of method [`blob_delete`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum BlobDeleteError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_delete_immutability_policy`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobDeleteImmutabilityPolicyError {
     DefaultResponse(models::StorageError),
     UnknownValue(serde_json::Value),
 }
@@ -29,10 +119,98 @@ pub enum BlobDownloadError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`blob_get_account_info`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobGetAccountInfoError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`blob_get_properties`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum BlobGetPropertiesError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_get_tags`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobGetTagsError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_release_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobReleaseLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_renew_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobRenewLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_set_expiry`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobSetExpiryError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_set_immutability_policy`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobSetImmutabilityPolicyError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_set_legal_hold`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobSetLegalHoldError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_set_metadata`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobSetMetadataError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_set_properties`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobSetPropertiesError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_set_tags`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobSetTagsError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_set_tier`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobSetTierError {
     DefaultResponse(models::StorageError),
     UnknownValue(serde_json::Value),
 }
@@ -43,6 +221,1544 @@ pub enum BlobGetPropertiesError {
 pub enum BlobStartCopyFromUrlError {
     DefaultResponse(models::StorageError),
     UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`blob_undelete`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlobUndeleteError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`block_blob_commit_block_list`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlockBlobCommitBlockListError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`block_blob_get_block_list`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlockBlobGetBlockListError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`block_blob_put_blob_from_url`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlockBlobPutBlobFromUrlError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`block_blob_query`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlockBlobQueryError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`block_blob_stage_block`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlockBlobStageBlockError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`block_blob_stage_block_from_url`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlockBlobStageBlockFromUrlError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`block_blob_upload`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BlockBlobUploadError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_acquire_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerAcquireLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_break_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerBreakLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_change_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerChangeLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_create`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerCreateError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_delete`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerDeleteError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_filter_blobs`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerFilterBlobsError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_get_access_policy`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerGetAccessPolicyError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_get_account_info`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerGetAccountInfoError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_get_properties`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerGetPropertiesError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_list_blob_flat_segment`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerListBlobFlatSegmentError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_list_blob_hierarchy_segment`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerListBlobHierarchySegmentError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_release_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerReleaseLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_rename`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerRenameError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_renew_lease`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerRenewLeaseError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_restore`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerRestoreError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_set_access_policy`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerSetAccessPolicyError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_set_metadata`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerSetMetadataError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`container_submit_batch`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ContainerSubmitBatchError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`filter_blobs`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum FilterBlobsError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`get_account_info`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum GetAccountInfoError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`get_properties`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum GetPropertiesError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`get_statistics`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum GetStatisticsError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`get_user_delegation_key`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum GetUserDelegationKeyError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`list_containers_segment`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ListContainersSegmentError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`page_blob_clear_pages`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum PageBlobClearPagesError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`page_blob_copy_incremental`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum PageBlobCopyIncrementalError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`page_blob_get_page_ranges`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum PageBlobGetPageRangesError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`page_blob_get_page_ranges_diff`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum PageBlobGetPageRangesDiffError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`page_blob_resize`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum PageBlobResizeError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`page_blob_set_sequence_number`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum PageBlobSetSequenceNumberError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`page_blob_upload_pages`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum PageBlobUploadPagesError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`page_blob_upload_pages_from_url`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum PageBlobUploadPagesFromUrlError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`set_properties`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum SetPropertiesError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`submit_batch`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum SubmitBatchError {
+    DefaultResponse(models::StorageError),
+    UnknownValue(serde_json::Value),
+}
+
+/// The Append Block operation commits a new block of data to the end of an append blob.
+pub async fn append_blob_append_block(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    content_length: i64,
+    body: std::path::PathBuf,
+    timeout: Option<i32>,
+    content_md5: Option<String>,
+    x_ms_content_crc64: Option<String>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_blob_condition_maxsize: Option<i64>,
+    x_ms_blob_condition_appendpos: Option<i64>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_structured_body: Option<&str>,
+    x_ms_structured_content_length: Option<i64>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<AppendBlobAppendBlockError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_content_length = content_length;
+    let p_body_body = body;
+    let p_query_timeout = timeout;
+    let p_header_content_md5 = content_md5;
+    let p_header_x_ms_content_crc64 = x_ms_content_crc64;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_blob_condition_maxsize = x_ms_blob_condition_maxsize;
+    let p_header_x_ms_blob_condition_appendpos = x_ms_blob_condition_appendpos;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_structured_body = x_ms_structured_body;
+    let p_header_x_ms_structured_content_length = x_ms_structured_content_length;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=appendblock",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    if let Some(param_value) = p_header_content_md5 {
+        req_builder = req_builder.header("Content-MD5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_content_crc64 {
+        req_builder = req_builder.header("x-ms-content-crc64", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_condition_maxsize {
+        req_builder = req_builder.header("x-ms-blob-condition-maxsize", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_condition_appendpos {
+        req_builder = req_builder.header("x-ms-blob-condition-appendpos", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_structured_body {
+        req_builder = req_builder.header("x-ms-structured-body", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_structured_content_length {
+        req_builder = req_builder.header("x-ms-structured-content-length", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    let file = TokioFile::open(p_body_body).await?;
+    let stream = FramedRead::new(file, BytesCodec::new());
+    req_builder = req_builder.body(reqwest::Body::wrap_stream(stream));
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<AppendBlobAppendBlockError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Append Block From URL operation creates a new block to be committed as part of an append blob where the contents are read from a URL.
+pub async fn append_blob_append_block_from_url(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_copy_source: &str,
+    content_length: i64,
+    x_ms_source_range: Option<&str>,
+    x_ms_source_content_md5: Option<String>,
+    x_ms_source_content_crc64: Option<String>,
+    timeout: Option<i32>,
+    content_md5: Option<String>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_blob_condition_maxsize: Option<i64>,
+    x_ms_blob_condition_appendpos: Option<i64>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_source_if_modified_since: Option<&str>,
+    x_ms_source_if_unmodified_since: Option<&str>,
+    x_ms_source_if_match: Option<&str>,
+    x_ms_source_if_none_match: Option<&str>,
+    x_ms_copy_source_authorization: Option<&str>,
+    x_ms_file_request_intent: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<AppendBlobAppendBlockFromUrlError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_copy_source = x_ms_copy_source;
+    let p_header_content_length = content_length;
+    let p_header_x_ms_source_range = x_ms_source_range;
+    let p_header_x_ms_source_content_md5 = x_ms_source_content_md5;
+    let p_header_x_ms_source_content_crc64 = x_ms_source_content_crc64;
+    let p_query_timeout = timeout;
+    let p_header_content_md5 = content_md5;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_blob_condition_maxsize = x_ms_blob_condition_maxsize;
+    let p_header_x_ms_blob_condition_appendpos = x_ms_blob_condition_appendpos;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_source_if_modified_since = x_ms_source_if_modified_since;
+    let p_header_x_ms_source_if_unmodified_since = x_ms_source_if_unmodified_since;
+    let p_header_x_ms_source_if_match = x_ms_source_if_match;
+    let p_header_x_ms_source_if_none_match = x_ms_source_if_none_match;
+    let p_header_x_ms_copy_source_authorization = x_ms_copy_source_authorization;
+    let p_header_x_ms_file_request_intent = x_ms_file_request_intent;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=appendblock&fromUrl",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-copy-source", p_header_x_ms_copy_source.to_string());
+    if let Some(param_value) = p_header_x_ms_source_range {
+        req_builder = req_builder.header("x-ms-source-range", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_content_md5 {
+        req_builder = req_builder.header("x-ms-source-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_content_crc64 {
+        req_builder = req_builder.header("x-ms-source-content-crc64", param_value.to_string());
+    }
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    if let Some(param_value) = p_header_content_md5 {
+        req_builder = req_builder.header("Content-MD5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_condition_maxsize {
+        req_builder = req_builder.header("x-ms-blob-condition-maxsize", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_condition_appendpos {
+        req_builder = req_builder.header("x-ms-blob-condition-appendpos", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_modified_since {
+        req_builder = req_builder.header("x-ms-source-if-modified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_unmodified_since {
+        req_builder =
+            req_builder.header("x-ms-source-if-unmodified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_match {
+        req_builder = req_builder.header("x-ms-source-if-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_none_match {
+        req_builder = req_builder.header("x-ms-source-if-none-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_copy_source_authorization {
+        req_builder = req_builder.header("x-ms-copy-source-authorization", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_file_request_intent {
+        req_builder = req_builder.header("x-ms-file-request-intent", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<AppendBlobAppendBlockFromUrlError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Create operation creates a new append blob.
+pub async fn append_blob_create(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    content_length: f64,
+    x_ms_blob_type: &str,
+    x_ms_meta: Option<&str>,
+    timeout: Option<i32>,
+    x_ms_blob_content_type: Option<&str>,
+    x_ms_blob_content_encoding: Option<&str>,
+    x_ms_blob_content_language: Option<&str>,
+    x_ms_blob_content_md5: Option<String>,
+    x_ms_blob_cache_control: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_blob_content_disposition: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_tags: Option<&str>,
+    x_ms_immutability_policy_until_date: Option<&str>,
+    x_ms_immutability_policy_mode: Option<&str>,
+    x_ms_legal_hold: Option<bool>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<AppendBlobCreateError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_content_length = content_length;
+    let p_header_x_ms_blob_type = x_ms_blob_type;
+    let p_header_x_ms_meta = x_ms_meta;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_blob_content_type = x_ms_blob_content_type;
+    let p_header_x_ms_blob_content_encoding = x_ms_blob_content_encoding;
+    let p_header_x_ms_blob_content_language = x_ms_blob_content_language;
+    let p_header_x_ms_blob_content_md5 = x_ms_blob_content_md5;
+    let p_header_x_ms_blob_cache_control = x_ms_blob_cache_control;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_blob_content_disposition = x_ms_blob_content_disposition;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_tags = x_ms_tags;
+    let p_header_x_ms_immutability_policy_until_date = x_ms_immutability_policy_until_date;
+    let p_header_x_ms_immutability_policy_mode = x_ms_immutability_policy_mode;
+    let p_header_x_ms_legal_hold = x_ms_legal_hold;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?_overload=create",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_meta {
+        req_builder = req_builder.header("x-ms-meta", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_type {
+        req_builder = req_builder.header("x-ms-blob-content-type", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_encoding {
+        req_builder = req_builder.header("x-ms-blob-content-encoding", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_language {
+        req_builder = req_builder.header("x-ms-blob-content-language", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_md5 {
+        req_builder = req_builder.header("x-ms-blob-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_cache_control {
+        req_builder = req_builder.header("x-ms-blob-cache-control", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_disposition {
+        req_builder = req_builder.header("x-ms-blob-content-disposition", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_tags {
+        req_builder = req_builder.header("x-ms-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_until_date {
+        req_builder = req_builder.header(
+            "x-ms-immutability-policy-until-date",
+            param_value.to_string(),
+        );
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_mode {
+        req_builder = req_builder.header("x-ms-immutability-policy-mode", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_legal_hold {
+        req_builder = req_builder.header("x-ms-legal-hold", param_value.to_string());
+    }
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    req_builder = req_builder.header("x-ms-blob-type", p_header_x_ms_blob_type.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<AppendBlobCreateError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Seal operation seals the Append Blob to make it read-only. Seal is supported only on version 2019-12-12 version or later.
+pub async fn append_blob_seal(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_blob_condition_appendpos: Option<i64>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<AppendBlobSealError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_blob_condition_appendpos = x_ms_blob_condition_appendpos;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=seal",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_condition_appendpos {
+        req_builder = req_builder.header("x-ms-blob-condition-appendpos", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<AppendBlobSealError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Abort Copy From URL operation aborts a pending Copy From URL operation, and leaves a destination blob with zero length and full metadata.
+pub async fn blob_abort_copy_from_url(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    copyid: &str,
+    x_ms_copy_action: &str,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobAbortCopyFromUrlError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_copyid = copyid;
+    let p_header_x_ms_copy_action = x_ms_copy_action;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=copy&copyid",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    req_builder = req_builder.query(&[("copyid", &p_query_copyid.to_string())]);
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-copy-action", p_header_x_ms_copy_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobAbortCopyFromUrlError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Acquire Lease operation requests a new lease on a blob. The lease lock duration can be 15 to 60 seconds, or can be infinite.
+pub async fn blob_acquire_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_lease_duration: i32,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    x_ms_proposed_lease_id: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobAcquireLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_lease_duration = x_ms_lease_duration;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_proposed_lease_id = x_ms_proposed_lease_id;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=lease&acquire",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header(
+        "x-ms-lease-duration",
+        p_header_x_ms_lease_duration.to_string(),
+    );
+    if let Some(param_value) = p_header_x_ms_proposed_lease_id {
+        req_builder = req_builder.header("x-ms-proposed-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobAcquireLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Break Lease operation ends a lease and ensures that another client can't acquire a new lease until the current lease period has expired.
+pub async fn blob_break_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    x_ms_lease_break_period: Option<i32>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobBreakLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_break_period = x_ms_lease_break_period;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=lease&break",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_break_period {
+        req_builder = req_builder.header("x-ms-lease-break-period", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobBreakLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Change Lease operation is used to change the ID of an existing lease.
+pub async fn blob_change_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_lease_id: &str,
+    x_ms_proposed_lease_id: &str,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobChangeLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_proposed_lease_id = x_ms_proposed_lease_id;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=lease&change",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-lease-id", p_header_x_ms_lease_id.to_string());
+    req_builder = req_builder.header(
+        "x-ms-proposed-lease-id",
+        p_header_x_ms_proposed_lease_id.to_string(),
+    );
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobChangeLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Copy From URL operation copies a blob or an internet resource to a new blob. It will not return a response until the copy is complete.
+pub async fn blob_copy_from_url(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_copy_source: &str,
+    x_ms_requires_sync: &str,
+    timeout: Option<i32>,
+    x_ms_meta: Option<&str>,
+    x_ms_access_tier: Option<&str>,
+    x_ms_source_if_modified_since: Option<&str>,
+    x_ms_source_if_unmodified_since: Option<&str>,
+    x_ms_source_if_match: Option<&str>,
+    x_ms_source_if_none_match: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_source_content_md5: Option<String>,
+    x_ms_tags: Option<&str>,
+    x_ms_immutability_policy_until_date: Option<&str>,
+    x_ms_immutability_policy_mode: Option<&str>,
+    x_ms_legal_hold: Option<bool>,
+    x_ms_copy_source_authorization: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_copy_source_tag_option: Option<&str>,
+    x_ms_file_request_intent: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobCopyFromUrlError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_copy_source = x_ms_copy_source;
+    let p_header_x_ms_requires_sync = x_ms_requires_sync;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_meta = x_ms_meta;
+    let p_header_x_ms_access_tier = x_ms_access_tier;
+    let p_header_x_ms_source_if_modified_since = x_ms_source_if_modified_since;
+    let p_header_x_ms_source_if_unmodified_since = x_ms_source_if_unmodified_since;
+    let p_header_x_ms_source_if_match = x_ms_source_if_match;
+    let p_header_x_ms_source_if_none_match = x_ms_source_if_none_match;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_source_content_md5 = x_ms_source_content_md5;
+    let p_header_x_ms_tags = x_ms_tags;
+    let p_header_x_ms_immutability_policy_until_date = x_ms_immutability_policy_until_date;
+    let p_header_x_ms_immutability_policy_mode = x_ms_immutability_policy_mode;
+    let p_header_x_ms_legal_hold = x_ms_legal_hold;
+    let p_header_x_ms_copy_source_authorization = x_ms_copy_source_authorization;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_copy_source_tag_option = x_ms_copy_source_tag_option;
+    let p_header_x_ms_file_request_intent = x_ms_file_request_intent;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=copy&sync",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_meta {
+        req_builder = req_builder.header("x-ms-meta", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_access_tier {
+        req_builder = req_builder.header("x-ms-access-tier", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_modified_since {
+        req_builder = req_builder.header("x-ms-source-if-modified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_unmodified_since {
+        req_builder =
+            req_builder.header("x-ms-source-if-unmodified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_match {
+        req_builder = req_builder.header("x-ms-source-if-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_none_match {
+        req_builder = req_builder.header("x-ms-source-if-none-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-copy-source", p_header_x_ms_copy_source.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_content_md5 {
+        req_builder = req_builder.header("x-ms-source-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_tags {
+        req_builder = req_builder.header("x-ms-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_until_date {
+        req_builder = req_builder.header(
+            "x-ms-immutability-policy-until-date",
+            param_value.to_string(),
+        );
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_mode {
+        req_builder = req_builder.header("x-ms-immutability-policy-mode", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_legal_hold {
+        req_builder = req_builder.header("x-ms-legal-hold", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_copy_source_authorization {
+        req_builder = req_builder.header("x-ms-copy-source-authorization", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_copy_source_tag_option {
+        req_builder = req_builder.header("x-ms-copy-source-tag-option", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_file_request_intent {
+        req_builder = req_builder.header("x-ms-file-request-intent", param_value.to_string());
+    }
+    req_builder = req_builder.header(
+        "x-ms-requires-sync",
+        p_header_x_ms_requires_sync.to_string(),
+    );
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobCopyFromUrlError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Create Snapshot operation creates a read-only snapshot of a blob
+pub async fn blob_create_snapshot(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    timeout: Option<i32>,
+    x_ms_meta: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobCreateSnapshotError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_meta = x_ms_meta;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=snapshot",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_meta {
+        req_builder = req_builder.header("x-ms-meta", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobCreateSnapshotError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
 }
 
 /// If the storage account's soft delete feature is disabled then, when a blob is deleted, it is permanently removed from the storage account. If the storage account's soft delete feature is enabled, then, when a blob is deleted, it is marked for deletion and becomes inaccessible immediately. However, the blob service retains the blob or snapshot for the number of days specified by the DeleteRetentionPolicy section of [Storage service properties] (Set-Blob-Service-Properties.md). After the specified number of days has passed, the blob's data is permanently removed from the storage account. Note that you continue to be charged for the soft-deleted blob's storage until it is permanently removed. Use the List Blobs API and specify the \\\"include=deleted\\\" query parameter to discover which blobs and snapshots have been soft deleted. You can then use the Undelete Blob API to restore a soft-deleted blob. All other operations on a soft-deleted blob or snapshot causes the service to return an HTTP status code of 404 (ResourceNotFound).
@@ -145,6 +1861,69 @@ pub async fn blob_delete(
     } else {
         let content = resp.text().await?;
         let entity: Option<BlobDeleteError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Delete Immutability Policy operation deletes the immutability policy on the blob.
+pub async fn blob_delete_immutability_policy(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    timeout: Option<i32>,
+    snapshot: Option<&str>,
+    versionid: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobDeleteImmutabilityPolicyError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_timeout = timeout;
+    let p_query_snapshot = snapshot;
+    let p_query_versionid = versionid;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!("{}/{containerName}/{blobName}?comp=immutabilityPolicies&_overload=deleteImmutabilityPolicy", configuration.base_path, containerName=crate::apis::urlencode(p_path_container_name), blobName=crate::apis::urlencode(p_path_blob_name));
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::DELETE, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_snapshot {
+        req_builder = req_builder.query(&[("snapshot", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_versionid {
+        req_builder = req_builder.query(&[("versionid", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobDeleteImmutabilityPolicyError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -284,6 +2063,62 @@ pub async fn blob_download(
     }
 }
 
+/// Returns the sku name and account kind
+pub async fn blob_get_account_info(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobGetAccountInfoError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?restype=account&comp=properties&blob",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobGetAccountInfoError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
 /// The Get Properties operation returns all user-defined metadata, standard HTTP properties, and system properties for the blob. It does not return the content of the blob.
 pub async fn blob_get_properties(
     configuration: &configuration::Configuration,
@@ -389,6 +2224,922 @@ pub async fn blob_get_properties(
     } else {
         let content = resp.text().await?;
         let entity: Option<BlobGetPropertiesError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Get Blob Tags operation enables users to get tags on a blob.
+pub async fn blob_get_tags(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    timeout: Option<i32>,
+    snapshot: Option<&str>,
+    versionid: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_blob_if_modified_since: Option<&str>,
+    x_ms_blob_if_unmodified_since: Option<&str>,
+    x_ms_blob_if_match: Option<&str>,
+    x_ms_blob_if_none_match: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::BlobTags, Error<BlobGetTagsError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_timeout = timeout;
+    let p_query_snapshot = snapshot;
+    let p_query_versionid = versionid;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_blob_if_modified_since = x_ms_blob_if_modified_since;
+    let p_header_x_ms_blob_if_unmodified_since = x_ms_blob_if_unmodified_since;
+    let p_header_x_ms_blob_if_match = x_ms_blob_if_match;
+    let p_header_x_ms_blob_if_none_match = x_ms_blob_if_none_match;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=tags",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_snapshot {
+        req_builder = req_builder.query(&[("snapshot", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_versionid {
+        req_builder = req_builder.query(&[("versionid", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_if_modified_since {
+        req_builder = req_builder.header("x-ms-blob-if-modified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_if_unmodified_since {
+        req_builder = req_builder.header("x-ms-blob-if-unmodified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_if_match {
+        req_builder = req_builder.header("x-ms-blob-if-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_if_none_match {
+        req_builder = req_builder.header("x-ms-blob-if-none-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::BlobTags`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::BlobTags`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobGetTagsError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Release Lease operation frees the lease if it's no longer needed, so that another client can immediately acquire a lease against the blob.
+pub async fn blob_release_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_lease_id: &str,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobReleaseLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=lease&release",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-lease-id", p_header_x_ms_lease_id.to_string());
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobReleaseLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Renew Lease operation renews an existing lease.
+pub async fn blob_renew_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_lease_id: &str,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobRenewLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=lease&renew",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-lease-id", p_header_x_ms_lease_id.to_string());
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobRenewLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Set the expiration time of a blob
+pub async fn blob_set_expiry(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_expiry_option: &str,
+    timeout: Option<i32>,
+    x_ms_expiry_time: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobSetExpiryError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_expiry_option = x_ms_expiry_option;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_expiry_time = x_ms_expiry_time;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=expiry",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header(
+        "x-ms-expiry-option",
+        p_header_x_ms_expiry_option.to_string(),
+    );
+    if let Some(param_value) = p_header_x_ms_expiry_time {
+        req_builder = req_builder.header("x-ms-expiry-time", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobSetExpiryError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Set the immutability policy of a blob
+pub async fn blob_set_immutability_policy(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    timeout: Option<i32>,
+    if_unmodified_since: Option<&str>,
+    x_ms_immutability_policy_until_date: Option<&str>,
+    x_ms_immutability_policy_mode: Option<&str>,
+    snapshot: Option<&str>,
+    versionid: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobSetImmutabilityPolicyError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_timeout = timeout;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_x_ms_immutability_policy_until_date = x_ms_immutability_policy_until_date;
+    let p_header_x_ms_immutability_policy_mode = x_ms_immutability_policy_mode;
+    let p_query_snapshot = snapshot;
+    let p_query_versionid = versionid;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=immutabilityPolicies",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_snapshot {
+        req_builder = req_builder.query(&[("snapshot", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_versionid {
+        req_builder = req_builder.query(&[("versionid", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_until_date {
+        req_builder = req_builder.header(
+            "x-ms-immutability-policy-until-date",
+            param_value.to_string(),
+        );
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_mode {
+        req_builder = req_builder.header("x-ms-immutability-policy-mode", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobSetImmutabilityPolicyError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Set Legal Hold operation sets a legal hold on the blob.
+pub async fn blob_set_legal_hold(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_legal_hold: bool,
+    timeout: Option<i32>,
+    snapshot: Option<&str>,
+    versionid: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobSetLegalHoldError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_legal_hold = x_ms_legal_hold;
+    let p_query_timeout = timeout;
+    let p_query_snapshot = snapshot;
+    let p_query_versionid = versionid;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=legalhold",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_snapshot {
+        req_builder = req_builder.query(&[("snapshot", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_versionid {
+        req_builder = req_builder.query(&[("versionid", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-legal-hold", p_header_x_ms_legal_hold.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobSetLegalHoldError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Set Metadata operation sets user-defined metadata for the specified blob as one or more name-value pairs.
+pub async fn blob_set_metadata(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    timeout: Option<i32>,
+    x_ms_meta: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobSetMetadataError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_meta = x_ms_meta;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=metadata",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_meta {
+        req_builder = req_builder.header("x-ms-meta", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobSetMetadataError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Set HTTP Headers operation sets system properties on the blob.
+pub async fn blob_set_properties(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    timeout: Option<i32>,
+    x_ms_blob_cache_control: Option<&str>,
+    x_ms_blob_content_type: Option<&str>,
+    x_ms_blob_content_md5: Option<String>,
+    x_ms_blob_content_encoding: Option<&str>,
+    x_ms_blob_content_language: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_blob_content_disposition: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobSetPropertiesError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_blob_cache_control = x_ms_blob_cache_control;
+    let p_header_x_ms_blob_content_type = x_ms_blob_content_type;
+    let p_header_x_ms_blob_content_md5 = x_ms_blob_content_md5;
+    let p_header_x_ms_blob_content_encoding = x_ms_blob_content_encoding;
+    let p_header_x_ms_blob_content_language = x_ms_blob_content_language;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_blob_content_disposition = x_ms_blob_content_disposition;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=properties&SetHTTPHeaders",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_blob_cache_control {
+        req_builder = req_builder.header("x-ms-blob-cache-control", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_type {
+        req_builder = req_builder.header("x-ms-blob-content-type", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_md5 {
+        req_builder = req_builder.header("x-ms-blob-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_encoding {
+        req_builder = req_builder.header("x-ms-blob-content-encoding", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_language {
+        req_builder = req_builder.header("x-ms-blob-content-language", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_disposition {
+        req_builder = req_builder.header("x-ms-blob-content-disposition", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobSetPropertiesError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Set Tags operation enables users to set tags on a blob.
+pub async fn blob_set_tags(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    tags: models::BlobTags,
+    timeout: Option<i32>,
+    versionid: Option<&str>,
+    content_md5: Option<String>,
+    x_ms_content_crc64: Option<String>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_blob_if_modified_since: Option<&str>,
+    x_ms_blob_if_unmodified_since: Option<&str>,
+    x_ms_blob_if_match: Option<&str>,
+    x_ms_blob_if_none_match: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobSetTagsError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_body_tags = tags;
+    let p_query_timeout = timeout;
+    let p_query_versionid = versionid;
+    let p_header_content_md5 = content_md5;
+    let p_header_x_ms_content_crc64 = x_ms_content_crc64;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_blob_if_modified_since = x_ms_blob_if_modified_since;
+    let p_header_x_ms_blob_if_unmodified_since = x_ms_blob_if_unmodified_since;
+    let p_header_x_ms_blob_if_match = x_ms_blob_if_match;
+    let p_header_x_ms_blob_if_none_match = x_ms_blob_if_none_match;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=tags&_overload=setTags",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_versionid {
+        req_builder = req_builder.query(&[("versionid", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_content_md5 {
+        req_builder = req_builder.header("Content-MD5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_content_crc64 {
+        req_builder = req_builder.header("x-ms-content-crc64", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_if_modified_since {
+        req_builder = req_builder.header("x-ms-blob-if-modified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_if_unmodified_since {
+        req_builder = req_builder.header("x-ms-blob-if-unmodified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_if_match {
+        req_builder = req_builder.header("x-ms-blob-if-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_if_none_match {
+        req_builder = req_builder.header("x-ms-blob-if-none-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_tags);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobSetTagsError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Set Tier operation sets the tier on a block blob. The operation is allowed on a page blob or block blob, but not on an append blob. A block blob's tier determines Hot/Cool/Archive storage type. This operation does not update the blob's ETag.
+pub async fn blob_set_tier(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_access_tier: &str,
+    snapshot: Option<&str>,
+    versionid: Option<&str>,
+    timeout: Option<i32>,
+    x_ms_rehydrate_priority: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobSetTierError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_access_tier = x_ms_access_tier;
+    let p_query_snapshot = snapshot;
+    let p_query_versionid = versionid;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_rehydrate_priority = x_ms_rehydrate_priority;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=tier",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_snapshot {
+        req_builder = req_builder.query(&[("snapshot", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_versionid {
+        req_builder = req_builder.query(&[("versionid", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-access-tier", p_header_x_ms_access_tier.to_string());
+    if let Some(param_value) = p_header_x_ms_rehydrate_priority {
+        req_builder = req_builder.header("x-ms-rehydrate-priority", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobSetTierError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,
@@ -553,6 +3304,4001 @@ pub async fn blob_start_copy_from_url(
     } else {
         let content = resp.text().await?;
         let entity: Option<BlobStartCopyFromUrlError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Undelete a blob that was previously soft deleted
+pub async fn blob_undelete(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlobUndeleteError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=undelete",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlobUndeleteError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Commit Block List operation writes a blob by specifying the list of block IDs that make up the blob. In order to be written as part of a blob, a block must have been successfully written to the server in a prior Put Block operation. You can call Put Block List to update a blob by uploading only those blocks that have changed, then committing the new and existing blocks together. You can do this by specifying whether to commit a block from the committed block list or from the uncommitted block list, or to commit the most recently uploaded version of the block, whichever list it may belong to.
+pub async fn block_blob_commit_block_list(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    blocks: models::BlockLookupList,
+    timeout: Option<i32>,
+    x_ms_blob_cache_control: Option<&str>,
+    x_ms_blob_content_type: Option<&str>,
+    x_ms_blob_content_encoding: Option<&str>,
+    x_ms_blob_content_language: Option<&str>,
+    x_ms_blob_content_md5: Option<String>,
+    content_md5: Option<String>,
+    x_ms_content_crc64: Option<String>,
+    x_ms_meta: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_blob_content_disposition: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_access_tier: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_tags: Option<&str>,
+    x_ms_immutability_policy_until_date: Option<&str>,
+    x_ms_immutability_policy_mode: Option<&str>,
+    x_ms_legal_hold: Option<bool>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlockBlobCommitBlockListError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_body_blocks = blocks;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_blob_cache_control = x_ms_blob_cache_control;
+    let p_header_x_ms_blob_content_type = x_ms_blob_content_type;
+    let p_header_x_ms_blob_content_encoding = x_ms_blob_content_encoding;
+    let p_header_x_ms_blob_content_language = x_ms_blob_content_language;
+    let p_header_x_ms_blob_content_md5 = x_ms_blob_content_md5;
+    let p_header_content_md5 = content_md5;
+    let p_header_x_ms_content_crc64 = x_ms_content_crc64;
+    let p_header_x_ms_meta = x_ms_meta;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_blob_content_disposition = x_ms_blob_content_disposition;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_access_tier = x_ms_access_tier;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_tags = x_ms_tags;
+    let p_header_x_ms_immutability_policy_until_date = x_ms_immutability_policy_until_date;
+    let p_header_x_ms_immutability_policy_mode = x_ms_immutability_policy_mode;
+    let p_header_x_ms_legal_hold = x_ms_legal_hold;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=blocklist",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_blob_cache_control {
+        req_builder = req_builder.header("x-ms-blob-cache-control", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_type {
+        req_builder = req_builder.header("x-ms-blob-content-type", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_encoding {
+        req_builder = req_builder.header("x-ms-blob-content-encoding", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_language {
+        req_builder = req_builder.header("x-ms-blob-content-language", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_md5 {
+        req_builder = req_builder.header("x-ms-blob-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_content_md5 {
+        req_builder = req_builder.header("Content-MD5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_content_crc64 {
+        req_builder = req_builder.header("x-ms-content-crc64", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_meta {
+        req_builder = req_builder.header("x-ms-meta", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_disposition {
+        req_builder = req_builder.header("x-ms-blob-content-disposition", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_access_tier {
+        req_builder = req_builder.header("x-ms-access-tier", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_tags {
+        req_builder = req_builder.header("x-ms-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_until_date {
+        req_builder = req_builder.header(
+            "x-ms-immutability-policy-until-date",
+            param_value.to_string(),
+        );
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_mode {
+        req_builder = req_builder.header("x-ms-immutability-policy-mode", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_legal_hold {
+        req_builder = req_builder.header("x-ms-legal-hold", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_blocks);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlockBlobCommitBlockListError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
+pub async fn block_blob_get_block_list(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    blocklisttype: &str,
+    snapshot: Option<&str>,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::BlockList, Error<BlockBlobGetBlockListError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_blocklisttype = blocklisttype;
+    let p_query_snapshot = snapshot;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=blocklist&_overload=getBlockList",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_snapshot {
+        req_builder = req_builder.query(&[("snapshot", &param_value.to_string())]);
+    }
+    req_builder = req_builder.query(&[("blocklisttype", &p_query_blocklisttype.to_string())]);
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::BlockList`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::BlockList`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlockBlobGetBlockListError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Put Blob from URL operation creates a new Block Blob where the contents of the blob are read from a given URL.  This API is supported beginning with the 2020-04-08 version. Partial updates are not supported with Put Blob from URL; the content of an existing blob is overwritten with the content of the new blob.  To perform partial updates to a block blob’s contents using a source URL, use the Put Block from URL API in conjunction with Put Block List.
+pub async fn block_blob_put_blob_from_url(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    content_length: i64,
+    x_ms_copy_source: &str,
+    x_ms_blob_type: &str,
+    x_ms_meta: Option<&str>,
+    timeout: Option<i32>,
+    content_md5: Option<String>,
+    x_ms_blob_content_type: Option<&str>,
+    x_ms_blob_content_encoding: Option<&str>,
+    x_ms_blob_content_language: Option<&str>,
+    x_ms_blob_content_md5: Option<String>,
+    x_ms_blob_cache_control: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_blob_content_disposition: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_access_tier: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_source_if_modified_since: Option<&str>,
+    x_ms_source_if_unmodified_since: Option<&str>,
+    x_ms_source_if_match: Option<&str>,
+    x_ms_source_if_none_match: Option<&str>,
+    x_ms_source_if_tags: Option<&str>,
+    x_ms_source_content_md5: Option<String>,
+    x_ms_tags: Option<&str>,
+    x_ms_copy_source_blob_properties: Option<bool>,
+    x_ms_copy_source_authorization: Option<&str>,
+    x_ms_copy_source_tag_option: Option<&str>,
+    x_ms_file_request_intent: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlockBlobPutBlobFromUrlError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_content_length = content_length;
+    let p_header_x_ms_copy_source = x_ms_copy_source;
+    let p_header_x_ms_blob_type = x_ms_blob_type;
+    let p_header_x_ms_meta = x_ms_meta;
+    let p_query_timeout = timeout;
+    let p_header_content_md5 = content_md5;
+    let p_header_x_ms_blob_content_type = x_ms_blob_content_type;
+    let p_header_x_ms_blob_content_encoding = x_ms_blob_content_encoding;
+    let p_header_x_ms_blob_content_language = x_ms_blob_content_language;
+    let p_header_x_ms_blob_content_md5 = x_ms_blob_content_md5;
+    let p_header_x_ms_blob_cache_control = x_ms_blob_cache_control;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_blob_content_disposition = x_ms_blob_content_disposition;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_access_tier = x_ms_access_tier;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_source_if_modified_since = x_ms_source_if_modified_since;
+    let p_header_x_ms_source_if_unmodified_since = x_ms_source_if_unmodified_since;
+    let p_header_x_ms_source_if_match = x_ms_source_if_match;
+    let p_header_x_ms_source_if_none_match = x_ms_source_if_none_match;
+    let p_header_x_ms_source_if_tags = x_ms_source_if_tags;
+    let p_header_x_ms_source_content_md5 = x_ms_source_content_md5;
+    let p_header_x_ms_tags = x_ms_tags;
+    let p_header_x_ms_copy_source_blob_properties = x_ms_copy_source_blob_properties;
+    let p_header_x_ms_copy_source_authorization = x_ms_copy_source_authorization;
+    let p_header_x_ms_copy_source_tag_option = x_ms_copy_source_tag_option;
+    let p_header_x_ms_file_request_intent = x_ms_file_request_intent;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?BlockBlob&fromUrl",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_meta {
+        req_builder = req_builder.header("x-ms-meta", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_content_md5 {
+        req_builder = req_builder.header("Content-MD5", param_value.to_string());
+    }
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    if let Some(param_value) = p_header_x_ms_blob_content_type {
+        req_builder = req_builder.header("x-ms-blob-content-type", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_encoding {
+        req_builder = req_builder.header("x-ms-blob-content-encoding", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_language {
+        req_builder = req_builder.header("x-ms-blob-content-language", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_md5 {
+        req_builder = req_builder.header("x-ms-blob-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_cache_control {
+        req_builder = req_builder.header("x-ms-blob-cache-control", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_disposition {
+        req_builder = req_builder.header("x-ms-blob-content-disposition", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_access_tier {
+        req_builder = req_builder.header("x-ms-access-tier", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_modified_since {
+        req_builder = req_builder.header("x-ms-source-if-modified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_unmodified_since {
+        req_builder =
+            req_builder.header("x-ms-source-if-unmodified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_match {
+        req_builder = req_builder.header("x-ms-source-if-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_none_match {
+        req_builder = req_builder.header("x-ms-source-if-none-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_tags {
+        req_builder = req_builder.header("x-ms-source-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_content_md5 {
+        req_builder = req_builder.header("x-ms-source-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_tags {
+        req_builder = req_builder.header("x-ms-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-copy-source", p_header_x_ms_copy_source.to_string());
+    if let Some(param_value) = p_header_x_ms_copy_source_blob_properties {
+        req_builder =
+            req_builder.header("x-ms-copy-source-blob-properties", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_copy_source_authorization {
+        req_builder = req_builder.header("x-ms-copy-source-authorization", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_copy_source_tag_option {
+        req_builder = req_builder.header("x-ms-copy-source-tag-option", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-blob-type", p_header_x_ms_blob_type.to_string());
+    if let Some(param_value) = p_header_x_ms_file_request_intent {
+        req_builder = req_builder.header("x-ms-file-request-intent", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlockBlobPutBlobFromUrlError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Query operation enables users to select/project on blob data by providing simple query expressions.
+pub async fn block_blob_query(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    query_request: models::QueryRequest,
+    snapshot: Option<&str>,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<reqwest::Response, Error<BlockBlobQueryError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_body_query_request = query_request;
+    let p_query_snapshot = snapshot;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=query",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_query_snapshot {
+        req_builder = req_builder.query(&[("snapshot", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_query_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(resp)
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlockBlobQueryError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Stage Block operation creates a new block to be committed as part of a blob
+pub async fn block_blob_stage_block(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    blockid: &str,
+    content_length: i64,
+    body: std::path::PathBuf,
+    content_md5: Option<String>,
+    x_ms_content_crc64: Option<String>,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_structured_body: Option<&str>,
+    x_ms_structured_content_length: Option<i64>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlockBlobStageBlockError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_blockid = blockid;
+    let p_header_content_length = content_length;
+    let p_body_body = body;
+    let p_header_content_md5 = content_md5;
+    let p_header_x_ms_content_crc64 = x_ms_content_crc64;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_structured_body = x_ms_structured_body;
+    let p_header_x_ms_structured_content_length = x_ms_structured_content_length;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=block",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    req_builder = req_builder.query(&[("blockid", &p_query_blockid.to_string())]);
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    if let Some(param_value) = p_header_content_md5 {
+        req_builder = req_builder.header("Content-MD5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_content_crc64 {
+        req_builder = req_builder.header("x-ms-content-crc64", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_structured_body {
+        req_builder = req_builder.header("x-ms-structured-body", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_structured_content_length {
+        req_builder = req_builder.header("x-ms-structured-content-length", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    let file = TokioFile::open(p_body_body).await?;
+    let stream = FramedRead::new(file, BytesCodec::new());
+    req_builder = req_builder.body(reqwest::Body::wrap_stream(stream));
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlockBlobStageBlockError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Stage Block From URL operation creates a new block to be committed as part of a blob where the contents are read from a URL.
+pub async fn block_blob_stage_block_from_url(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    blockid: &str,
+    content_length: i64,
+    x_ms_copy_source: &str,
+    x_ms_source_range: Option<&str>,
+    x_ms_source_content_md5: Option<String>,
+    x_ms_source_content_crc64: Option<String>,
+    timeout: Option<i32>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_source_if_modified_since: Option<&str>,
+    x_ms_source_if_unmodified_since: Option<&str>,
+    x_ms_source_if_match: Option<&str>,
+    x_ms_source_if_none_match: Option<&str>,
+    x_ms_copy_source_authorization: Option<&str>,
+    x_ms_file_request_intent: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlockBlobStageBlockFromUrlError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_blockid = blockid;
+    let p_header_content_length = content_length;
+    let p_header_x_ms_copy_source = x_ms_copy_source;
+    let p_header_x_ms_source_range = x_ms_source_range;
+    let p_header_x_ms_source_content_md5 = x_ms_source_content_md5;
+    let p_header_x_ms_source_content_crc64 = x_ms_source_content_crc64;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_source_if_modified_since = x_ms_source_if_modified_since;
+    let p_header_x_ms_source_if_unmodified_since = x_ms_source_if_unmodified_since;
+    let p_header_x_ms_source_if_match = x_ms_source_if_match;
+    let p_header_x_ms_source_if_none_match = x_ms_source_if_none_match;
+    let p_header_x_ms_copy_source_authorization = x_ms_copy_source_authorization;
+    let p_header_x_ms_file_request_intent = x_ms_file_request_intent;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=block&fromURL",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    req_builder = req_builder.query(&[("blockid", &p_query_blockid.to_string())]);
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    req_builder = req_builder.header("x-ms-copy-source", p_header_x_ms_copy_source.to_string());
+    if let Some(param_value) = p_header_x_ms_source_range {
+        req_builder = req_builder.header("x-ms-source-range", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_content_md5 {
+        req_builder = req_builder.header("x-ms-source-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_content_crc64 {
+        req_builder = req_builder.header("x-ms-source-content-crc64", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_modified_since {
+        req_builder = req_builder.header("x-ms-source-if-modified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_unmodified_since {
+        req_builder =
+            req_builder.header("x-ms-source-if-unmodified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_match {
+        req_builder = req_builder.header("x-ms-source-if-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_none_match {
+        req_builder = req_builder.header("x-ms-source-if-none-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_copy_source_authorization {
+        req_builder = req_builder.header("x-ms-copy-source-authorization", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_file_request_intent {
+        req_builder = req_builder.header("x-ms-file-request-intent", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlockBlobStageBlockFromUrlError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Upload Block Blob operation updates the content of an existing block blob. Updating an existing block blob overwrites any existing metadata on the blob. Partial updates are not supported with Put Blob; the content of the existing blob is overwritten with the content of the new blob. To perform a partial update of the content of a block blob, use the Put Block List operation.
+pub async fn block_blob_upload(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    content_length: i64,
+    x_ms_blob_type: &str,
+    body: std::path::PathBuf,
+    x_ms_meta: Option<&str>,
+    timeout: Option<i32>,
+    content_md5: Option<String>,
+    x_ms_blob_content_type: Option<&str>,
+    x_ms_blob_content_encoding: Option<&str>,
+    x_ms_blob_content_language: Option<&str>,
+    x_ms_blob_content_md5: Option<String>,
+    x_ms_blob_cache_control: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_blob_content_disposition: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_access_tier: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_tags: Option<&str>,
+    x_ms_immutability_policy_until_date: Option<&str>,
+    x_ms_immutability_policy_mode: Option<&str>,
+    x_ms_legal_hold: Option<bool>,
+    x_ms_content_crc64: Option<String>,
+    x_ms_structured_body: Option<&str>,
+    x_ms_structured_content_length: Option<i64>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<BlockBlobUploadError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_content_length = content_length;
+    let p_header_x_ms_blob_type = x_ms_blob_type;
+    let p_body_body = body;
+    let p_header_x_ms_meta = x_ms_meta;
+    let p_query_timeout = timeout;
+    let p_header_content_md5 = content_md5;
+    let p_header_x_ms_blob_content_type = x_ms_blob_content_type;
+    let p_header_x_ms_blob_content_encoding = x_ms_blob_content_encoding;
+    let p_header_x_ms_blob_content_language = x_ms_blob_content_language;
+    let p_header_x_ms_blob_content_md5 = x_ms_blob_content_md5;
+    let p_header_x_ms_blob_cache_control = x_ms_blob_cache_control;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_blob_content_disposition = x_ms_blob_content_disposition;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_access_tier = x_ms_access_tier;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_tags = x_ms_tags;
+    let p_header_x_ms_immutability_policy_until_date = x_ms_immutability_policy_until_date;
+    let p_header_x_ms_immutability_policy_mode = x_ms_immutability_policy_mode;
+    let p_header_x_ms_legal_hold = x_ms_legal_hold;
+    let p_header_x_ms_content_crc64 = x_ms_content_crc64;
+    let p_header_x_ms_structured_body = x_ms_structured_body;
+    let p_header_x_ms_structured_content_length = x_ms_structured_content_length;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?_overload=upload",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_meta {
+        req_builder = req_builder.header("x-ms-meta", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_content_md5 {
+        req_builder = req_builder.header("Content-MD5", param_value.to_string());
+    }
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    if let Some(param_value) = p_header_x_ms_blob_content_type {
+        req_builder = req_builder.header("x-ms-blob-content-type", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_encoding {
+        req_builder = req_builder.header("x-ms-blob-content-encoding", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_language {
+        req_builder = req_builder.header("x-ms-blob-content-language", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_md5 {
+        req_builder = req_builder.header("x-ms-blob-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_cache_control {
+        req_builder = req_builder.header("x-ms-blob-cache-control", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_content_disposition {
+        req_builder = req_builder.header("x-ms-blob-content-disposition", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_access_tier {
+        req_builder = req_builder.header("x-ms-access-tier", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_tags {
+        req_builder = req_builder.header("x-ms-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_until_date {
+        req_builder = req_builder.header(
+            "x-ms-immutability-policy-until-date",
+            param_value.to_string(),
+        );
+    }
+    if let Some(param_value) = p_header_x_ms_immutability_policy_mode {
+        req_builder = req_builder.header("x-ms-immutability-policy-mode", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_legal_hold {
+        req_builder = req_builder.header("x-ms-legal-hold", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_content_crc64 {
+        req_builder = req_builder.header("x-ms-content-crc64", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_structured_body {
+        req_builder = req_builder.header("x-ms-structured-body", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_structured_content_length {
+        req_builder = req_builder.header("x-ms-structured-content-length", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-blob-type", p_header_x_ms_blob_type.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    let file = TokioFile::open(p_body_body).await?;
+    let stream = FramedRead::new(file, BytesCodec::new());
+    req_builder = req_builder.body(reqwest::Body::wrap_stream(stream));
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BlockBlobUploadError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Acquire Lease operation requests a new lease on a container. The lease lock duration can be 15 to 60 seconds, or can be infinite.
+pub async fn container_acquire_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    x_ms_lease_duration: i32,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    x_ms_proposed_lease_id: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerAcquireLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_header_x_ms_lease_duration = x_ms_lease_duration;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_proposed_lease_id = x_ms_proposed_lease_id;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?comp=lease&restype=container&acquire",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header(
+        "x-ms-lease-duration",
+        p_header_x_ms_lease_duration.to_string(),
+    );
+    if let Some(param_value) = p_header_x_ms_proposed_lease_id {
+        req_builder = req_builder.header("x-ms-proposed-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerAcquireLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Break Lease operation ends a lease and ensures that another client can't acquire a new lease until the current lease period has expired.
+pub async fn container_break_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    x_ms_lease_break_period: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerBreakLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_x_ms_lease_break_period = x_ms_lease_break_period;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?comp=lease&restype=container&break",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_break_period {
+        req_builder = req_builder.header("x-ms-lease-break-period", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerBreakLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Change Lease operation is used to change the ID of an existing lease.
+pub async fn container_change_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    x_ms_lease_id: &str,
+    x_ms_proposed_lease_id: &str,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerChangeLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_proposed_lease_id = x_ms_proposed_lease_id;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?comp=lease&restype=container&change",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-lease-id", p_header_x_ms_lease_id.to_string());
+    req_builder = req_builder.header(
+        "x-ms-proposed-lease-id",
+        p_header_x_ms_proposed_lease_id.to_string(),
+    );
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerChangeLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Creates a new container under the specified account. If the container with the same name already exists, the operation fails.
+pub async fn container_create(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    timeout: Option<i32>,
+    x_ms_meta: Option<&str>,
+    x_ms_blob_public_access: Option<&str>,
+    x_ms_default_encryption_scope: Option<&str>,
+    x_ms_deny_encryption_scope_override: Option<bool>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerCreateError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_meta = x_ms_meta;
+    let p_header_x_ms_blob_public_access = x_ms_blob_public_access;
+    let p_header_x_ms_default_encryption_scope = x_ms_default_encryption_scope;
+    let p_header_x_ms_deny_encryption_scope_override = x_ms_deny_encryption_scope_override;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_meta {
+        req_builder = req_builder.header("x-ms-meta", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_public_access {
+        req_builder = req_builder.header("x-ms-blob-public-access", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_default_encryption_scope {
+        req_builder = req_builder.header("x-ms-default-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_deny_encryption_scope_override {
+        req_builder = req_builder.header(
+            "x-ms-deny-encryption-scope-override",
+            param_value.to_string(),
+        );
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerCreateError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// operation marks the specified container for deletion. The container and any blobs contained within it are later deleted during garbage collection
+pub async fn container_delete(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerDeleteError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&_overload=delete",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::DELETE, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerDeleteError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Filter Blobs operation enables callers to list blobs in a container whose tags match a given search expression.  Filter blobs searches within the given container.
+pub async fn container_filter_blobs(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    timeout: Option<i32>,
+    r#where: Option<&str>,
+    marker: Option<&str>,
+    maxresults: Option<i32>,
+    include: Option<Vec<String>>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::FilterBlobSegment, Error<ContainerFilterBlobsError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_query_timeout = timeout;
+    let p_query_where = r#where;
+    let p_query_marker = marker;
+    let p_query_maxresults = maxresults;
+    let p_query_include = include;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&comp=blobs",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_where {
+        req_builder = req_builder.query(&[("where", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_marker {
+        req_builder = req_builder.query(&[("marker", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_maxresults {
+        req_builder = req_builder.query(&[("maxresults", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_include {
+        req_builder = match "csv" {
+            "multi" => req_builder.query(
+                &param_value
+                    .into_iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "include",
+                &param_value
+                    .into_iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::FilterBlobSegment`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::FilterBlobSegment`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerFilterBlobsError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+pub async fn container_get_access_policy(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<Vec<models::SignedIdentifier>, Error<ContainerGetAccessPolicyError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&comp=acl",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `Vec&lt;models::SignedIdentifier&gt;`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `Vec&lt;models::SignedIdentifier&gt;`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerGetAccessPolicyError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Returns the sku name and account kind
+pub async fn container_get_account_info(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerGetAccountInfoError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=account&comp=properties",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerGetAccountInfoError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// returns all user-defined metadata and system properties for the specified container. The data returned does not include the container's list of blobs
+pub async fn container_get_properties(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerGetPropertiesError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&_overload=getProperties",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerGetPropertiesError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The List Blobs operation returns a list of the blobs under the specified container.
+pub async fn container_list_blob_flat_segment(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    prefix: Option<&str>,
+    marker: Option<&str>,
+    maxresults: Option<i32>,
+    include: Option<Vec<String>>,
+    timeout: Option<i32>,
+    start_from: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::ListBlobsFlatSegmentResponse, Error<ContainerListBlobFlatSegmentError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_query_prefix = prefix;
+    let p_query_marker = marker;
+    let p_query_maxresults = maxresults;
+    let p_query_include = include;
+    let p_query_timeout = timeout;
+    let p_query_start_from = start_from;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&comp=list&flat",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_prefix {
+        req_builder = req_builder.query(&[("prefix", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_marker {
+        req_builder = req_builder.query(&[("marker", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_maxresults {
+        req_builder = req_builder.query(&[("maxresults", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_include {
+        req_builder = match "csv" {
+            "multi" => req_builder.query(
+                &param_value
+                    .into_iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "include",
+                &param_value
+                    .into_iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_start_from {
+        req_builder = req_builder.query(&[("startFrom", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ListBlobsFlatSegmentResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ListBlobsFlatSegmentResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerListBlobFlatSegmentError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The List Blobs operation returns a list of the blobs under the specified container. A delimiter can be used to traverse a virtual hierarchy of blobs as though it were a file system.
+pub async fn container_list_blob_hierarchy_segment(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    delimiter: &str,
+    prefix: Option<&str>,
+    marker: Option<&str>,
+    maxresults: Option<i32>,
+    include: Option<Vec<String>>,
+    timeout: Option<i32>,
+    start_from: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::ListBlobsHierarchySegmentResponse, Error<ContainerListBlobHierarchySegmentError>>
+{
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_query_delimiter = delimiter;
+    let p_query_prefix = prefix;
+    let p_query_marker = marker;
+    let p_query_maxresults = maxresults;
+    let p_query_include = include;
+    let p_query_timeout = timeout;
+    let p_query_start_from = start_from;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&comp=list&hierarchy",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    req_builder = req_builder.query(&[("delimiter", &p_query_delimiter.to_string())]);
+    if let Some(ref param_value) = p_query_prefix {
+        req_builder = req_builder.query(&[("prefix", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_marker {
+        req_builder = req_builder.query(&[("marker", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_maxresults {
+        req_builder = req_builder.query(&[("maxresults", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_include {
+        req_builder = match "csv" {
+            "multi" => req_builder.query(
+                &param_value
+                    .into_iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "include",
+                &param_value
+                    .into_iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_start_from {
+        req_builder = req_builder.query(&[("startFrom", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ListBlobsHierarchySegmentResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ListBlobsHierarchySegmentResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerListBlobHierarchySegmentError> =
+            serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Release Lease operation frees the lease if it's no longer needed, so that another client can immediately acquire a lease against the container.
+pub async fn container_release_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    x_ms_lease_id: &str,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerReleaseLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?comp=lease&restype=container&release",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-lease-id", p_header_x_ms_lease_id.to_string());
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerReleaseLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Renames an existing container.
+pub async fn container_rename(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    x_ms_source_container_name: &str,
+    x_ms_source_lease_id: Option<&str>,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerRenameError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_header_x_ms_source_container_name = x_ms_source_container_name;
+    let p_header_x_ms_source_lease_id = x_ms_source_lease_id;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&comp=rename",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header(
+        "x-ms-source-container-name",
+        p_header_x_ms_source_container_name.to_string(),
+    );
+    if let Some(param_value) = p_header_x_ms_source_lease_id {
+        req_builder = req_builder.header("x-ms-source-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerRenameError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Renew Lease operation renews an existing lease.
+pub async fn container_renew_lease(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    x_ms_lease_id: &str,
+    x_ms_lease_action: &str,
+    timeout: Option<i32>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerRenewLeaseError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_lease_action = x_ms_lease_action;
+    let p_query_timeout = timeout;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?comp=lease&restype=container&renew",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-lease-id", p_header_x_ms_lease_id.to_string());
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-lease-action", p_header_x_ms_lease_action.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerRenewLeaseError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Restores a previously-deleted container.
+pub async fn container_restore(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    x_ms_deleted_container_name: Option<&str>,
+    x_ms_deleted_container_version: Option<&str>,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerRestoreError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_header_x_ms_deleted_container_name = x_ms_deleted_container_name;
+    let p_header_x_ms_deleted_container_version = x_ms_deleted_container_version;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&comp=undelete",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_deleted_container_name {
+        req_builder = req_builder.header("x-ms-deleted-container-name", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_deleted_container_version {
+        req_builder = req_builder.header("x-ms-deleted-container-version", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerRestoreError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+pub async fn container_set_access_policy(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    container_acl: Vec<models::SignedIdentifier>,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_blob_public_access: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerSetAccessPolicyError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_body_container_acl = container_acl;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_blob_public_access = x_ms_blob_public_access;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&comp=acl&_overload=setAccessPolicy",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_blob_public_access {
+        req_builder = req_builder.header("x-ms-blob-public-access", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_container_acl);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerSetAccessPolicyError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// operation sets one or more user-defined name-value pairs for the specified container.
+pub async fn container_set_metadata(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_meta: Option<&str>,
+    if_modified_since: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<ContainerSetMetadataError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_meta = x_ms_meta;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&comp=metadata",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_meta {
+        req_builder = req_builder.header("x-ms-meta", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerSetMetadataError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Batch operation allows multiple API calls to be embedded into a single HTTP request.
+pub async fn container_submit_batch(
+    configuration: &configuration::Configuration,
+    container_name: &str,
+    content_length: i64,
+    x_ms_version: &str,
+    name: &str,
+    body: std::path::PathBuf,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<String, Error<ContainerSubmitBatchError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_path_container_name = container_name;
+    let p_header_content_length = content_length;
+    let p_header_x_ms_version = x_ms_version;
+    let p_form_name = name;
+    let _p_form_body = body;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}?restype=container&comp=batch",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name)
+    );
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    let mut multipart_form = reqwest::multipart::Form::new();
+    multipart_form = multipart_form.text("name", p_form_name.to_string());
+    // TODO: support file upload for 'body' parameter
+    req_builder = req_builder.multipart(multipart_form);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `String`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `String`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ContainerSubmitBatchError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Filter Blobs operation enables callers to list blobs across all containers whose tags match a given search expression.
+pub async fn filter_blobs(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    timeout: Option<i32>,
+    r#where: Option<&str>,
+    marker: Option<&str>,
+    maxresults: Option<i32>,
+    include: Option<Vec<String>>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::FilterBlobSegment, Error<FilterBlobsError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_query_timeout = timeout;
+    let p_query_where = r#where;
+    let p_query_marker = marker;
+    let p_query_maxresults = maxresults;
+    let p_query_include = include;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!("{}/?comp=blobs", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_where {
+        req_builder = req_builder.query(&[("where", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_marker {
+        req_builder = req_builder.query(&[("marker", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_maxresults {
+        req_builder = req_builder.query(&[("maxresults", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_include {
+        req_builder = match "csv" {
+            "multi" => req_builder.query(
+                &param_value
+                    .into_iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "include",
+                &param_value
+                    .into_iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::FilterBlobSegment`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::FilterBlobSegment`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<FilterBlobsError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Returns the sku name and account kind.
+pub async fn get_account_info(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<GetAccountInfoError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/?restype=account&comp=properties",
+        configuration.base_path
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<GetAccountInfoError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Retrieves properties of a storage account's Blob service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.
+pub async fn get_properties(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::StorageServiceProperties, Error<GetPropertiesError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/?restype=service&comp=properties&_overload=getProperties",
+        configuration.base_path
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::StorageServiceProperties`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::StorageServiceProperties`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<GetPropertiesError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
+pub async fn get_statistics(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::StorageServiceStats, Error<GetStatisticsError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!("{}/?restype=service&comp=stats", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::StorageServiceStats`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::StorageServiceStats`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<GetStatisticsError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Retrieves a user delegation key for the Blob service. This is only a valid operation when using bearer token authentication.
+pub async fn get_user_delegation_key(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    key_info: models::KeyInfo,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::UserDelegationKey, Error<GetUserDelegationKeyError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_body_key_info = key_info;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/?restype=service&comp=userdelegationkey",
+        configuration.base_path
+    );
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_key_info);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::UserDelegationKey`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::UserDelegationKey`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<GetUserDelegationKeyError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The List Containers Segment operation returns a list of the containers under the specified account
+pub async fn list_containers_segment(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    prefix: Option<&str>,
+    marker: Option<&str>,
+    maxresults: Option<i32>,
+    timeout: Option<i32>,
+    include: Option<Vec<String>>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::ListContainersSegmentResponse, Error<ListContainersSegmentError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_query_prefix = prefix;
+    let p_query_marker = marker;
+    let p_query_maxresults = maxresults;
+    let p_query_timeout = timeout;
+    let p_query_include = include;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!("{}/?comp=list", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_prefix {
+        req_builder = req_builder.query(&[("prefix", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_marker {
+        req_builder = req_builder.query(&[("marker", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_maxresults {
+        req_builder = req_builder.query(&[("maxresults", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_include {
+        req_builder = match "csv" {
+            "multi" => req_builder.query(
+                &param_value
+                    .into_iter()
+                    .map(|p| ("include".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "include",
+                &param_value
+                    .into_iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ListContainersSegmentResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ListContainersSegmentResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ListContainersSegmentError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Clear Pages operation clears a range of pages from a page blob
+pub async fn page_blob_clear_pages(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    content_length: f64,
+    range: &str,
+    x_ms_page_write: &str,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_if_sequence_number_le: Option<i64>,
+    x_ms_if_sequence_number_lt: Option<i64>,
+    x_ms_if_sequence_number_eq: Option<i64>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<PageBlobClearPagesError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_content_length = content_length;
+    let p_header_range = range;
+    let p_header_x_ms_page_write = x_ms_page_write;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_if_sequence_number_le = x_ms_if_sequence_number_le;
+    let p_header_x_ms_if_sequence_number_lt = x_ms_if_sequence_number_lt;
+    let p_header_x_ms_if_sequence_number_eq = x_ms_if_sequence_number_eq;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=page&clear",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    req_builder = req_builder.header("Range", p_header_range.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_sequence_number_le {
+        req_builder = req_builder.header("x-ms-if-sequence-number-le", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_sequence_number_lt {
+        req_builder = req_builder.header("x-ms-if-sequence-number-lt", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_sequence_number_eq {
+        req_builder = req_builder.header("x-ms-if-sequence-number-eq", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-page-write", p_header_x_ms_page_write.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<PageBlobClearPagesError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Copy Incremental operation copies a snapshot of the source page blob to a destination page blob. The snapshot is copied such that only the differential changes between the previously copied snapshot are transferred to the destination. The copied snapshots are complete copies of the original snapshot and can be read or copied from as usual. This API is supported since REST version 2016-05-31.
+pub async fn page_blob_copy_incremental(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_copy_source: &str,
+    timeout: Option<i32>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<PageBlobCopyIncrementalError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_copy_source = x_ms_copy_source;
+    let p_query_timeout = timeout;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=incrementalcopy",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-copy-source", p_header_x_ms_copy_source.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<PageBlobCopyIncrementalError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Get Page Ranges operation returns the list of valid page ranges for a page blob or snapshot of a page blob.
+pub async fn page_blob_get_page_ranges(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    snapshot: Option<&str>,
+    timeout: Option<i32>,
+    range: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    marker: Option<&str>,
+    maxresults: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::PageList, Error<PageBlobGetPageRangesError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_snapshot = snapshot;
+    let p_query_timeout = timeout;
+    let p_header_range = range;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_query_marker = marker;
+    let p_query_maxresults = maxresults;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=pagelist",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_snapshot {
+        req_builder = req_builder.query(&[("snapshot", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_marker {
+        req_builder = req_builder.query(&[("marker", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_maxresults {
+        req_builder = req_builder.query(&[("maxresults", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_range {
+        req_builder = req_builder.header("Range", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::PageList`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::PageList`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<PageBlobGetPageRangesError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Get Page Ranges Diff operation returns the list of valid page ranges for a page blob or snapshot of a page blob.
+pub async fn page_blob_get_page_ranges_diff(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    snapshot: Option<&str>,
+    timeout: Option<i32>,
+    prevsnapshot: Option<&str>,
+    x_ms_previous_snapshot_url: Option<&str>,
+    range: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    marker: Option<&str>,
+    maxresults: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<models::PageList, Error<PageBlobGetPageRangesDiffError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_query_snapshot = snapshot;
+    let p_query_timeout = timeout;
+    let p_query_prevsnapshot = prevsnapshot;
+    let p_header_x_ms_previous_snapshot_url = x_ms_previous_snapshot_url;
+    let p_header_range = range;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_query_marker = marker;
+    let p_query_maxresults = maxresults;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=pagelist&diff",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_snapshot {
+        req_builder = req_builder.query(&[("snapshot", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_prevsnapshot {
+        req_builder = req_builder.query(&[("prevsnapshot", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_marker {
+        req_builder = req_builder.query(&[("marker", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_maxresults {
+        req_builder = req_builder.query(&[("maxresults", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_previous_snapshot_url {
+        req_builder = req_builder.header("x-ms-previous-snapshot-url", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_range {
+        req_builder = req_builder.header("Range", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::PageList`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::PageList`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<PageBlobGetPageRangesDiffError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Resize operation increases the size of the page blob to the specified size.
+pub async fn page_blob_resize(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_blob_content_length: i64,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<PageBlobResizeError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_blob_content_length = x_ms_blob_content_length;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=properties&Resize",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header(
+        "x-ms-blob-content-length",
+        p_header_x_ms_blob_content_length.to_string(),
+    );
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<PageBlobResizeError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Update Sequence Number operation sets the blob's sequence number. The operation will fail if the specified sequence number is less than the current sequence number of the blob.
+pub async fn page_blob_set_sequence_number(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_sequence_number_action: &str,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_blob_sequence_number: Option<i64>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<PageBlobSetSequenceNumberError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_sequence_number_action = x_ms_sequence_number_action;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_blob_sequence_number = x_ms_blob_sequence_number;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=properties&UpdateSequenceNumber",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    req_builder = req_builder.header(
+        "x-ms-sequence-number-action",
+        p_header_x_ms_sequence_number_action.to_string(),
+    );
+    if let Some(param_value) = p_header_x_ms_blob_sequence_number {
+        req_builder = req_builder.header("x-ms-blob-sequence-number", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<PageBlobSetSequenceNumberError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Upload Pages operation writes a range of pages to a page blob
+pub async fn page_blob_upload_pages(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    content_length: i64,
+    range: &str,
+    x_ms_page_write: &str,
+    body: std::path::PathBuf,
+    content_md5: Option<String>,
+    x_ms_content_crc64: Option<String>,
+    timeout: Option<i32>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_if_sequence_number_le: Option<i64>,
+    x_ms_if_sequence_number_lt: Option<i64>,
+    x_ms_if_sequence_number_eq: Option<i64>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_structured_body: Option<&str>,
+    x_ms_structured_content_length: Option<i64>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<PageBlobUploadPagesError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_content_length = content_length;
+    let p_header_range = range;
+    let p_header_x_ms_page_write = x_ms_page_write;
+    let p_body_body = body;
+    let p_header_content_md5 = content_md5;
+    let p_header_x_ms_content_crc64 = x_ms_content_crc64;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_if_sequence_number_le = x_ms_if_sequence_number_le;
+    let p_header_x_ms_if_sequence_number_lt = x_ms_if_sequence_number_lt;
+    let p_header_x_ms_if_sequence_number_eq = x_ms_if_sequence_number_eq;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_structured_body = x_ms_structured_body;
+    let p_header_x_ms_structured_content_length = x_ms_structured_content_length;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=page&update",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    if let Some(param_value) = p_header_content_md5 {
+        req_builder = req_builder.header("Content-MD5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_content_crc64 {
+        req_builder = req_builder.header("x-ms-content-crc64", param_value.to_string());
+    }
+    req_builder = req_builder.header("Range", p_header_range.to_string());
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_sequence_number_le {
+        req_builder = req_builder.header("x-ms-if-sequence-number-le", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_sequence_number_lt {
+        req_builder = req_builder.header("x-ms-if-sequence-number-lt", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_sequence_number_eq {
+        req_builder = req_builder.header("x-ms-if-sequence-number-eq", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_structured_body {
+        req_builder = req_builder.header("x-ms-structured-body", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_structured_content_length {
+        req_builder = req_builder.header("x-ms-structured-content-length", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-page-write", p_header_x_ms_page_write.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    let file = TokioFile::open(p_body_body).await?;
+    let stream = FramedRead::new(file, BytesCodec::new());
+    req_builder = req_builder.body(reqwest::Body::wrap_stream(stream));
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<PageBlobUploadPagesError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Upload Pages operation writes a range of pages to a page blob where the contents are read from a URL.
+pub async fn page_blob_upload_pages_from_url(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    container_name: &str,
+    blob_name: &str,
+    x_ms_copy_source: &str,
+    x_ms_source_range: &str,
+    content_length: i64,
+    x_ms_range: &str,
+    x_ms_page_write: &str,
+    x_ms_source_content_md5: Option<String>,
+    x_ms_source_content_crc64: Option<String>,
+    timeout: Option<i32>,
+    x_ms_encryption_key: Option<&str>,
+    x_ms_encryption_key_sha256: Option<&str>,
+    x_ms_encryption_algorithm: Option<&str>,
+    x_ms_encryption_scope: Option<&str>,
+    x_ms_lease_id: Option<&str>,
+    x_ms_if_sequence_number_le: Option<i64>,
+    x_ms_if_sequence_number_lt: Option<i64>,
+    x_ms_if_sequence_number_eq: Option<i64>,
+    if_modified_since: Option<&str>,
+    if_unmodified_since: Option<&str>,
+    if_none_match: Option<&str>,
+    if_match: Option<&str>,
+    x_ms_if_tags: Option<&str>,
+    x_ms_source_if_modified_since: Option<&str>,
+    x_ms_source_if_unmodified_since: Option<&str>,
+    x_ms_source_if_match: Option<&str>,
+    x_ms_source_if_none_match: Option<&str>,
+    x_ms_copy_source_authorization: Option<&str>,
+    x_ms_file_request_intent: Option<&str>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<PageBlobUploadPagesFromUrlError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_path_container_name = container_name;
+    let p_path_blob_name = blob_name;
+    let p_header_x_ms_copy_source = x_ms_copy_source;
+    let p_header_x_ms_source_range = x_ms_source_range;
+    let p_header_content_length = content_length;
+    let p_header_x_ms_range = x_ms_range;
+    let p_header_x_ms_page_write = x_ms_page_write;
+    let p_header_x_ms_source_content_md5 = x_ms_source_content_md5;
+    let p_header_x_ms_source_content_crc64 = x_ms_source_content_crc64;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_encryption_key = x_ms_encryption_key;
+    let p_header_x_ms_encryption_key_sha256 = x_ms_encryption_key_sha256;
+    let p_header_x_ms_encryption_algorithm = x_ms_encryption_algorithm;
+    let p_header_x_ms_encryption_scope = x_ms_encryption_scope;
+    let p_header_x_ms_lease_id = x_ms_lease_id;
+    let p_header_x_ms_if_sequence_number_le = x_ms_if_sequence_number_le;
+    let p_header_x_ms_if_sequence_number_lt = x_ms_if_sequence_number_lt;
+    let p_header_x_ms_if_sequence_number_eq = x_ms_if_sequence_number_eq;
+    let p_header_if_modified_since = if_modified_since;
+    let p_header_if_unmodified_since = if_unmodified_since;
+    let p_header_if_none_match = if_none_match;
+    let p_header_if_match = if_match;
+    let p_header_x_ms_if_tags = x_ms_if_tags;
+    let p_header_x_ms_source_if_modified_since = x_ms_source_if_modified_since;
+    let p_header_x_ms_source_if_unmodified_since = x_ms_source_if_unmodified_since;
+    let p_header_x_ms_source_if_match = x_ms_source_if_match;
+    let p_header_x_ms_source_if_none_match = x_ms_source_if_none_match;
+    let p_header_x_ms_copy_source_authorization = x_ms_copy_source_authorization;
+    let p_header_x_ms_file_request_intent = x_ms_file_request_intent;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/{containerName}/{blobName}?comp=page&update&fromUrl",
+        configuration.base_path,
+        containerName = crate::apis::urlencode(p_path_container_name),
+        blobName = crate::apis::urlencode(p_path_blob_name)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    req_builder = req_builder.header("x-ms-copy-source", p_header_x_ms_copy_source.to_string());
+    req_builder = req_builder.header("x-ms-source-range", p_header_x_ms_source_range.to_string());
+    if let Some(param_value) = p_header_x_ms_source_content_md5 {
+        req_builder = req_builder.header("x-ms-source-content-md5", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_content_crc64 {
+        req_builder = req_builder.header("x-ms-source-content-crc64", param_value.to_string());
+    }
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    req_builder = req_builder.header("x-ms-range", p_header_x_ms_range.to_string());
+    if let Some(param_value) = p_header_x_ms_encryption_key {
+        req_builder = req_builder.header("x-ms-encryption-key", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_key_sha256 {
+        req_builder = req_builder.header("x-ms-encryption-key-sha256", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_algorithm {
+        req_builder = req_builder.header("x-ms-encryption-algorithm", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_encryption_scope {
+        req_builder = req_builder.header("x-ms-encryption-scope", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_lease_id {
+        req_builder = req_builder.header("x-ms-lease-id", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_sequence_number_le {
+        req_builder = req_builder.header("x-ms-if-sequence-number-le", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_sequence_number_lt {
+        req_builder = req_builder.header("x-ms-if-sequence-number-lt", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_sequence_number_eq {
+        req_builder = req_builder.header("x-ms-if-sequence-number-eq", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_modified_since {
+        req_builder = req_builder.header("If-Modified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_unmodified_since {
+        req_builder = req_builder.header("If-Unmodified-Since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_none_match {
+        req_builder = req_builder.header("If-None-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_if_match {
+        req_builder = req_builder.header("If-Match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_if_tags {
+        req_builder = req_builder.header("x-ms-if-tags", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_modified_since {
+        req_builder = req_builder.header("x-ms-source-if-modified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_unmodified_since {
+        req_builder =
+            req_builder.header("x-ms-source-if-unmodified-since", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_match {
+        req_builder = req_builder.header("x-ms-source-if-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_source_if_none_match {
+        req_builder = req_builder.header("x-ms-source-if-none-match", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_copy_source_authorization {
+        req_builder = req_builder.header("x-ms-copy-source-authorization", param_value.to_string());
+    }
+    if let Some(param_value) = p_header_x_ms_file_request_intent {
+        req_builder = req_builder.header("x-ms-file-request-intent", param_value.to_string());
+    }
+    req_builder = req_builder.header("x-ms-page-write", p_header_x_ms_page_write.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<PageBlobUploadPagesFromUrlError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Sets properties for a storage account's Blob service endpoint, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules
+pub async fn set_properties(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    storage_service_properties: models::StorageServiceProperties,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<(), Error<SetPropertiesError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_body_storage_service_properties = storage_service_properties;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!(
+        "{}/?restype=service&comp=properties",
+        configuration.base_path
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_storage_service_properties);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<SetPropertiesError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// The Batch operation allows multiple API calls to be embedded into a single HTTP request.
+pub async fn submit_batch(
+    configuration: &configuration::Configuration,
+    x_ms_version: &str,
+    content_length: i64,
+    name: &str,
+    body: std::path::PathBuf,
+    timeout: Option<i32>,
+    x_ms_client_request_id: Option<&str>,
+) -> Result<String, Error<SubmitBatchError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_header_x_ms_version = x_ms_version;
+    let p_header_content_length = content_length;
+    let p_form_name = name;
+    let _p_form_body = body;
+    let p_query_timeout = timeout;
+    let p_header_x_ms_client_request_id = x_ms_client_request_id;
+
+    let uri_str = format!("{}/?comp=batch", configuration.base_path);
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_query_timeout {
+        req_builder = req_builder.query(&[("timeout", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.header("x-ms-version", p_header_x_ms_version.to_string());
+    if let Some(param_value) = p_header_x_ms_client_request_id {
+        req_builder = req_builder.header("x-ms-client-request-id", param_value.to_string());
+    }
+    req_builder = req_builder.header("Content-Length", p_header_content_length.to_string());
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    let mut multipart_form = reqwest::multipart::Form::new();
+    multipart_form = multipart_form.text("name", p_form_name.to_string());
+    // TODO: support file upload for 'body' parameter
+    req_builder = req_builder.multipart(multipart_form);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `String`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `String`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<SubmitBatchError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

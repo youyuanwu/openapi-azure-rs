@@ -30,6 +30,7 @@ src/models/block_lookup_list.rs
 src/models/clear_range.rs
 src/models/container_item.rs
 src/models/container_properties.rs
+src/models/container_submit_batch_request.rs
 src/models/copy_status.rs
 src/models/cors_rule.rs
 src/models/delete_snapshots_option_type.rs

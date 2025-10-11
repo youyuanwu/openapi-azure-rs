@@ -1,4 +1,4 @@
-#![allow(clippy::needless_return)]
+#![allow(clippy::needless_return, clippy::into_iter_on_ref)]
 #![allow(unused_imports)]
 #![allow(clippy::too_many_arguments)]
 

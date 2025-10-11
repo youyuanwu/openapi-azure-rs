@@ -52,6 +52,8 @@ pub mod container_item;
 pub use self::container_item::ContainerItem;
 pub mod container_properties;
 pub use self::container_properties::ContainerProperties;
+pub mod container_submit_batch_request;
+pub use self::container_submit_batch_request::ContainerSubmitBatchRequest;
 pub mod copy_status;
 pub use self::copy_status::CopyStatus;
 pub mod cors_rule;
