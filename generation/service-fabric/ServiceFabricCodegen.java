@@ -77,9 +77,15 @@ public class ServiceFabricCodegen extends RustClientCodegen {
                     parameter.dataType = "u32";
                 }
             }
-            if (operation.returnType != null && operation.responses.stream()
-                    .anyMatch(response -> "204".equals(response.code) && response.dataType == null)) {
-                operation.vendorExtensions.put("x-sf-optional-response", true);
+            if (operation.returnType != null) {
+                List<String> emptySuccessCodes = operation.responses.stream()
+                    .filter(response -> response.is2xx && response.dataType == null)
+                    .map(response -> response.code)
+                    .collect(Collectors.toList());
+                if (!emptySuccessCodes.isEmpty()) {
+                    operation.vendorExtensions.put("x-sf-optional-response", true);
+                    operation.vendorExtensions.put("x-sf-empty-success-codes", emptySuccessCodes);
+                }
             }
             // The official upload operations describe raw data but omit a body parameter.
             if ("upload_file".equals(operation.operationId) || "upload_file_chunk".equals(operation.operationId)) {

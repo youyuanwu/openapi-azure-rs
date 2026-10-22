@@ -1,7 +1,7 @@
 use openapi_service_fabric::{
     apis::{
         application_api, application_type_api, configuration::Configuration, image_store_api,
-        node_api, property_management_api, service_api, Error,
+        mesh_secrets_api, node_api, property_management_api, service_api, Error,
     },
     models::{
         ApplicationPackageCleanupPolicy, HealthEvaluation, NameDescription,
@@ -223,6 +223,41 @@ async fn application_lookup_preserves_http_errors() {
                 assert!(response.entity.is_some());
             }
             other => panic!("{other:?}"),
+        }
+        server.join().unwrap();
+    }
+}
+
+#[tokio::test]
+async fn model_responses_allow_only_documented_bodyless_successes() {
+    for status in [200, 201] {
+        let body = r#"{"name":"example","properties":{"kind":"inlinedValue"}}"#;
+        let (config, server) = serve(status, Some("application/json"), body);
+        let model = mesh_secrets_api::mesh_secret_create_or_update(
+            &config,
+            "6.4-preview",
+            "example",
+            serde_json::from_str(body).unwrap(),
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        assert_eq!(model.name, "example");
+        server.join().unwrap();
+    }
+    for (status, is_documented_empty) in [(200, false), (201, false), (202, true), (204, false)] {
+        let (config, server) = serve(status, Some("application/json"), "");
+        let result = mesh_secrets_api::mesh_secret_create_or_update(
+            &config,
+            "6.4-preview",
+            "example",
+            Default::default(),
+        )
+        .await;
+        if is_documented_empty {
+            assert!(result.unwrap().is_none());
+        } else {
+            assert!(matches!(result, Err(Error::Serde(_))), "{result:?}");
         }
         server.join().unwrap();
     }

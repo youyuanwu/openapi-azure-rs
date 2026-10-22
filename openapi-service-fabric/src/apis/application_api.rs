@@ -464,7 +464,7 @@ pub async fn get_application_info(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
-    if status == reqwest::StatusCode::NO_CONTENT {
+    if status.as_u16() == 204 {
         return Ok(None);
     }
     let content_type = resp
@@ -600,7 +600,7 @@ pub async fn get_application_load_info(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
-    if status == reqwest::StatusCode::NO_CONTENT {
+    if status.as_u16() == 204 {
         return Ok(None);
     }
     let content_type = resp
@@ -886,7 +886,7 @@ pub async fn get_deployed_application_info(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
-    if status == reqwest::StatusCode::NO_CONTENT {
+    if status.as_u16() == 204 {
         return Ok(None);
     }
     let content_type = resp

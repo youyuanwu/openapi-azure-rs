@@ -593,11 +593,11 @@ pub {{#supportAsync}}async {{/supportAsync}}fn {{{operationId}}}(configuration: 
     let resp = configuration.client.execute(req){{#supportAsync}}.await{{/supportAsync}}?;
 
     let status = resp.status();
-    {{#vendorExtensions.x-sf-optional-response}}
-    if status == reqwest::StatusCode::NO_CONTENT {
+    {{#vendorExtensions.x-sf-empty-success-codes}}
+    if status.as_u16() == {{.}} {
         return Ok(None);
     }
-    {{/vendorExtensions.x-sf-optional-response}}
+    {{/vendorExtensions.x-sf-empty-success-codes}}
     {{^supportMultipleResponses}}
     {{^isResponseFile}}
     {{#returnType}}

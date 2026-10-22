@@ -51,7 +51,7 @@ pub async fn mesh_volume_create_or_update(
     api_version: &str,
     volume_resource_name: &str,
     volume_resource_description: models::VolumeResourceDescription,
-) -> Result<models::VolumeResourceDescription, Error<MeshVolumeCreateOrUpdateError>> {
+) -> Result<Option<models::VolumeResourceDescription>, Error<MeshVolumeCreateOrUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_volume_resource_name = volume_resource_name;
@@ -74,6 +74,9 @@ pub async fn mesh_volume_create_or_update(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status.as_u16() == 202 {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -84,7 +87,7 @@ pub async fn mesh_volume_create_or_update(
     if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::VolumeResourceDescription`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::VolumeResourceDescription`")))),
         }

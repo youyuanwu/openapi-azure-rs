@@ -32,8 +32,9 @@ The subclass customizes generator metadata rather than editing the specification
   `Vec<u8>` arguments, including intentionally empty directory markers.
 - Represent query parameters ending in `HealthStateFilter` as `u32` masks
   (`0..=4294967295`), serialized as positive decimal values.
-- Mark model-returning operations with a documented empty 204 response as
-  `Option<T>`; only 204 becomes `None`, not decoding failures.
+- Mark model-returning operations with documented bodyless 2xx alternatives as
+  `Option<T>`; only those exact statuses become `None`, not decoding failures.
+  These include application lookup's 204 and Mesh create/update's 202.
 
 `generation/service-fabric/templates/reqwest/api.mustache` was scaffolded from
 the pinned generator's `rust/reqwest/api.mustache`. Its focused overrides consume

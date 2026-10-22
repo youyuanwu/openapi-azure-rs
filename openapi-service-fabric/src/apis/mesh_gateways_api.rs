@@ -51,7 +51,7 @@ pub async fn mesh_gateway_create_or_update(
     api_version: &str,
     gateway_resource_name: &str,
     gateway_resource_description: models::GatewayResourceDescription,
-) -> Result<models::GatewayResourceDescription, Error<MeshGatewayCreateOrUpdateError>> {
+) -> Result<Option<models::GatewayResourceDescription>, Error<MeshGatewayCreateOrUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_gateway_resource_name = gateway_resource_name;
@@ -74,6 +74,9 @@ pub async fn mesh_gateway_create_or_update(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status.as_u16() == 202 {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -84,7 +87,7 @@ pub async fn mesh_gateway_create_or_update(
     if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::GatewayResourceDescription`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::GatewayResourceDescription`")))),
         }

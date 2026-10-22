@@ -7,9 +7,10 @@ Tagged enums use the documented wire discriminator values (for example,
 `Stateful`, `Event`, and `ImageStorePath`) and preserve inherited and subtype
 fields. Provision requests must include the subtype's required fields.
 
-Model-returning operations with a documented empty 204 alternative, including
-`get_application_info`, return `Option<T>`: `Some` for decoded responses and
-`None` for 204. Malformed 200 responses remain errors.
+Model-returning operations with documented bodyless success alternatives return
+`Option<T>`: `Some` for decoded responses and `None` only for those exact statuses.
+This includes `get_application_info`'s 204 and Mesh create/update's 202.
+Malformed 200/201 responses remain errors.
 
 Operations previously returning `()` now return `reqwest::StatusCode`, so callers
 can distinguish completion from acceptance or enforce an exact status contract.
