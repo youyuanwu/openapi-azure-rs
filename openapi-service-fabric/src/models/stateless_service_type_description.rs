@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatelessServiceTypeDescription : Describes a stateless service type defined in the service manifest of a provisioned application type.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatelessServiceTypeDescription {
-    /// A flag indicating if this type is not implemented and hosted by a user service process, but is implicitly hosted by a system created process. This value is true for services using the guest executable services, false otherwise.
-    #[serde(rename = "UseImplicitHost", skip_serializing_if = "Option::is_none")]
-    pub use_implicit_host: Option<bool>,
     #[serde(rename = "Kind")]
     pub kind: models::ServiceKind,
     /// Indicates whether the service type is a stateful service type or a stateless service type. This property is true if the service type is a stateful service type, false otherwise.
@@ -43,13 +39,14 @@ pub struct StatelessServiceTypeDescription {
     /// List of service type extensions.
     #[serde(rename = "Extensions", skip_serializing_if = "Option::is_none")]
     pub extensions: Option<Vec<models::ServiceTypeExtensionDescription>>,
+    /// A flag indicating if this type is not implemented and hosted by a user service process, but is implicitly hosted by a system created process. This value is true for services using the guest executable services, false otherwise.
+    #[serde(rename = "UseImplicitHost", skip_serializing_if = "Option::is_none")]
+    pub use_implicit_host: Option<bool>,
 }
 
 impl StatelessServiceTypeDescription {
-    /// Describes a stateless service type defined in the service manifest of a provisioned application type.
     pub fn new(kind: models::ServiceKind) -> StatelessServiceTypeDescription {
         StatelessServiceTypeDescription {
-            use_implicit_host: None,
             kind,
             is_stateful: None,
             service_type_name: None,
@@ -57,6 +54,7 @@ impl StatelessServiceTypeDescription {
             load_metrics: None,
             service_placement_policies: None,
             extensions: None,
+            use_implicit_host: None,
         }
     }
 }

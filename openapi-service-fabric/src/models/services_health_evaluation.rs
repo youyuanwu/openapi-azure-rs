@@ -11,9 +11,18 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServicesHealthEvaluation : Represents health evaluation for services of a certain service type belonging to an application, containing health evaluations for each unhealthy service that impacted current aggregated health state. Can be returned when evaluating application health and the aggregated health state is either Error or Warning.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServicesHealthEvaluation {
+    #[serde(rename = "Kind")]
+    pub kind: models::HealthEvaluationKind,
+    #[serde(
+        rename = "AggregatedHealthState",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub aggregated_health_state: Option<models::HealthState>,
+    /// Description of the health evaluation, which represents a summary of the evaluation process.
+    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// Name of the service type of the services.
     #[serde(rename = "ServiceTypeName", skip_serializing_if = "Option::is_none")]
     pub service_type_name: Option<String>,
@@ -32,29 +41,18 @@ pub struct ServicesHealthEvaluation {
         skip_serializing_if = "Option::is_none"
     )]
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::HealthEvaluationKind,
-    #[serde(
-        rename = "AggregatedHealthState",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub aggregated_health_state: Option<models::HealthState>,
-    /// Description of the health evaluation, which represents a summary of the evaluation process.
-    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
 }
 
 impl ServicesHealthEvaluation {
-    /// Represents health evaluation for services of a certain service type belonging to an application, containing health evaluations for each unhealthy service that impacted current aggregated health state. Can be returned when evaluating application health and the aggregated health state is either Error or Warning.
     pub fn new(kind: models::HealthEvaluationKind) -> ServicesHealthEvaluation {
         ServicesHealthEvaluation {
+            kind,
+            aggregated_health_state: None,
+            description: None,
             service_type_name: None,
             max_percent_unhealthy_services: None,
             total_count: None,
             unhealthy_evaluations: None,
-            kind,
-            aggregated_health_state: None,
-            description: None,
         }
     }
 }

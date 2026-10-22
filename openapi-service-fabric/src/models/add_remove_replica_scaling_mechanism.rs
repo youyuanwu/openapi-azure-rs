@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// AddRemoveReplicaScalingMechanism : Describes the horizontal auto scaling mechanism that adds or removes replicas (containers or container groups).
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AddRemoveReplicaScalingMechanism {
+    #[serde(rename = "kind")]
+    pub kind: models::AutoScalingMechanismKind,
     /// Minimum number of containers (scale down won't be performed below this number).
     #[serde(rename = "minCount")]
     pub min_count: i32,
@@ -23,23 +24,20 @@ pub struct AddRemoveReplicaScalingMechanism {
     /// Each time auto scaling is performed, this number of containers will be added or removed.
     #[serde(rename = "scaleIncrement")]
     pub scale_increment: i32,
-    #[serde(rename = "kind")]
-    pub kind: models::AutoScalingMechanismKind,
 }
 
 impl AddRemoveReplicaScalingMechanism {
-    /// Describes the horizontal auto scaling mechanism that adds or removes replicas (containers or container groups).
     pub fn new(
+        kind: models::AutoScalingMechanismKind,
         min_count: i32,
         max_count: i32,
         scale_increment: i32,
-        kind: models::AutoScalingMechanismKind,
     ) -> AddRemoveReplicaScalingMechanism {
         AddRemoveReplicaScalingMechanism {
+            kind,
             min_count,
             max_count,
             scale_increment,
-            kind,
         }
     }
 }

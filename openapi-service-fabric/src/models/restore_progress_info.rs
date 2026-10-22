@@ -18,7 +18,7 @@ pub struct RestoreProgressInfo {
     pub restore_state: Option<models::RestoreState>,
     /// Timestamp when operation succeeded or failed.
     #[serde(rename = "TimeStampUtc", skip_serializing_if = "Option::is_none")]
-    pub time_stamp_utc: Option<String>,
+    pub time_stamp_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
     #[serde(rename = "RestoredEpoch", skip_serializing_if = "Option::is_none")]
     pub restored_epoch: Option<Box<models::Epoch>>,
     /// Restored LSN.

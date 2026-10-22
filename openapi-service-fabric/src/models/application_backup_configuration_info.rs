@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationBackupConfigurationInfo : Backup configuration information for a specific Service Fabric application specifying what backup policy is being applied and suspend description, if any.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationBackupConfigurationInfo {
-    /// The name of the application, including the 'fabric:' URI scheme.
-    #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
-    pub application_name: Option<String>,
     #[serde(rename = "Kind")]
     pub kind: models::BackupEntityKind,
     /// The name of the backup policy which is applicable to this Service Fabric application or service or partition.
@@ -29,17 +25,19 @@ pub struct ApplicationBackupConfigurationInfo {
     pub policy_inherited_from: Option<models::BackupPolicyScope>,
     #[serde(rename = "SuspensionInfo", skip_serializing_if = "Option::is_none")]
     pub suspension_info: Option<Box<models::BackupSuspensionInfo>>,
+    /// The name of the application, including the 'fabric:' URI scheme.
+    #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
+    pub application_name: Option<String>,
 }
 
 impl ApplicationBackupConfigurationInfo {
-    /// Backup configuration information for a specific Service Fabric application specifying what backup policy is being applied and suspend description, if any.
     pub fn new(kind: models::BackupEntityKind) -> ApplicationBackupConfigurationInfo {
         ApplicationBackupConfigurationInfo {
-            application_name: None,
             kind,
             policy_name: None,
             policy_inherited_from: None,
             suspension_info: None,
+            application_name: None,
         }
     }
 }

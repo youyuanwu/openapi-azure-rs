@@ -11,22 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationBackupEntity : Identifies the Service Fabric application which is being backed up.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationBackupEntity {
+    #[serde(rename = "EntityKind")]
+    pub entity_kind: models::BackupEntityKind,
     /// The name of the application, including the 'fabric:' URI scheme.
     #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
     pub application_name: Option<String>,
-    #[serde(rename = "EntityKind")]
-    pub entity_kind: models::BackupEntityKind,
 }
 
 impl ApplicationBackupEntity {
-    /// Identifies the Service Fabric application which is being backed up.
     pub fn new(entity_kind: models::BackupEntityKind) -> ApplicationBackupEntity {
         ApplicationBackupEntity {
-            application_name: None,
             entity_kind,
+            application_name: None,
         }
     }
 }

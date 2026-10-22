@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ClusterUpgradeRollbackStartedEvent : Cluster Upgrade Rollback Started event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClusterUpgradeRollbackStartedEvent {
-    /// Target Cluster version.
-    #[serde(rename = "TargetClusterVersion")]
-    pub target_cluster_version: String,
-    /// Describes failure.
-    #[serde(rename = "FailureReason")]
-    pub failure_reason: String,
-    /// Overall duration of upgrade in milli-seconds.
-    #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
-    pub overall_upgrade_elapsed_time_in_ms: f64,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -33,34 +23,42 @@ pub struct ClusterUpgradeRollbackStartedEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// Target Cluster version.
+    #[serde(rename = "TargetClusterVersion")]
+    pub target_cluster_version: String,
+    /// Describes failure.
+    #[serde(rename = "FailureReason")]
+    pub failure_reason: String,
+    /// Overall duration of upgrade in milli-seconds.
+    #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
+    pub overall_upgrade_elapsed_time_in_ms: f64,
 }
 
 impl ClusterUpgradeRollbackStartedEvent {
-    /// Cluster Upgrade Rollback Started event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         target_cluster_version: String,
         failure_reason: String,
         overall_upgrade_elapsed_time_in_ms: f64,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ClusterUpgradeRollbackStartedEvent {
         ClusterUpgradeRollbackStartedEvent {
-            target_cluster_version,
-            failure_reason,
-            overall_upgrade_elapsed_time_in_ms,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            target_cluster_version,
+            failure_reason,
+            overall_upgrade_elapsed_time_in_ms,
         }
     }
 }

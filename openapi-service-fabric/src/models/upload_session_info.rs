@@ -22,7 +22,7 @@ pub struct UploadSessionInfo {
     pub session_id: Option<uuid::Uuid>,
     /// The date and time when the upload session was last modified.
     #[serde(rename = "ModifiedDate", skip_serializing_if = "Option::is_none")]
-    pub modified_date: Option<String>,
+    pub modified_date: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// The size in bytes of the uploading file.
     #[serde(rename = "FileSize", skip_serializing_if = "Option::is_none")]
     pub file_size: Option<String>,

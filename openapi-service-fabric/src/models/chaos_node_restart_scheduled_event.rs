@@ -11,21 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ChaosNodeRestartScheduledEvent : Chaos Restart Node Fault Scheduled event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ChaosNodeRestartScheduledEvent {
-    /// Id of Node instance.
-    #[serde(rename = "NodeInstanceId")]
-    pub node_instance_id: i64,
-    /// Id of fault group.
-    #[serde(rename = "FaultGroupId")]
-    pub fault_group_id: uuid::Uuid,
-    /// Id of fault.
-    #[serde(rename = "FaultId")]
-    pub fault_id: uuid::Uuid,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName")]
-    pub node_name: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -36,36 +23,47 @@ pub struct ChaosNodeRestartScheduledEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName")]
+    pub node_name: String,
+    /// Id of Node instance.
+    #[serde(rename = "NodeInstanceId")]
+    pub node_instance_id: i64,
+    /// Id of fault group.
+    #[serde(rename = "FaultGroupId")]
+    pub fault_group_id: uuid::Uuid,
+    /// Id of fault.
+    #[serde(rename = "FaultId")]
+    pub fault_id: uuid::Uuid,
 }
 
 impl ChaosNodeRestartScheduledEvent {
-    /// Chaos Restart Node Fault Scheduled event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        node_name: String,
         node_instance_id: i64,
         fault_group_id: uuid::Uuid,
         fault_id: uuid::Uuid,
-        node_name: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ChaosNodeRestartScheduledEvent {
         ChaosNodeRestartScheduledEvent {
-            node_instance_id,
-            fault_group_id,
-            fault_id,
-            node_name,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            node_name,
+            node_instance_id,
+            fault_group_id,
+            fault_id,
         }
     }
 }

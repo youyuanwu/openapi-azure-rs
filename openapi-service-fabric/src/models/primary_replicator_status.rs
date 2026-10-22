@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PrimaryReplicatorStatus : Provides statistics about the Service Fabric Replicator, when it is functioning in a Primary role.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PrimaryReplicatorStatus {
+    #[serde(rename = "Kind")]
+    pub kind: models::ReplicaRole,
     #[serde(
         rename = "ReplicationQueueStatus",
         skip_serializing_if = "Option::is_none"
@@ -22,17 +23,14 @@ pub struct PrimaryReplicatorStatus {
     /// List of remote replicator status
     #[serde(rename = "RemoteReplicators", skip_serializing_if = "Option::is_none")]
     pub remote_replicators: Option<Vec<models::RemoteReplicatorStatus>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::ReplicaRole,
 }
 
 impl PrimaryReplicatorStatus {
-    /// Provides statistics about the Service Fabric Replicator, when it is functioning in a Primary role.
     pub fn new(kind: models::ReplicaRole) -> PrimaryReplicatorStatus {
         PrimaryReplicatorStatus {
+            kind,
             replication_queue_status: None,
             remote_replicators: None,
-            kind,
         }
     }
 }

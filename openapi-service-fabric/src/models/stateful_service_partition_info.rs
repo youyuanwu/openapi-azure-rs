@@ -11,9 +11,19 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatefulServicePartitionInfo : Information about a partition of a stateful Service Fabric service..
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatefulServicePartitionInfo {
+    #[serde(rename = "ServiceKind")]
+    pub service_kind: models::ServiceKind,
+    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
+    pub health_state: Option<models::HealthState>,
+    #[serde(rename = "PartitionStatus", skip_serializing_if = "Option::is_none")]
+    pub partition_status: Option<models::ServicePartitionStatus>,
+    #[serde(
+        rename = "PartitionInformation",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub partition_information: Option<Box<models::PartitionInformation>>,
     /// The target replica set size as a number.
     #[serde(
         rename = "TargetReplicaSetSize",
@@ -37,32 +47,20 @@ pub struct StatefulServicePartitionInfo {
     pub last_quorum_loss_duration: Option<String>,
     #[serde(rename = "PrimaryEpoch", skip_serializing_if = "Option::is_none")]
     pub primary_epoch: Option<Box<models::Epoch>>,
-    #[serde(rename = "ServiceKind")]
-    pub service_kind: models::ServiceKind,
-    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
-    pub health_state: Option<models::HealthState>,
-    #[serde(rename = "PartitionStatus", skip_serializing_if = "Option::is_none")]
-    pub partition_status: Option<models::ServicePartitionStatus>,
-    #[serde(
-        rename = "PartitionInformation",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub partition_information: Option<Box<models::PartitionInformation>>,
 }
 
 impl StatefulServicePartitionInfo {
-    /// Information about a partition of a stateful Service Fabric service..
     pub fn new(service_kind: models::ServiceKind) -> StatefulServicePartitionInfo {
         StatefulServicePartitionInfo {
+            service_kind,
+            health_state: None,
+            partition_status: None,
+            partition_information: None,
             target_replica_set_size: None,
             min_replica_set_size: None,
             auxiliary_replica_count: None,
             last_quorum_loss_duration: None,
             primary_epoch: None,
-            service_kind,
-            health_state: None,
-            partition_status: None,
-            partition_information: None,
         }
     }
 }

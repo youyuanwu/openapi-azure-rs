@@ -25,7 +25,7 @@ pub struct LoadMetricReportInfo {
     pub current_value: Option<f64>,
     /// The UTC time when the load is reported.
     #[serde(rename = "LastReportedUtc", skip_serializing_if = "Option::is_none")]
-    pub last_reported_utc: Option<String>,
+    pub last_reported_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
 }
 
 impl LoadMetricReportInfo {

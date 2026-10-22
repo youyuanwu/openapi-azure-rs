@@ -11,9 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ChaosCodePackageRestartScheduledEvent : Chaos Restart Code Package Fault Scheduled event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ChaosCodePackageRestartScheduledEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+    #[serde(rename = "ApplicationId")]
+    pub application_id: String,
     /// Id of fault group.
     #[serde(rename = "FaultGroupId")]
     pub fault_group_id: uuid::Uuid,
@@ -32,55 +51,34 @@ pub struct ChaosCodePackageRestartScheduledEvent {
     /// Id of Service package activation.
     #[serde(rename = "ServicePackageActivationId")]
     pub service_package_activation_id: String,
-    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
-    #[serde(rename = "ApplicationId")]
-    pub application_id: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl ChaosCodePackageRestartScheduledEvent {
-    /// Chaos Restart Code Package Fault Scheduled event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        application_id: String,
         fault_group_id: uuid::Uuid,
         fault_id: uuid::Uuid,
         node_name: String,
         service_manifest_name: String,
         code_package_name: String,
         service_package_activation_id: String,
-        application_id: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ChaosCodePackageRestartScheduledEvent {
         ChaosCodePackageRestartScheduledEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
+            application_id,
             fault_group_id,
             fault_id,
             node_name,
             service_manifest_name,
             code_package_name,
             service_package_activation_id,
-            application_id,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

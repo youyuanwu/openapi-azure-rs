@@ -11,25 +11,26 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StartedChaosEvent : Describes a Chaos event that gets generated when Chaos is started.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StartedChaosEvent {
-    #[serde(rename = "ChaosParameters", skip_serializing_if = "Option::is_none")]
-    pub chaos_parameters: Option<Box<models::ChaosParameters>>,
     #[serde(rename = "Kind")]
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
-    pub time_stamp_utc: String,
+    pub time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    #[serde(rename = "ChaosParameters", skip_serializing_if = "Option::is_none")]
+    pub chaos_parameters: Option<Box<models::ChaosParameters>>,
 }
 
 impl StartedChaosEvent {
-    /// Describes a Chaos event that gets generated when Chaos is started.
-    pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> StartedChaosEvent {
+    pub fn new(
+        kind: models::ChaosEventKind,
+        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    ) -> StartedChaosEvent {
         StartedChaosEvent {
-            chaos_parameters: None,
             kind,
             time_stamp_utc,
+            chaos_parameters: None,
         }
     }
 }

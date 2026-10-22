@@ -11,9 +11,25 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ClusterUpgradeDomainCompletedEvent : Cluster Upgrade Domain Completed event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClusterUpgradeDomainCompletedEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
     /// Target Cluster version.
     #[serde(rename = "TargetClusterVersion")]
     pub target_cluster_version: String,
@@ -26,46 +42,28 @@ pub struct ClusterUpgradeDomainCompletedEvent {
     /// Duration of domain upgrade in milli-seconds.
     #[serde(rename = "UpgradeDomainElapsedTimeInMs")]
     pub upgrade_domain_elapsed_time_in_ms: f64,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl ClusterUpgradeDomainCompletedEvent {
-    /// Cluster Upgrade Domain Completed event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         target_cluster_version: String,
         upgrade_state: String,
         upgrade_domains: String,
         upgrade_domain_elapsed_time_in_ms: f64,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ClusterUpgradeDomainCompletedEvent {
         ClusterUpgradeDomainCompletedEvent {
-            target_cluster_version,
-            upgrade_state,
-            upgrade_domains,
-            upgrade_domain_elapsed_time_in_ms,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            target_cluster_version,
+            upgrade_state,
+            upgrade_domains,
+            upgrade_domain_elapsed_time_in_ms,
         }
     }
 }

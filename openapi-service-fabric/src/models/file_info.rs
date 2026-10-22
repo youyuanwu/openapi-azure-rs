@@ -21,7 +21,7 @@ pub struct FileInfo {
     pub file_version: Option<Box<models::FileVersion>>,
     /// The date and time when the image store file was last modified.
     #[serde(rename = "ModifiedDate", skip_serializing_if = "Option::is_none")]
-    pub modified_date: Option<String>,
+    pub modified_date: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// The file path relative to the image store root path.
     #[serde(rename = "StoreRelativePath", skip_serializing_if = "Option::is_none")]
     pub store_relative_path: Option<String>,

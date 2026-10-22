@@ -30,7 +30,7 @@ pub struct PropertyMetadata {
         rename = "LastModifiedUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_modified_utc_timestamp: Option<String>,
+    pub last_modified_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// The version of the property. Every time a property is modified, its sequence number is increased.
     #[serde(rename = "SequenceNumber", skip_serializing_if = "Option::is_none")]
     pub sequence_number: Option<String>,

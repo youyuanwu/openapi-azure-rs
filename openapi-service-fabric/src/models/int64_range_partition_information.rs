@@ -11,32 +11,30 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// Int64RangePartitionInformation : Describes the partition information for the integer range that is based on partition schemes.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Int64RangePartitionInformation {
+    #[serde(rename = "ServicePartitionKind")]
+    pub service_partition_kind: models::ServicePartitionKind,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
+    pub id: Option<uuid::Uuid>,
     /// Specifies the minimum key value handled by this partition.
     #[serde(rename = "LowKey", skip_serializing_if = "Option::is_none")]
     pub low_key: Option<String>,
     /// Specifies the maximum key value handled by this partition.
     #[serde(rename = "HighKey", skip_serializing_if = "Option::is_none")]
     pub high_key: Option<String>,
-    #[serde(rename = "ServicePartitionKind")]
-    pub service_partition_kind: models::ServicePartitionKind,
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
-    pub id: Option<uuid::Uuid>,
 }
 
 impl Int64RangePartitionInformation {
-    /// Describes the partition information for the integer range that is based on partition schemes.
     pub fn new(
         service_partition_kind: models::ServicePartitionKind,
     ) -> Int64RangePartitionInformation {
         Int64RangePartitionInformation {
-            low_key: None,
-            high_key: None,
             service_partition_kind,
             id: None,
+            low_key: None,
+            high_key: None,
         }
     }
 }

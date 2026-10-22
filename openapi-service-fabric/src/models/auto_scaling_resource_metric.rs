@@ -11,21 +11,19 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// AutoScalingResourceMetric : Describes the resource that is used for triggering auto scaling.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AutoScalingResourceMetric {
-    #[serde(rename = "name")]
-    pub name: models::AutoScalingResourceMetricName,
     #[serde(rename = "kind")]
     pub kind: models::AutoScalingMetricKind,
+    #[serde(rename = "name")]
+    pub name: models::AutoScalingResourceMetricName,
 }
 
 impl AutoScalingResourceMetric {
-    /// Describes the resource that is used for triggering auto scaling.
     pub fn new(
-        name: models::AutoScalingResourceMetricName,
         kind: models::AutoScalingMetricKind,
+        name: models::AutoScalingResourceMetricName,
     ) -> AutoScalingResourceMetric {
-        AutoScalingResourceMetric { name, kind }
+        AutoScalingResourceMetric { kind, name }
     }
 }

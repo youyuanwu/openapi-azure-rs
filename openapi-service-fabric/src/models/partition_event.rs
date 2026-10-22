@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PartitionEvent : Represents the base for all Partition Events.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PartitionEvent {
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId")]
-    pub partition_id: uuid::Uuid,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -27,30 +23,32 @@ pub struct PartitionEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId")]
+    pub partition_id: uuid::Uuid,
 }
 
 impl PartitionEvent {
-    /// Represents the base for all Partition Events.
     pub fn new(
-        partition_id: uuid::Uuid,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        partition_id: uuid::Uuid,
     ) -> PartitionEvent {
         PartitionEvent {
-            partition_id,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            partition_id,
         }
     }
 }

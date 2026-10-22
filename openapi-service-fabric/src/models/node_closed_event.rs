@@ -11,21 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeClosedEvent : Node Closed event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeClosedEvent {
-    /// Id of Node.
-    #[serde(rename = "NodeId")]
-    pub node_id: String,
-    /// Id of Node instance.
-    #[serde(rename = "NodeInstance")]
-    pub node_instance: i64,
-    /// Describes error.
-    #[serde(rename = "Error")]
-    pub error: String,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName")]
-    pub node_name: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -36,36 +23,47 @@ pub struct NodeClosedEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName")]
+    pub node_name: String,
+    /// Id of Node.
+    #[serde(rename = "NodeId")]
+    pub node_id: String,
+    /// Id of Node instance.
+    #[serde(rename = "NodeInstance")]
+    pub node_instance: i64,
+    /// Describes error.
+    #[serde(rename = "Error")]
+    pub error: String,
 }
 
 impl NodeClosedEvent {
-    /// Node Closed event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        node_name: String,
         node_id: String,
         node_instance: i64,
         error: String,
-        node_name: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> NodeClosedEvent {
         NodeClosedEvent {
-            node_id,
-            node_instance,
-            error,
-            node_name,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            node_name,
+            node_id,
+            node_instance,
+            error,
         }
     }
 }

@@ -11,19 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedStatefulServiceReplicaInfo : Information about a stateful service replica deployed on a node.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedStatefulServiceReplicaInfo {
-    /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
-    #[serde(rename = "ReplicaId", skip_serializing_if = "Option::is_none")]
-    pub replica_id: Option<String>,
-    #[serde(rename = "ReplicaRole", skip_serializing_if = "Option::is_none")]
-    pub replica_role: Option<models::ReplicaRole>,
-    #[serde(
-        rename = "ReconfigurationInformation",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub reconfiguration_information: Option<Box<models::ReconfigurationInformation>>,
     #[serde(rename = "ServiceKind")]
     pub service_kind: models::ServiceKind,
     /// The full name of the service with 'fabric:' URI scheme.
@@ -58,15 +47,21 @@ pub struct DeployedStatefulServiceReplicaInfo {
     /// Host process ID of the process that is hosting the replica. This will be zero if the replica is down. In hyper-v containers this host process ID will be from different kernel.
     #[serde(rename = "HostProcessId", skip_serializing_if = "Option::is_none")]
     pub host_process_id: Option<String>,
+    /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+    #[serde(rename = "ReplicaId", skip_serializing_if = "Option::is_none")]
+    pub replica_id: Option<String>,
+    #[serde(rename = "ReplicaRole", skip_serializing_if = "Option::is_none")]
+    pub replica_role: Option<models::ReplicaRole>,
+    #[serde(
+        rename = "ReconfigurationInformation",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub reconfiguration_information: Option<Box<models::ReconfigurationInformation>>,
 }
 
 impl DeployedStatefulServiceReplicaInfo {
-    /// Information about a stateful service replica deployed on a node.
     pub fn new(service_kind: models::ServiceKind) -> DeployedStatefulServiceReplicaInfo {
         DeployedStatefulServiceReplicaInfo {
-            replica_id: None,
-            replica_role: None,
-            reconfiguration_information: None,
             service_kind,
             service_name: None,
             service_type_name: None,
@@ -77,6 +72,9 @@ impl DeployedStatefulServiceReplicaInfo {
             address: None,
             service_package_activation_id: None,
             host_process_id: None,
+            replica_id: None,
+            replica_role: None,
+            reconfiguration_information: None,
         }
     }
 }

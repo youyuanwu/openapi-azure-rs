@@ -11,14 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ReplicaHealth : Represents a base class for stateful service replica or stateless service instance health. Contains the replica aggregated health state, the health events and the unhealthy evaluations.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ReplicaHealth {
-    #[serde(rename = "ServiceKind")]
-    pub service_kind: models::ServiceKind,
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
-    pub partition_id: Option<uuid::Uuid>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
@@ -35,18 +29,22 @@ pub struct ReplicaHealth {
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "HealthStatistics", skip_serializing_if = "Option::is_none")]
     pub health_statistics: Option<Box<models::HealthStatistics>>,
+    #[serde(rename = "ServiceKind")]
+    pub service_kind: models::ServiceKind,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+    pub partition_id: Option<uuid::Uuid>,
 }
 
 impl ReplicaHealth {
-    /// Represents a base class for stateful service replica or stateless service instance health. Contains the replica aggregated health state, the health events and the unhealthy evaluations.
     pub fn new(service_kind: models::ServiceKind) -> ReplicaHealth {
         ReplicaHealth {
-            service_kind,
-            partition_id: None,
             aggregated_health_state: None,
             health_events: None,
             unhealthy_evaluations: None,
             health_statistics: None,
+            service_kind,
+            partition_id: None,
         }
     }
 }

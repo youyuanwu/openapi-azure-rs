@@ -14,6 +14,8 @@ use serde::{Deserialize, Serialize};
 /// SecondaryIdleReplicatorStatus : Status of the secondary replicator when it is in idle mode and is being built by the primary.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SecondaryIdleReplicatorStatus {
+    #[serde(rename = "Kind")]
+    pub kind: models::ReplicaRole,
     #[serde(
         rename = "ReplicationQueueStatus",
         skip_serializing_if = "Option::is_none"
@@ -24,7 +26,7 @@ pub struct SecondaryIdleReplicatorStatus {
         rename = "LastReplicationOperationReceivedTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_replication_operation_received_time_utc: Option<String>,
+    pub last_replication_operation_received_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// Value that indicates whether the replica is currently being built.
     #[serde(rename = "IsInBuild", skip_serializing_if = "Option::is_none")]
     pub is_in_build: Option<bool>,
@@ -35,28 +37,26 @@ pub struct SecondaryIdleReplicatorStatus {
         rename = "LastCopyOperationReceivedTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_copy_operation_received_time_utc: Option<String>,
+    pub last_copy_operation_received_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// The last time-stamp (UTC) at which an acknowledgment was sent to the primary replicator. UTC 0 represents an invalid value, indicating that an acknowledgment message was never sent.
     #[serde(
         rename = "LastAcknowledgementSentTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_acknowledgement_sent_time_utc: Option<String>,
-    #[serde(rename = "Kind")]
-    pub kind: models::ReplicaRole,
+    pub last_acknowledgement_sent_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
 }
 
 impl SecondaryIdleReplicatorStatus {
     /// Status of the secondary replicator when it is in idle mode and is being built by the primary.
     pub fn new(kind: models::ReplicaRole) -> SecondaryIdleReplicatorStatus {
         SecondaryIdleReplicatorStatus {
+            kind,
             replication_queue_status: None,
             last_replication_operation_received_time_utc: None,
             is_in_build: None,
             copy_queue_status: None,
             last_copy_operation_received_time_utc: None,
             last_acknowledgement_sent_time_utc: None,
-            kind,
         }
     }
 }

@@ -18,7 +18,7 @@ pub struct BackupProgressInfo {
     pub backup_state: Option<models::BackupState>,
     /// TimeStamp in UTC when operation succeeded or failed.
     #[serde(rename = "TimeStampUtc", skip_serializing_if = "Option::is_none")]
-    pub time_stamp_utc: Option<String>,
+    pub time_stamp_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// Unique ID of the newly created backup.
     #[serde(rename = "BackupId", skip_serializing_if = "Option::is_none")]
     pub backup_id: Option<uuid::Uuid>,

@@ -14,19 +14,19 @@ use serde::{Deserialize, Serialize};
 /// WaitForReconfigurationSafetyCheck : Safety check that waits for the current reconfiguration of the partition to be completed before starting an upgrade.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct WaitForReconfigurationSafetyCheck {
+    #[serde(rename = "Kind")]
+    pub kind: models::SafetyCheckKind,
     /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
     #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
     pub partition_id: Option<uuid::Uuid>,
-    #[serde(rename = "Kind")]
-    pub kind: models::SafetyCheckKind,
 }
 
 impl WaitForReconfigurationSafetyCheck {
     /// Safety check that waits for the current reconfiguration of the partition to be completed before starting an upgrade.
     pub fn new(kind: models::SafetyCheckKind) -> WaitForReconfigurationSafetyCheck {
         WaitForReconfigurationSafetyCheck {
-            partition_id: None,
             kind,
+            partition_id: None,
         }
     }
 }

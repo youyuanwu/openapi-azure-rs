@@ -11,24 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationHealth : Represents the health of the application. Contains the application aggregated health state and the service and deployed application health states.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationHealth {
-    /// The name of the application, including the 'fabric:' URI scheme.
-    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Service health states as found in the health store.
-    #[serde(
-        rename = "ServiceHealthStates",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub service_health_states: Option<Vec<models::ServiceHealthState>>,
-    /// Deployed application health states as found in the health store.
-    #[serde(
-        rename = "DeployedApplicationHealthStates",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub deployed_application_health_states: Option<Vec<models::DeployedApplicationHealthState>>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
@@ -45,19 +29,33 @@ pub struct ApplicationHealth {
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "HealthStatistics", skip_serializing_if = "Option::is_none")]
     pub health_statistics: Option<Box<models::HealthStatistics>>,
+    /// The name of the application, including the 'fabric:' URI scheme.
+    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Service health states as found in the health store.
+    #[serde(
+        rename = "ServiceHealthStates",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub service_health_states: Option<Vec<models::ServiceHealthState>>,
+    /// Deployed application health states as found in the health store.
+    #[serde(
+        rename = "DeployedApplicationHealthStates",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub deployed_application_health_states: Option<Vec<models::DeployedApplicationHealthState>>,
 }
 
 impl ApplicationHealth {
-    /// Represents the health of the application. Contains the application aggregated health state and the service and deployed application health states.
     pub fn new() -> ApplicationHealth {
         ApplicationHealth {
-            name: None,
-            service_health_states: None,
-            deployed_application_health_states: None,
             aggregated_health_state: None,
             health_events: None,
             unhealthy_evaluations: None,
             health_statistics: None,
+            name: None,
+            service_health_states: None,
+            deployed_application_health_states: None,
         }
     }
 }

@@ -11,9 +11,19 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatelessServicePartitionInfo : Information about a partition of a stateless Service Fabric service.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatelessServicePartitionInfo {
+    #[serde(rename = "ServiceKind")]
+    pub service_kind: models::ServiceKind,
+    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
+    pub health_state: Option<models::HealthState>,
+    #[serde(rename = "PartitionStatus", skip_serializing_if = "Option::is_none")]
+    pub partition_status: Option<models::ServicePartitionStatus>,
+    #[serde(
+        rename = "PartitionInformation",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub partition_information: Option<Box<models::PartitionInformation>>,
     /// Number of instances of this partition.
     #[serde(rename = "InstanceCount", skip_serializing_if = "Option::is_none")]
     pub instance_count: Option<i64>,
@@ -26,30 +36,18 @@ pub struct StatelessServicePartitionInfo {
         skip_serializing_if = "Option::is_none"
     )]
     pub min_instance_percentage: Option<i32>,
-    #[serde(rename = "ServiceKind")]
-    pub service_kind: models::ServiceKind,
-    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
-    pub health_state: Option<models::HealthState>,
-    #[serde(rename = "PartitionStatus", skip_serializing_if = "Option::is_none")]
-    pub partition_status: Option<models::ServicePartitionStatus>,
-    #[serde(
-        rename = "PartitionInformation",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub partition_information: Option<Box<models::PartitionInformation>>,
 }
 
 impl StatelessServicePartitionInfo {
-    /// Information about a partition of a stateless Service Fabric service.
     pub fn new(service_kind: models::ServiceKind) -> StatelessServicePartitionInfo {
         StatelessServicePartitionInfo {
-            instance_count: None,
-            min_instance_count: None,
-            min_instance_percentage: None,
             service_kind,
             health_state: None,
             partition_status: None,
             partition_information: None,
+            instance_count: None,
+            min_instance_count: None,
+            min_instance_percentage: None,
         }
     }
 }

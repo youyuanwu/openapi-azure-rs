@@ -11,34 +11,32 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// AzureBlobBackupStorageDescription : Describes the parameters for Azure blob store used for storing and enumerating backups.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AzureBlobBackupStorageDescription {
+    #[serde(rename = "StorageKind")]
+    pub storage_kind: models::BackupStorageKind,
+    /// Friendly name for this backup storage.
+    #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
+    pub friendly_name: Option<String>,
     /// The connection string to connect to the Azure blob store.
     #[serde(rename = "ConnectionString")]
     pub connection_string: String,
     /// The name of the container in the blob store to store and enumerate backups from.
     #[serde(rename = "ContainerName")]
     pub container_name: String,
-    #[serde(rename = "StorageKind")]
-    pub storage_kind: models::BackupStorageKind,
-    /// Friendly name for this backup storage.
-    #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
-    pub friendly_name: Option<String>,
 }
 
 impl AzureBlobBackupStorageDescription {
-    /// Describes the parameters for Azure blob store used for storing and enumerating backups.
     pub fn new(
+        storage_kind: models::BackupStorageKind,
         connection_string: String,
         container_name: String,
-        storage_kind: models::BackupStorageKind,
     ) -> AzureBlobBackupStorageDescription {
         AzureBlobBackupStorageDescription {
-            connection_string,
-            container_name,
             storage_kind,
             friendly_name: None,
+            connection_string,
+            container_name,
         }
     }
 }

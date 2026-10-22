@@ -14,6 +14,8 @@ use serde::{Deserialize, Serialize};
 /// SecondaryActiveReplicatorStatus : Status of the secondary replicator when it is in active mode and is part of the replica set.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SecondaryActiveReplicatorStatus {
+    #[serde(rename = "Kind")]
+    pub kind: models::ReplicaRole,
     #[serde(
         rename = "ReplicationQueueStatus",
         skip_serializing_if = "Option::is_none"
@@ -24,7 +26,7 @@ pub struct SecondaryActiveReplicatorStatus {
         rename = "LastReplicationOperationReceivedTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_replication_operation_received_time_utc: Option<String>,
+    pub last_replication_operation_received_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// Value that indicates whether the replica is currently being built.
     #[serde(rename = "IsInBuild", skip_serializing_if = "Option::is_none")]
     pub is_in_build: Option<bool>,
@@ -35,28 +37,26 @@ pub struct SecondaryActiveReplicatorStatus {
         rename = "LastCopyOperationReceivedTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_copy_operation_received_time_utc: Option<String>,
+    pub last_copy_operation_received_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// The last time-stamp (UTC) at which an acknowledgment was sent to the primary replicator. UTC 0 represents an invalid value, indicating that an acknowledgment message was never sent.
     #[serde(
         rename = "LastAcknowledgementSentTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_acknowledgement_sent_time_utc: Option<String>,
-    #[serde(rename = "Kind")]
-    pub kind: models::ReplicaRole,
+    pub last_acknowledgement_sent_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
 }
 
 impl SecondaryActiveReplicatorStatus {
     /// Status of the secondary replicator when it is in active mode and is part of the replica set.
     pub fn new(kind: models::ReplicaRole) -> SecondaryActiveReplicatorStatus {
         SecondaryActiveReplicatorStatus {
+            kind,
             replication_queue_status: None,
             last_replication_operation_received_time_utc: None,
             is_in_build: None,
             copy_queue_status: None,
             last_copy_operation_received_time_utc: None,
             last_acknowledgement_sent_time_utc: None,
-            kind,
         }
     }
 }

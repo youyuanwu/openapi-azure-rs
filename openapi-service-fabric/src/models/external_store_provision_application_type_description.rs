@@ -11,9 +11,13 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ExternalStoreProvisionApplicationTypeDescription : Describes the operation to register or provision an application type using an application package from an external store instead of a package uploaded to the Service Fabric image store.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ExternalStoreProvisionApplicationTypeDescription {
+    #[serde(rename = "Kind")]
+    pub kind: models::ProvisionApplicationTypeKind,
+    /// Indicates whether or not provisioning should occur asynchronously. When set to true, the provision operation returns when the request is accepted by the system, and the provision operation continues without any timeout limit. The default value is false. For large application packages, we recommend setting the value to true.
+    #[serde(rename = "Async")]
+    pub r#async: bool,
     /// The path to the '.sfpkg' application package from where the application package can be downloaded using HTTP or HTTPS protocols. The application package can be stored in an external store that provides GET operation to download the file. Supported protocols are HTTP and HTTPS, and the path must allow READ access.
     #[serde(rename = "ApplicationPackageDownloadUri")]
     pub application_package_download_uri: String,
@@ -23,28 +27,22 @@ pub struct ExternalStoreProvisionApplicationTypeDescription {
     /// The application type version represents the version of the application type found in the application manifest.
     #[serde(rename = "ApplicationTypeVersion")]
     pub application_type_version: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::ProvisionApplicationTypeKind,
-    /// Indicates whether or not provisioning should occur asynchronously. When set to true, the provision operation returns when the request is accepted by the system, and the provision operation continues without any timeout limit. The default value is false. For large application packages, we recommend setting the value to true.
-    #[serde(rename = "Async")]
-    pub r#async: bool,
 }
 
 impl ExternalStoreProvisionApplicationTypeDescription {
-    /// Describes the operation to register or provision an application type using an application package from an external store instead of a package uploaded to the Service Fabric image store.
     pub fn new(
+        kind: models::ProvisionApplicationTypeKind,
+        r#async: bool,
         application_package_download_uri: String,
         application_type_name: String,
         application_type_version: String,
-        kind: models::ProvisionApplicationTypeKind,
-        r#async: bool,
     ) -> ExternalStoreProvisionApplicationTypeDescription {
         ExternalStoreProvisionApplicationTypeDescription {
+            kind,
+            r#async,
             application_package_download_uri,
             application_type_name,
             application_type_version,
-            kind,
-            r#async,
         }
     }
 }

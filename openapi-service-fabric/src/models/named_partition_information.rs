@@ -11,26 +11,24 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NamedPartitionInformation : Describes the partition information for the name as a string that is based on partition schemes.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NamedPartitionInformation {
-    /// Name of the partition.
-    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
     #[serde(rename = "ServicePartitionKind")]
     pub service_partition_kind: models::ServicePartitionKind,
     /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
     #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
     pub id: Option<uuid::Uuid>,
+    /// Name of the partition.
+    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 impl NamedPartitionInformation {
-    /// Describes the partition information for the name as a string that is based on partition schemes.
     pub fn new(service_partition_kind: models::ServicePartitionKind) -> NamedPartitionInformation {
         NamedPartitionInformation {
-            name: None,
             service_partition_kind,
             id: None,
+            name: None,
         }
     }
 }

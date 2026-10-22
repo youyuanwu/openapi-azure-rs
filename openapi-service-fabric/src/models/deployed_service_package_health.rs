@@ -11,21 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedServicePackageHealth : Information about the health of a service package for a specific application deployed on a Service Fabric node.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedServicePackageHealth {
-    /// The name of the application, including the 'fabric:' URI scheme.
-    #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
-    pub application_name: Option<String>,
-    /// The name of the service manifest.
-    #[serde(
-        rename = "ServiceManifestName",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub service_manifest_name: Option<String>,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
-    pub node_name: Option<String>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
@@ -42,19 +29,30 @@ pub struct DeployedServicePackageHealth {
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "HealthStatistics", skip_serializing_if = "Option::is_none")]
     pub health_statistics: Option<Box<models::HealthStatistics>>,
+    /// The name of the application, including the 'fabric:' URI scheme.
+    #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
+    pub application_name: Option<String>,
+    /// The name of the service manifest.
+    #[serde(
+        rename = "ServiceManifestName",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub service_manifest_name: Option<String>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
+    pub node_name: Option<String>,
 }
 
 impl DeployedServicePackageHealth {
-    /// Information about the health of a service package for a specific application deployed on a Service Fabric node.
     pub fn new() -> DeployedServicePackageHealth {
         DeployedServicePackageHealth {
-            application_name: None,
-            service_manifest_name: None,
-            node_name: None,
             aggregated_health_state: None,
             health_events: None,
             unhealthy_evaluations: None,
             health_statistics: None,
+            application_name: None,
+            service_manifest_name: None,
+            node_name: None,
         }
     }
 }

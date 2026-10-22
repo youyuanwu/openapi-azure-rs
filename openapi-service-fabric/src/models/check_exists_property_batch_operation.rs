@@ -11,30 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// CheckExistsPropertyBatchOperation : Represents a PropertyBatchOperation that compares the Boolean existence of a property with the Exists argument. The PropertyBatchOperation operation fails if the property's existence is not equal to the Exists argument. The CheckExistsPropertyBatchOperation is generally used as a precondition for the write operations in the batch. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CheckExistsPropertyBatchOperation {
-    /// Whether or not the property should exist for the operation to pass.
-    #[serde(rename = "Exists")]
-    pub exists: bool,
     #[serde(rename = "Kind")]
     pub kind: models::PropertyBatchOperationKind,
     /// The name of the Service Fabric property.
     #[serde(rename = "PropertyName")]
     pub property_name: String,
+    /// Whether or not the property should exist for the operation to pass.
+    #[serde(rename = "Exists")]
+    pub exists: bool,
 }
 
 impl CheckExistsPropertyBatchOperation {
-    /// Represents a PropertyBatchOperation that compares the Boolean existence of a property with the Exists argument. The PropertyBatchOperation operation fails if the property's existence is not equal to the Exists argument. The CheckExistsPropertyBatchOperation is generally used as a precondition for the write operations in the batch. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
     pub fn new(
-        exists: bool,
         kind: models::PropertyBatchOperationKind,
         property_name: String,
+        exists: bool,
     ) -> CheckExistsPropertyBatchOperation {
         CheckExistsPropertyBatchOperation {
-            exists,
             kind,
             property_name,
+            exists,
         }
     }
 }

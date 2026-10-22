@@ -11,9 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeDeactivateCompletedEvent : Node Deactivate Completed event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeDeactivateCompletedEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName")]
+    pub node_name: String,
     /// Id of Node instance.
     #[serde(rename = "NodeInstance")]
     pub node_instance: i64,
@@ -25,52 +44,31 @@ pub struct NodeDeactivateCompletedEvent {
     pub batch_ids_with_deactivate_intent: String,
     /// Start time.
     #[serde(rename = "StartTime")]
-    pub start_time: String,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName")]
-    pub node_name: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
+    pub start_time: chrono::DateTime<chrono::FixedOffset>,
 }
 
 impl NodeDeactivateCompletedEvent {
-    /// Node Deactivate Completed event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        node_name: String,
         node_instance: i64,
         effective_deactivate_intent: String,
         batch_ids_with_deactivate_intent: String,
-        start_time: String,
-        node_name: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
+        start_time: chrono::DateTime<chrono::FixedOffset>,
     ) -> NodeDeactivateCompletedEvent {
         NodeDeactivateCompletedEvent {
-            node_instance,
-            effective_deactivate_intent,
-            batch_ids_with_deactivate_intent,
-            start_time,
-            node_name,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            node_name,
+            node_instance,
+            effective_deactivate_intent,
+            batch_ids_with_deactivate_intent,
+            start_time,
         }
     }
 }

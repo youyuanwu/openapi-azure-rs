@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedServicePackageHealthStateChunk : Represents the health state chunk of a deployed service package, which contains the service manifest name and the service package aggregated health state.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedServicePackageHealthStateChunk {
+    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
+    pub health_state: Option<models::HealthState>,
     /// The name of the service manifest.
     #[serde(
         rename = "ServiceManifestName",
@@ -26,17 +27,14 @@ pub struct DeployedServicePackageHealthStateChunk {
         skip_serializing_if = "Option::is_none"
     )]
     pub service_package_activation_id: Option<String>,
-    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
-    pub health_state: Option<models::HealthState>,
 }
 
 impl DeployedServicePackageHealthStateChunk {
-    /// Represents the health state chunk of a deployed service package, which contains the service manifest name and the service package aggregated health state.
     pub fn new() -> DeployedServicePackageHealthStateChunk {
         DeployedServicePackageHealthStateChunk {
+            health_state: None,
             service_manifest_name: None,
             service_package_activation_id: None,
-            health_state: None,
         }
     }
 }

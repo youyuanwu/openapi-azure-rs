@@ -11,9 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServiceNewHealthReportEvent : Service Health Report Created event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServiceNewHealthReportEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
+    #[serde(rename = "ServiceId")]
+    pub service_id: String,
     /// Id of Service instance.
     #[serde(rename = "InstanceId")]
     pub instance_id: i64,
@@ -40,32 +59,15 @@ pub struct ServiceNewHealthReportEvent {
     pub remove_when_expired: bool,
     /// Source time.
     #[serde(rename = "SourceUtcTimestamp")]
-    pub source_utc_timestamp: String,
-    /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
-    #[serde(rename = "ServiceId")]
-    pub service_id: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
+    pub source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
 }
 
 impl ServiceNewHealthReportEvent {
-    /// Service Health Report Created event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        service_id: String,
         instance_id: i64,
         source_id: String,
         property: String,
@@ -74,13 +76,15 @@ impl ServiceNewHealthReportEvent {
         sequence_number: i64,
         description: String,
         remove_when_expired: bool,
-        source_utc_timestamp: String,
-        service_id: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
+        source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
     ) -> ServiceNewHealthReportEvent {
         ServiceNewHealthReportEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
+            service_id,
             instance_id,
             source_id,
             property,
@@ -90,12 +94,6 @@ impl ServiceNewHealthReportEvent {
             description,
             remove_when_expired,
             source_utc_timestamp,
-            service_id,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

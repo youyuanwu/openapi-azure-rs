@@ -11,30 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NamedPartitionSchemeDescription : Describes the named partition scheme of the service.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NamedPartitionSchemeDescription {
+    #[serde(rename = "PartitionScheme")]
+    pub partition_scheme: models::PartitionScheme,
     /// The number of partitions.
     #[serde(rename = "Count")]
     pub count: i32,
     /// Array of size specified by the ‘Count’ parameter, for the names of the partitions.
     #[serde(rename = "Names")]
     pub names: Vec<String>,
-    #[serde(rename = "PartitionScheme")]
-    pub partition_scheme: models::PartitionScheme,
 }
 
 impl NamedPartitionSchemeDescription {
-    /// Describes the named partition scheme of the service.
     pub fn new(
+        partition_scheme: models::PartitionScheme,
         count: i32,
         names: Vec<String>,
-        partition_scheme: models::PartitionScheme,
     ) -> NamedPartitionSchemeDescription {
         NamedPartitionSchemeDescription {
+            partition_scheme,
             count,
             names,
-            partition_scheme,
         }
     }
 }

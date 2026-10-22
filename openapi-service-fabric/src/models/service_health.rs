@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServiceHealth : Information about the health of a Service Fabric service.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServiceHealth {
-    /// The full name of the service with 'fabric:' URI scheme.
-    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// The list of partition health states associated with the service.
-    #[serde(
-        rename = "PartitionHealthStates",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub partition_health_states: Option<Vec<models::PartitionHealthState>>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
@@ -39,18 +29,26 @@ pub struct ServiceHealth {
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "HealthStatistics", skip_serializing_if = "Option::is_none")]
     pub health_statistics: Option<Box<models::HealthStatistics>>,
+    /// The full name of the service with 'fabric:' URI scheme.
+    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The list of partition health states associated with the service.
+    #[serde(
+        rename = "PartitionHealthStates",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub partition_health_states: Option<Vec<models::PartitionHealthState>>,
 }
 
 impl ServiceHealth {
-    /// Information about the health of a Service Fabric service.
     pub fn new() -> ServiceHealth {
         ServiceHealth {
-            name: None,
-            partition_health_states: None,
             aggregated_health_state: None,
             health_events: None,
             unhealthy_evaluations: None,
             health_statistics: None,
+            name: None,
+            partition_health_states: None,
         }
     }
 }

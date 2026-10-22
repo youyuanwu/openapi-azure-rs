@@ -11,9 +11,18 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// UpgradeDomainNodesHealthEvaluation : Represents health evaluation for cluster nodes in an upgrade domain, containing health evaluations for each unhealthy node that impacted current aggregated health state. Can be returned when evaluating cluster health during cluster upgrade and the aggregated health state is either Error or Warning.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UpgradeDomainNodesHealthEvaluation {
+    #[serde(rename = "Kind")]
+    pub kind: models::HealthEvaluationKind,
+    #[serde(
+        rename = "AggregatedHealthState",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub aggregated_health_state: Option<models::HealthState>,
+    /// Description of the health evaluation, which represents a summary of the evaluation process.
+    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// Name of the upgrade domain where nodes health is currently evaluated.
     #[serde(rename = "UpgradeDomainName", skip_serializing_if = "Option::is_none")]
     pub upgrade_domain_name: Option<String>,
@@ -32,29 +41,18 @@ pub struct UpgradeDomainNodesHealthEvaluation {
         skip_serializing_if = "Option::is_none"
     )]
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::HealthEvaluationKind,
-    #[serde(
-        rename = "AggregatedHealthState",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub aggregated_health_state: Option<models::HealthState>,
-    /// Description of the health evaluation, which represents a summary of the evaluation process.
-    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
 }
 
 impl UpgradeDomainNodesHealthEvaluation {
-    /// Represents health evaluation for cluster nodes in an upgrade domain, containing health evaluations for each unhealthy node that impacted current aggregated health state. Can be returned when evaluating cluster health during cluster upgrade and the aggregated health state is either Error or Warning.
     pub fn new(kind: models::HealthEvaluationKind) -> UpgradeDomainNodesHealthEvaluation {
         UpgradeDomainNodesHealthEvaluation {
+            kind,
+            aggregated_health_state: None,
+            description: None,
             upgrade_domain_name: None,
             max_percent_unhealthy_nodes: None,
             total_count: None,
             unhealthy_evaluations: None,
-            kind,
-            aggregated_health_state: None,
-            description: None,
         }
     }
 }

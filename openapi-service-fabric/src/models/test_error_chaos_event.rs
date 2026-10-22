@@ -11,26 +11,27 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// TestErrorChaosEvent : Describes a Chaos event that gets generated when an unexpected event occurs in the Chaos engine. For example, due to the cluster snapshot being inconsistent, while faulting an entity, Chaos found that the entity was already faulted -- which would be an unexpected event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TestErrorChaosEvent {
-    /// Describes why TestErrorChaosEvent was generated. For example, Chaos tries to fault a partition but finds that the partition is no longer fault tolerant, then a TestErrorEvent gets generated with the reason stating that the partition is not fault tolerant.
-    #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
-    pub reason: Option<String>,
     #[serde(rename = "Kind")]
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
-    pub time_stamp_utc: String,
+    pub time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    /// Describes why TestErrorChaosEvent was generated. For example, Chaos tries to fault a partition but finds that the partition is no longer fault tolerant, then a TestErrorEvent gets generated with the reason stating that the partition is not fault tolerant.
+    #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
 }
 
 impl TestErrorChaosEvent {
-    /// Describes a Chaos event that gets generated when an unexpected event occurs in the Chaos engine. For example, due to the cluster snapshot being inconsistent, while faulting an entity, Chaos found that the entity was already faulted -- which would be an unexpected event.
-    pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> TestErrorChaosEvent {
+    pub fn new(
+        kind: models::ChaosEventKind,
+        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    ) -> TestErrorChaosEvent {
         TestErrorChaosEvent {
-            reason: None,
             kind,
             time_stamp_utc,
+            reason: None,
         }
     }
 }

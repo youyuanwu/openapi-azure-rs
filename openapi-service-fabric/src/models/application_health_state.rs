@@ -11,25 +11,23 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationHealthState : Represents the health state of an application, which contains the application identifier and the aggregated health state.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationHealthState {
-    /// The name of the application, including the 'fabric:' URI scheme.
-    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
     )]
     pub aggregated_health_state: Option<models::HealthState>,
+    /// The name of the application, including the 'fabric:' URI scheme.
+    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 impl ApplicationHealthState {
-    /// Represents the health state of an application, which contains the application identifier and the aggregated health state.
     pub fn new() -> ApplicationHealthState {
         ApplicationHealthState {
-            name: None,
             aggregated_health_state: None,
+            name: None,
         }
     }
 }

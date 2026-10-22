@@ -25,7 +25,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -43,7 +43,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -61,7 +61,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -79,7 +79,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -97,7 +97,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -115,7 +115,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -133,7 +133,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -151,7 +151,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -169,7 +169,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -187,7 +187,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -205,7 +205,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -223,7 +223,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -241,7 +241,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -259,7 +259,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -277,7 +277,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -295,7 +295,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -313,7 +313,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -331,7 +331,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -349,7 +349,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -367,7 +367,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -385,7 +385,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -403,7 +403,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -421,7 +421,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -439,7 +439,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -457,7 +457,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -475,7 +475,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -493,7 +493,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -511,7 +511,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -529,7 +529,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -547,7 +547,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -565,7 +565,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -583,7 +583,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -601,7 +601,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -619,7 +619,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -637,7 +637,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -655,7 +655,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -673,7 +673,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -691,7 +691,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -709,7 +709,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -727,7 +727,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -745,7 +745,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -763,7 +763,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -781,7 +781,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -799,7 +799,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -817,7 +817,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -835,7 +835,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -853,7 +853,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -871,7 +871,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -889,7 +889,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -907,7 +907,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -925,7 +925,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -943,7 +943,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -961,7 +961,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -979,7 +979,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -997,7 +997,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -1015,7 +1015,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -1033,7 +1033,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -1051,7 +1051,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -1069,7 +1069,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -1087,7 +1087,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -1105,7 +1105,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",
@@ -1123,7 +1123,7 @@ pub enum FabricEvent {
         category: Option<String>,
         /// The time event was logged.
         #[serde(rename = "TimeStamp")]
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         /// Shows there is existing related events available.
         #[serde(
             rename = "HasCorrelatedEvents",

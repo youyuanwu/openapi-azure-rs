@@ -1,9 +1,17 @@
-Download the swagger file:
+Run these commands from the repository root. Both crates were regenerated with
+OpenAPI Generator **7.26.0**, the latest stable release at regeneration time.
+The Docker image is pinned so regeneration is reproducible.
+
+When regenerating, use the existing files in `specs/` unchanged. Only run the
+optional `wget` commands when intentionally refreshing the specifications.
+
+Service Fabric:
 ```bash
+# Optional: refresh the specification (skip for regeneration).
 wget https://raw.githubusercontent.com/Azure/azure-rest-api-specs/refs/heads/main/specification/servicefabric/data-plane/ServiceFabric/stable/8.2/servicefabric.json \
     -O ./specs/servicefabric.json
 
-docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
+docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v7.26.0 generate \
     -i /local/specs/servicefabric.json \
     -g rust\
     -o /local/openapi-service-fabric/ \
@@ -11,21 +19,23 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
     --additional-properties=packageName=openapi-service-fabric,packageVersion=0.1.0
 
 sudo chown -R $(whoami) .
-cargo fmt
 
 sed -i 's/license = "Unlicense"/license = "MIT"/' openapi-service-fabric/Cargo.toml
 sed -i '/edition = "2021"/a\documentation = "https://learn.microsoft.com/en-us/azure/service-fabric/service-fabric-overview"' openapi-service-fabric/Cargo.toml
 sed -i '/edition = "2021"/a\readme = "README.md"' openapi-service-fabric/Cargo.toml
 sed -i '/edition = "2021"/a\repository.workspace = true' openapi-service-fabric/Cargo.toml
+sed -i '/^rustls = /a\rustls-tls = ["rustls"]' openapi-service-fabric/Cargo.toml
 sed -i '/unused_imports)]/i\#![allow(clippy::needless_return)]' openapi-service-fabric/src/lib.rs
+cargo fmt
 ```
 
 Azure storage
 ```bash
+# Optional: refresh the specification (skip for regeneration).
 wget https://raw.githubusercontent.com/Azure/azure-rest-api-specs/refs/heads/main/specification/storage/data-plane/Microsoft.BlobStorage/stable/2026-02-06/generated_blob.json \
     -O ./specs/generated_blob.json 
 
-docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
+docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v7.26.0 generate \
     -i /local/specs/generated_blob.json \
     -g rust \
     -o /local/openapi-azure-storage-blob/ \
@@ -34,14 +44,30 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
 
 
 sudo chown -R $(whoami) .
-cargo fmt
 
 sed -i 's/license = "Unlicense"/license = "MIT"/' openapi-azure-storage-blob/Cargo.toml
 sed -i '/edition = "2021"/a\documentation = "https://learn.microsoft.com/en-us/azure/storage/blobs/"' openapi-azure-storage-blob/Cargo.toml
 sed -i '/edition = "2021"/a\readme = "README.md"' openapi-azure-storage-blob/Cargo.toml
 sed -i '/edition = "2021"/a\repository.workspace = true' openapi-azure-storage-blob/Cargo.toml
+sed -i '/^rustls = /a\rustls-tls = ["rustls"]' openapi-azure-storage-blob/Cargo.toml
 sed -i '/unused_imports)]/i\#![allow(clippy::needless_return,clippy::into_iter_on_ref)]' openapi-azure-storage-blob/src/lib.rs
-# unsupported body
-sed -i 's/let p_form_body/let _p_form_body/' openapi-azure-storage-blob/src/apis/default_api.rs
+cargo fmt
 ```
+
+The generator now uses Reqwest 0.13 and Chrono date/time types. The `rustls-tls`
+feature alias preserves the previous feature name alongside the generated
+`rustls` feature. Blob file bodies are now used by the generated upload code, so
+the old unused-body rename must not be applied.
+
+Validate after regenerating and applying the post-processing:
+```bash
+cargo fmt --all -- --check
+cargo check --workspace --all-targets -j 1
+cargo test -p openapi-service-fabric -p openapi-azure-storage-blob -j 1
+cargo clippy --workspace --all-targets -j 1 -- -D warnings
+cargo check -p openapi-service-fabric -p openapi-azure-storage-blob --no-default-features --features rustls-tls -j 1
+```
+The `openapi-tests` integration test requires a local Service Fabric onebox
+cluster at `http://localhost:19080`; run it only when that cluster is available.
+
 See openapi codegen [rust docs](https://openapi-generator.tech/docs/generators/rust/)

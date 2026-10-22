@@ -11,12 +11,33 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PartitionPrimaryMoveAnalysisEvent : Partition Primary Move Analysis event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PartitionPrimaryMoveAnalysisEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId")]
+    pub partition_id: uuid::Uuid,
+    #[serde(rename = "Metadata")]
+    pub metadata: Box<models::AnalysisEventMetadata>,
     /// Time when the move was completed.
     #[serde(rename = "WhenMoveCompleted")]
-    pub when_move_completed: String,
+    pub when_move_completed: chrono::DateTime<chrono::FixedOffset>,
     /// The name of a Service Fabric node.
     #[serde(rename = "PreviousNode")]
     pub previous_node: String,
@@ -29,57 +50,34 @@ pub struct PartitionPrimaryMoveAnalysisEvent {
     /// Relevant traces.
     #[serde(rename = "RelevantTraces")]
     pub relevant_traces: String,
-    #[serde(rename = "Metadata")]
-    pub metadata: Box<models::AnalysisEventMetadata>,
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId")]
-    pub partition_id: uuid::Uuid,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl PartitionPrimaryMoveAnalysisEvent {
-    /// Partition Primary Move Analysis event.
     pub fn new(
-        when_move_completed: String,
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        partition_id: uuid::Uuid,
+        metadata: models::AnalysisEventMetadata,
+        when_move_completed: chrono::DateTime<chrono::FixedOffset>,
         previous_node: String,
         current_node: String,
         move_reason: String,
         relevant_traces: String,
-        metadata: models::AnalysisEventMetadata,
-        partition_id: uuid::Uuid,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> PartitionPrimaryMoveAnalysisEvent {
         PartitionPrimaryMoveAnalysisEvent {
-            when_move_completed,
-            previous_node,
-            current_node,
-            move_reason,
-            relevant_traces,
-            metadata: Box::new(metadata),
-            partition_id,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            partition_id,
+            metadata: Box::new(metadata),
+            when_move_completed,
+            previous_node,
+            current_node,
+            move_reason,
+            relevant_traces,
         }
     }
 }

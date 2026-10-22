@@ -11,9 +11,18 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeltaNodesCheckHealthEvaluation : Represents health evaluation for delta nodes, containing health evaluations for each unhealthy node that impacted current aggregated health state. Can be returned during cluster upgrade when the aggregated health state of the cluster is Warning or Error.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeltaNodesCheckHealthEvaluation {
+    #[serde(rename = "Kind")]
+    pub kind: models::HealthEvaluationKind,
+    #[serde(
+        rename = "AggregatedHealthState",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub aggregated_health_state: Option<models::HealthState>,
+    /// Description of the health evaluation, which represents a summary of the evaluation process.
+    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// Number of nodes with aggregated heath state Error in the health store at the beginning of the cluster upgrade.
     #[serde(rename = "BaselineErrorCount", skip_serializing_if = "Option::is_none")]
     pub baseline_error_count: Option<i64>,
@@ -35,30 +44,19 @@ pub struct DeltaNodesCheckHealthEvaluation {
         skip_serializing_if = "Option::is_none"
     )]
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::HealthEvaluationKind,
-    #[serde(
-        rename = "AggregatedHealthState",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub aggregated_health_state: Option<models::HealthState>,
-    /// Description of the health evaluation, which represents a summary of the evaluation process.
-    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
 }
 
 impl DeltaNodesCheckHealthEvaluation {
-    /// Represents health evaluation for delta nodes, containing health evaluations for each unhealthy node that impacted current aggregated health state. Can be returned during cluster upgrade when the aggregated health state of the cluster is Warning or Error.
     pub fn new(kind: models::HealthEvaluationKind) -> DeltaNodesCheckHealthEvaluation {
         DeltaNodesCheckHealthEvaluation {
+            kind,
+            aggregated_health_state: None,
+            description: None,
             baseline_error_count: None,
             baseline_total_count: None,
             max_percent_delta_unhealthy_nodes: None,
             total_count: None,
             unhealthy_evaluations: None,
-            kind,
-            aggregated_health_state: None,
-            description: None,
         }
     }
 }

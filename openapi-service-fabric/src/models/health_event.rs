@@ -11,36 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// HealthEvent : Represents health information reported on a health entity, such as cluster, application or node, with additional metadata added by the Health Manager.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct HealthEvent {
-    /// Returns true if the health event is expired, otherwise false.
-    #[serde(rename = "IsExpired", skip_serializing_if = "Option::is_none")]
-    pub is_expired: Option<bool>,
-    /// The date and time when the health report was sent by the source.
-    #[serde(rename = "SourceUtcTimestamp", skip_serializing_if = "Option::is_none")]
-    pub source_utc_timestamp: Option<String>,
-    /// The date and time when the health report was last modified by the health store.
-    #[serde(
-        rename = "LastModifiedUtcTimestamp",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub last_modified_utc_timestamp: Option<String>,
-    /// If the current health state is 'Ok', this property returns the time at which the health report was first reported with 'Ok'. For periodic reporting, many reports with the same state may have been generated. This property returns the date and time when the first 'Ok' health report was received.  If the current health state is 'Error' or 'Warning', returns the date and time at which the health state was last in 'Ok', before transitioning to a different state.  If the health state was never 'Ok', the value will be zero date-time.
-    #[serde(rename = "LastOkTransitionAt", skip_serializing_if = "Option::is_none")]
-    pub last_ok_transition_at: Option<String>,
-    /// If the current health state is 'Warning', this property returns the time at which the health report was first reported with 'Warning'. For periodic reporting, many reports with the same state may have been generated however, this property returns only the date and time at the first 'Warning' health report was received.  If the current health state is 'Ok' or 'Error', returns the date and time at which the health state was last in 'Warning', before transitioning to a different state.  If the health state was never 'Warning', the value will be zero date-time.
-    #[serde(
-        rename = "LastWarningTransitionAt",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub last_warning_transition_at: Option<String>,
-    /// If the current health state is 'Error', this property returns the time at which the health report was first reported with 'Error'. For periodic reporting, many reports with the same state may have been generated however, this property returns only the date and time at the first 'Error' health report was received.  If the current health state is 'Ok' or 'Warning', returns the date and time at which the health state was last in 'Error', before transitioning to a different state.  If the health state was never 'Error', the value will be zero date-time.
-    #[serde(
-        rename = "LastErrorTransitionAt",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub last_error_transition_at: Option<String>,
     /// The source name that identifies the client/watchdog/system component that generated the health information.
     #[serde(rename = "SourceId")]
     pub source_id: String,
@@ -67,22 +39,42 @@ pub struct HealthEvent {
     /// A health report ID which identifies the health report and can be used to find more detailed information about a specific health event at aka.ms/sfhealthid
     #[serde(rename = "HealthReportId", skip_serializing_if = "Option::is_none")]
     pub health_report_id: Option<String>,
+    /// Returns true if the health event is expired, otherwise false.
+    #[serde(rename = "IsExpired", skip_serializing_if = "Option::is_none")]
+    pub is_expired: Option<bool>,
+    /// The date and time when the health report was sent by the source.
+    #[serde(rename = "SourceUtcTimestamp", skip_serializing_if = "Option::is_none")]
+    pub source_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    /// The date and time when the health report was last modified by the health store.
+    #[serde(
+        rename = "LastModifiedUtcTimestamp",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub last_modified_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    /// If the current health state is 'Ok', this property returns the time at which the health report was first reported with 'Ok'. For periodic reporting, many reports with the same state may have been generated. This property returns the date and time when the first 'Ok' health report was received.  If the current health state is 'Error' or 'Warning', returns the date and time at which the health state was last in 'Ok', before transitioning to a different state.  If the health state was never 'Ok', the value will be zero date-time.
+    #[serde(rename = "LastOkTransitionAt", skip_serializing_if = "Option::is_none")]
+    pub last_ok_transition_at: Option<chrono::DateTime<chrono::FixedOffset>>,
+    /// If the current health state is 'Warning', this property returns the time at which the health report was first reported with 'Warning'. For periodic reporting, many reports with the same state may have been generated however, this property returns only the date and time at the first 'Warning' health report was received.  If the current health state is 'Ok' or 'Error', returns the date and time at which the health state was last in 'Warning', before transitioning to a different state.  If the health state was never 'Warning', the value will be zero date-time.
+    #[serde(
+        rename = "LastWarningTransitionAt",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub last_warning_transition_at: Option<chrono::DateTime<chrono::FixedOffset>>,
+    /// If the current health state is 'Error', this property returns the time at which the health report was first reported with 'Error'. For periodic reporting, many reports with the same state may have been generated however, this property returns only the date and time at the first 'Error' health report was received.  If the current health state is 'Ok' or 'Warning', returns the date and time at which the health state was last in 'Error', before transitioning to a different state.  If the health state was never 'Error', the value will be zero date-time.
+    #[serde(
+        rename = "LastErrorTransitionAt",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub last_error_transition_at: Option<chrono::DateTime<chrono::FixedOffset>>,
 }
 
 impl HealthEvent {
-    /// Represents health information reported on a health entity, such as cluster, application or node, with additional metadata added by the Health Manager.
     pub fn new(
         source_id: String,
         property: String,
         health_state: models::HealthState,
     ) -> HealthEvent {
         HealthEvent {
-            is_expired: None,
-            source_utc_timestamp: None,
-            last_modified_utc_timestamp: None,
-            last_ok_transition_at: None,
-            last_warning_transition_at: None,
-            last_error_transition_at: None,
             source_id,
             property,
             health_state,
@@ -91,6 +83,12 @@ impl HealthEvent {
             sequence_number: None,
             remove_when_expired: None,
             health_report_id: None,
+            is_expired: None,
+            source_utc_timestamp: None,
+            last_modified_utc_timestamp: None,
+            last_ok_transition_at: None,
+            last_warning_transition_at: None,
+            last_error_transition_at: None,
         }
     }
 }

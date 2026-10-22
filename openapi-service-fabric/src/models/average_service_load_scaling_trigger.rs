@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// AverageServiceLoadScalingTrigger : Represents a scaling policy related to an average load of a metric/resource of a service.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AverageServiceLoadScalingTrigger {
+    #[serde(rename = "Kind")]
+    pub kind: models::ScalingTriggerKind,
     /// The name of the metric for which usage should be tracked.
     #[serde(rename = "MetricName")]
     pub metric_name: String,
@@ -29,27 +30,24 @@ pub struct AverageServiceLoadScalingTrigger {
     /// Flag determines whether only the load of primary replica should be considered for scaling. If set to true, then trigger will only consider the load of primary replicas of stateful service.  If set to false, trigger will consider load of all replicas.  This parameter cannot be set to true for stateless service.
     #[serde(rename = "UseOnlyPrimaryLoad")]
     pub use_only_primary_load: bool,
-    #[serde(rename = "Kind")]
-    pub kind: models::ScalingTriggerKind,
 }
 
 impl AverageServiceLoadScalingTrigger {
-    /// Represents a scaling policy related to an average load of a metric/resource of a service.
     pub fn new(
+        kind: models::ScalingTriggerKind,
         metric_name: String,
         lower_load_threshold: f64,
         upper_load_threshold: f64,
         scale_interval_in_seconds: i64,
         use_only_primary_load: bool,
-        kind: models::ScalingTriggerKind,
     ) -> AverageServiceLoadScalingTrigger {
         AverageServiceLoadScalingTrigger {
+            kind,
             metric_name,
             lower_load_threshold,
             upper_load_threshold,
             scale_interval_in_seconds,
             use_only_primary_load,
-            kind,
         }
     }
 }

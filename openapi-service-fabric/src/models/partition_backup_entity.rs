@@ -11,26 +11,24 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PartitionBackupEntity : Identifies the Service Fabric stateful partition which is being backed up.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PartitionBackupEntity {
+    #[serde(rename = "EntityKind")]
+    pub entity_kind: models::BackupEntityKind,
     /// The full name of the service with 'fabric:' URI scheme.
     #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
     pub service_name: Option<String>,
     /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
     #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
     pub partition_id: Option<uuid::Uuid>,
-    #[serde(rename = "EntityKind")]
-    pub entity_kind: models::BackupEntityKind,
 }
 
 impl PartitionBackupEntity {
-    /// Identifies the Service Fabric stateful partition which is being backed up.
     pub fn new(entity_kind: models::BackupEntityKind) -> PartitionBackupEntity {
         PartitionBackupEntity {
+            entity_kind,
             service_name: None,
             partition_id: None,
-            entity_kind,
         }
     }
 }

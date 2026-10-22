@@ -11,9 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedServicePackageHealthReportExpiredEvent : Deployed Service Health Report Expired event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedServicePackageHealthReportExpiredEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+    #[serde(rename = "ApplicationId")]
+    pub application_id: String,
     /// Service manifest name.
     #[serde(rename = "ServiceManifest")]
     pub service_manifest: String,
@@ -49,32 +68,15 @@ pub struct DeployedServicePackageHealthReportExpiredEvent {
     pub remove_when_expired: bool,
     /// Source time.
     #[serde(rename = "SourceUtcTimestamp")]
-    pub source_utc_timestamp: String,
-    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
-    #[serde(rename = "ApplicationId")]
-    pub application_id: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
+    pub source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
 }
 
 impl DeployedServicePackageHealthReportExpiredEvent {
-    /// Deployed Service Health Report Expired event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        application_id: String,
         service_manifest: String,
         service_package_instance_id: i64,
         service_package_activation_id: String,
@@ -86,13 +88,15 @@ impl DeployedServicePackageHealthReportExpiredEvent {
         sequence_number: i64,
         description: String,
         remove_when_expired: bool,
-        source_utc_timestamp: String,
-        application_id: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
+        source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
     ) -> DeployedServicePackageHealthReportExpiredEvent {
         DeployedServicePackageHealthReportExpiredEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
+            application_id,
             service_manifest,
             service_package_instance_id,
             service_package_activation_id,
@@ -105,12 +109,6 @@ impl DeployedServicePackageHealthReportExpiredEvent {
             description,
             remove_when_expired,
             source_utc_timestamp,
-            application_id,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

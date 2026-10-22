@@ -11,21 +11,19 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// RunToCompletionExecutionPolicy : The run to completion execution policy, the service will perform its desired operation and complete successfully. If the service encounters failure, it will restarted based on restart policy specified. If the service completes its operation successfully, it will not be restarted again.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct RunToCompletionExecutionPolicy {
-    #[serde(rename = "restart")]
-    pub restart: models::RestartPolicy,
     #[serde(rename = "type")]
     pub r#type: models::ExecutionPolicyType,
+    #[serde(rename = "restart")]
+    pub restart: models::RestartPolicy,
 }
 
 impl RunToCompletionExecutionPolicy {
-    /// The run to completion execution policy, the service will perform its desired operation and complete successfully. If the service encounters failure, it will restarted based on restart policy specified. If the service completes its operation successfully, it will not be restarted again.
     pub fn new(
-        restart: models::RestartPolicy,
         r#type: models::ExecutionPolicyType,
+        restart: models::RestartPolicy,
     ) -> RunToCompletionExecutionPolicy {
-        RunToCompletionExecutionPolicy { restart, r#type }
+        RunToCompletionExecutionPolicy { r#type, restart }
     }
 }

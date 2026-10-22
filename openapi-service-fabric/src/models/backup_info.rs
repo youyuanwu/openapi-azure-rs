@@ -49,7 +49,7 @@ pub struct BackupInfo {
     pub lsn_of_last_backup_record: Option<String>,
     /// The date time when this backup was taken.
     #[serde(rename = "CreationTimeUtc", skip_serializing_if = "Option::is_none")]
-    pub creation_time_utc: Option<String>,
+    pub creation_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// Manifest Version of the service this partition backup belongs to.
     #[serde(
         rename = "ServiceManifestVersion",

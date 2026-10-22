@@ -11,9 +11,25 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ClusterHealthReportExpiredEvent : Cluster Health Report Expired event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClusterHealthReportExpiredEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
     /// Id of report source.
     #[serde(rename = "SourceId")]
     pub source_id: String,
@@ -37,29 +53,14 @@ pub struct ClusterHealthReportExpiredEvent {
     pub remove_when_expired: bool,
     /// Source time.
     #[serde(rename = "SourceUtcTimestamp")]
-    pub source_utc_timestamp: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
+    pub source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
 }
 
 impl ClusterHealthReportExpiredEvent {
-    /// Cluster Health Report Expired event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
         source_id: String,
         property: String,
         health_state: String,
@@ -67,12 +68,14 @@ impl ClusterHealthReportExpiredEvent {
         sequence_number: i64,
         description: String,
         remove_when_expired: bool,
-        source_utc_timestamp: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
+        source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
     ) -> ClusterHealthReportExpiredEvent {
         ClusterHealthReportExpiredEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
             source_id,
             property,
             health_state,
@@ -81,11 +84,6 @@ impl ClusterHealthReportExpiredEvent {
             description,
             remove_when_expired,
             source_utc_timestamp,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

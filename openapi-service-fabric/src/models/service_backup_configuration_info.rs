@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServiceBackupConfigurationInfo : Backup configuration information for a specific Service Fabric service specifying what backup policy is being applied and suspend description, if any.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServiceBackupConfigurationInfo {
-    /// The full name of the service with 'fabric:' URI scheme.
-    #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
-    pub service_name: Option<String>,
     #[serde(rename = "Kind")]
     pub kind: models::BackupEntityKind,
     /// The name of the backup policy which is applicable to this Service Fabric application or service or partition.
@@ -29,17 +25,19 @@ pub struct ServiceBackupConfigurationInfo {
     pub policy_inherited_from: Option<models::BackupPolicyScope>,
     #[serde(rename = "SuspensionInfo", skip_serializing_if = "Option::is_none")]
     pub suspension_info: Option<Box<models::BackupSuspensionInfo>>,
+    /// The full name of the service with 'fabric:' URI scheme.
+    #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
+    pub service_name: Option<String>,
 }
 
 impl ServiceBackupConfigurationInfo {
-    /// Backup configuration information for a specific Service Fabric service specifying what backup policy is being applied and suspend description, if any.
     pub fn new(kind: models::BackupEntityKind) -> ServiceBackupConfigurationInfo {
         ServiceBackupConfigurationInfo {
-            service_name: None,
             kind,
             policy_name: None,
             policy_inherited_from: None,
             suspension_info: None,
+            service_name: None,
         }
     }
 }

@@ -11,19 +11,17 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// Int64PropertyValue : Describes a Service Fabric property value of type Int64.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Int64PropertyValue {
+    #[serde(rename = "Kind")]
+    pub kind: models::PropertyValueKind,
     /// The data of the property value.
     #[serde(rename = "Data")]
     pub data: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::PropertyValueKind,
 }
 
 impl Int64PropertyValue {
-    /// Describes a Service Fabric property value of type Int64.
-    pub fn new(data: String, kind: models::PropertyValueKind) -> Int64PropertyValue {
-        Int64PropertyValue { data, kind }
+    pub fn new(kind: models::PropertyValueKind, data: String) -> Int64PropertyValue {
+        Int64PropertyValue { kind, data }
     }
 }

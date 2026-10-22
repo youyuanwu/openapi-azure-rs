@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedStatelessServiceInstanceInfo : Information about a stateless service instance deployed on a node.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedStatelessServiceInstanceInfo {
-    /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
-    #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
-    pub instance_id: Option<String>,
     #[serde(rename = "ServiceKind")]
     pub service_kind: models::ServiceKind,
     /// The full name of the service with 'fabric:' URI scheme.
@@ -51,13 +47,14 @@ pub struct DeployedStatelessServiceInstanceInfo {
     /// Host process ID of the process that is hosting the replica. This will be zero if the replica is down. In hyper-v containers this host process ID will be from different kernel.
     #[serde(rename = "HostProcessId", skip_serializing_if = "Option::is_none")]
     pub host_process_id: Option<String>,
+    /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
+    #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
+    pub instance_id: Option<String>,
 }
 
 impl DeployedStatelessServiceInstanceInfo {
-    /// Information about a stateless service instance deployed on a node.
     pub fn new(service_kind: models::ServiceKind) -> DeployedStatelessServiceInstanceInfo {
         DeployedStatelessServiceInstanceInfo {
-            instance_id: None,
             service_kind,
             service_name: None,
             service_type_name: None,
@@ -68,6 +65,7 @@ impl DeployedStatelessServiceInstanceInfo {
             address: None,
             service_package_activation_id: None,
             host_process_id: None,
+            instance_id: None,
         }
     }
 }

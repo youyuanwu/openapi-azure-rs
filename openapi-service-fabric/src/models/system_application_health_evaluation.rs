@@ -11,15 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// SystemApplicationHealthEvaluation : Represents health evaluation for the fabric:/System application, containing information about the data and the algorithm used by health store to evaluate health. The evaluation is returned only when the aggregated health state of the cluster is either Error or Warning.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SystemApplicationHealthEvaluation {
-    /// List of health evaluations that resulted in the current aggregated health state.
-    #[serde(
-        rename = "UnhealthyEvaluations",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "Kind")]
     pub kind: models::HealthEvaluationKind,
     #[serde(
@@ -30,16 +23,21 @@ pub struct SystemApplicationHealthEvaluation {
     /// Description of the health evaluation, which represents a summary of the evaluation process.
     #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// List of health evaluations that resulted in the current aggregated health state.
+    #[serde(
+        rename = "UnhealthyEvaluations",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
 }
 
 impl SystemApplicationHealthEvaluation {
-    /// Represents health evaluation for the fabric:/System application, containing information about the data and the algorithm used by health store to evaluate health. The evaluation is returned only when the aggregated health state of the cluster is either Error or Warning.
     pub fn new(kind: models::HealthEvaluationKind) -> SystemApplicationHealthEvaluation {
         SystemApplicationHealthEvaluation {
-            unhealthy_evaluations: None,
             kind,
             aggregated_health_state: None,
             description: None,
+            unhealthy_evaluations: None,
         }
     }
 }

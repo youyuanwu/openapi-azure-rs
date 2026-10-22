@@ -11,19 +11,17 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DoublePropertyValue : Describes a Service Fabric property value of type Double.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DoublePropertyValue {
+    #[serde(rename = "Kind")]
+    pub kind: models::PropertyValueKind,
     /// The data of the property value.
     #[serde(rename = "Data")]
     pub data: f64,
-    #[serde(rename = "Kind")]
-    pub kind: models::PropertyValueKind,
 }
 
 impl DoublePropertyValue {
-    /// Describes a Service Fabric property value of type Double.
-    pub fn new(data: f64, kind: models::PropertyValueKind) -> DoublePropertyValue {
-        DoublePropertyValue { data, kind }
+    pub fn new(kind: models::PropertyValueKind, data: f64) -> DoublePropertyValue {
+        DoublePropertyValue { kind, data }
     }
 }

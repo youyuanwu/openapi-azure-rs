@@ -11,9 +11,30 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedStatefulServiceReplicaDetailInfo : Information about a stateful replica running in a code package. Note DeployedServiceReplicaQueryResult will contain duplicate data like ServiceKind, ServiceName, PartitionId and replicaId.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedStatefulServiceReplicaDetailInfo {
+    #[serde(rename = "ServiceKind")]
+    pub service_kind: models::ServiceKind,
+    /// The full name of the service with 'fabric:' URI scheme.
+    #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
+    pub service_name: Option<String>,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+    pub partition_id: Option<uuid::Uuid>,
+    #[serde(
+        rename = "CurrentServiceOperation",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub current_service_operation: Option<models::ServiceOperationName>,
+    /// The start time of the current service operation in UTC format.
+    #[serde(
+        rename = "CurrentServiceOperationStartTimeUtc",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub current_service_operation_start_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+    /// List of load reported by replica.
+    #[serde(rename = "ReportedLoad", skip_serializing_if = "Option::is_none")]
+    pub reported_load: Option<Vec<models::LoadMetricReportInfo>>,
     /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
     #[serde(rename = "ReplicaId", skip_serializing_if = "Option::is_none")]
     pub replica_id: Option<String>,
@@ -36,34 +57,17 @@ pub struct DeployedStatefulServiceReplicaDetailInfo {
     )]
     pub deployed_service_replica_query_result:
         Option<Box<models::DeployedStatefulServiceReplicaInfo>>,
-    #[serde(rename = "ServiceKind")]
-    pub service_kind: models::ServiceKind,
-    /// The full name of the service with 'fabric:' URI scheme.
-    #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
-    pub service_name: Option<String>,
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
-    pub partition_id: Option<uuid::Uuid>,
-    #[serde(
-        rename = "CurrentServiceOperation",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub current_service_operation: Option<models::ServiceOperationName>,
-    /// The start time of the current service operation in UTC format.
-    #[serde(
-        rename = "CurrentServiceOperationStartTimeUtc",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub current_service_operation_start_time_utc: Option<String>,
-    /// List of load reported by replica.
-    #[serde(rename = "ReportedLoad", skip_serializing_if = "Option::is_none")]
-    pub reported_load: Option<Vec<models::LoadMetricReportInfo>>,
 }
 
 impl DeployedStatefulServiceReplicaDetailInfo {
-    /// Information about a stateful replica running in a code package. Note DeployedServiceReplicaQueryResult will contain duplicate data like ServiceKind, ServiceName, PartitionId and replicaId.
     pub fn new(service_kind: models::ServiceKind) -> DeployedStatefulServiceReplicaDetailInfo {
         DeployedStatefulServiceReplicaDetailInfo {
+            service_kind,
+            service_name: None,
+            partition_id: None,
+            current_service_operation: None,
+            current_service_operation_start_time_utc: None,
+            reported_load: None,
             replica_id: None,
             current_replicator_operation: None,
             read_status: None,
@@ -71,12 +75,6 @@ impl DeployedStatefulServiceReplicaDetailInfo {
             replicator_status: None,
             replica_status: None,
             deployed_service_replica_query_result: None,
-            service_kind,
-            service_name: None,
-            partition_id: None,
-            current_service_operation: None,
-            current_service_operation_start_time_utc: None,
-            reported_load: None,
         }
     }
 }

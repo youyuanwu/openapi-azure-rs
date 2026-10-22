@@ -19,22 +19,22 @@ pub struct CodePackageEntryPointStatistics {
     pub last_exit_code: Option<String>,
     /// The last time (in UTC) when Service Fabric attempted to run the entry point.
     #[serde(rename = "LastActivationTime", skip_serializing_if = "Option::is_none")]
-    pub last_activation_time: Option<String>,
+    pub last_activation_time: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// The last time (in UTC) when the entry point finished running.
     #[serde(rename = "LastExitTime", skip_serializing_if = "Option::is_none")]
-    pub last_exit_time: Option<String>,
+    pub last_exit_time: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// The last time (in UTC) when the entry point ran successfully.
     #[serde(
         rename = "LastSuccessfulActivationTime",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_successful_activation_time: Option<String>,
+    pub last_successful_activation_time: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// The last time (in UTC) when the entry point finished running gracefully.
     #[serde(
         rename = "LastSuccessfulExitTime",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_successful_exit_time: Option<String>,
+    pub last_successful_exit_time: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// Number of times the entry point has run.
     #[serde(rename = "ActivationCount", skip_serializing_if = "Option::is_none")]
     pub activation_count: Option<String>,

@@ -19,37 +19,37 @@ pub enum ChaosEvent {
     ExecutingFaultsChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
-        time_stamp_utc: String,
+        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
     },
     #[serde(rename = "StartedChaosEvent")]
     StartedChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
-        time_stamp_utc: String,
+        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
     },
     #[serde(rename = "StoppedChaosEvent")]
     StoppedChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
-        time_stamp_utc: String,
+        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
     },
     #[serde(rename = "TestErrorChaosEvent")]
     TestErrorChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
-        time_stamp_utc: String,
+        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
     },
     #[serde(rename = "ValidationFailedChaosEvent")]
     ValidationFailedChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
-        time_stamp_utc: String,
+        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
     },
     #[serde(rename = "WaitingChaosEvent")]
     WaitingChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
-        time_stamp_utc: String,
+        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
     },
 }
 

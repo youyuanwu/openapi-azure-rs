@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// AddRemoveIncrementalNamedPartitionScalingMechanism : Represents a scaling mechanism for adding or removing named partitions of a stateless service. Partition names are in the format '0','1''N-1'
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AddRemoveIncrementalNamedPartitionScalingMechanism {
+    #[serde(rename = "Kind")]
+    pub kind: models::ScalingMechanismKind,
     /// Minimum number of named partitions of the service.
     #[serde(rename = "MinPartitionCount")]
     pub min_partition_count: i32,
@@ -23,23 +24,20 @@ pub struct AddRemoveIncrementalNamedPartitionScalingMechanism {
     /// The number of instances to add or remove during a scaling operation.
     #[serde(rename = "ScaleIncrement")]
     pub scale_increment: i32,
-    #[serde(rename = "Kind")]
-    pub kind: models::ScalingMechanismKind,
 }
 
 impl AddRemoveIncrementalNamedPartitionScalingMechanism {
-    /// Represents a scaling mechanism for adding or removing named partitions of a stateless service. Partition names are in the format '0','1''N-1'
     pub fn new(
+        kind: models::ScalingMechanismKind,
         min_partition_count: i32,
         max_partition_count: i32,
         scale_increment: i32,
-        kind: models::ScalingMechanismKind,
     ) -> AddRemoveIncrementalNamedPartitionScalingMechanism {
         AddRemoveIncrementalNamedPartitionScalingMechanism {
+            kind,
             min_partition_count,
             max_partition_count,
             scale_increment,
-            kind,
         }
     }
 }

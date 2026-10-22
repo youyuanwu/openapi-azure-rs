@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// KeyValueStoreReplicaStatus : Key value store related information for the replica.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct KeyValueStoreReplicaStatus {
+    #[serde(rename = "Kind")]
+    pub kind: models::ReplicaKind,
     /// Value indicating the estimated number of rows in the underlying database.
     #[serde(
         rename = "DatabaseRowCountEstimate",
@@ -41,20 +42,17 @@ pub struct KeyValueStoreReplicaStatus {
     /// Value indicating the current status details of the replica.
     #[serde(rename = "StatusDetails", skip_serializing_if = "Option::is_none")]
     pub status_details: Option<String>,
-    #[serde(rename = "Kind")]
-    pub kind: models::ReplicaKind,
 }
 
 impl KeyValueStoreReplicaStatus {
-    /// Key value store related information for the replica.
     pub fn new(kind: models::ReplicaKind) -> KeyValueStoreReplicaStatus {
         KeyValueStoreReplicaStatus {
+            kind,
             database_row_count_estimate: None,
             database_logical_size_estimate: None,
             copy_notification_current_key_filter: None,
             copy_notification_current_progress: None,
             status_details: None,
-            kind,
         }
     }
 }

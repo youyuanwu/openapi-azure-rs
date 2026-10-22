@@ -11,25 +11,23 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServiceHealthState : Represents the health state of a service, which contains the service identifier and its aggregated health state.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServiceHealthState {
-    /// The full name of the service with 'fabric:' URI scheme.
-    #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
-    pub service_name: Option<String>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
     )]
     pub aggregated_health_state: Option<models::HealthState>,
+    /// The full name of the service with 'fabric:' URI scheme.
+    #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
+    pub service_name: Option<String>,
 }
 
 impl ServiceHealthState {
-    /// Represents the health state of a service, which contains the service identifier and its aggregated health state.
     pub fn new() -> ServiceHealthState {
         ServiceHealthState {
-            service_name: None,
             aggregated_health_state: None,
+            service_name: None,
         }
     }
 }

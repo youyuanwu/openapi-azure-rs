@@ -24,7 +24,7 @@ pub struct ContainerInstanceEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
+    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
@@ -38,7 +38,7 @@ impl ContainerInstanceEvent {
     pub fn new(
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: String,
+        time_stamp: chrono::DateTime<chrono::FixedOffset>,
     ) -> ContainerInstanceEvent {
         ContainerInstanceEvent {
             kind,

@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedApplicationHealthStateChunk : Represents the health state chunk of a deployed application, which contains the node where the application is deployed, the aggregated health state and any deployed service packages that respect the chunk query description filters.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedApplicationHealthStateChunk {
+    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
+    pub health_state: Option<models::HealthState>,
     /// The name of node where the application is deployed.
     #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
     pub node_name: Option<String>,
@@ -23,17 +24,14 @@ pub struct DeployedApplicationHealthStateChunk {
     )]
     pub deployed_service_package_health_state_chunks:
         Option<Box<models::DeployedServicePackageHealthStateChunkList>>,
-    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
-    pub health_state: Option<models::HealthState>,
 }
 
 impl DeployedApplicationHealthStateChunk {
-    /// Represents the health state chunk of a deployed application, which contains the node where the application is deployed, the aggregated health state and any deployed service packages that respect the chunk query description filters.
     pub fn new() -> DeployedApplicationHealthStateChunk {
         DeployedApplicationHealthStateChunk {
+            health_state: None,
             node_name: None,
             deployed_service_package_health_state_chunks: None,
-            health_state: None,
         }
     }
 }

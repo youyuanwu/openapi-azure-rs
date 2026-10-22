@@ -11,9 +11,13 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ProvisionApplicationTypeDescription : Describes the operation to register or provision an application type using an application package uploaded to the Service Fabric image store.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ProvisionApplicationTypeDescription {
+    #[serde(rename = "Kind")]
+    pub kind: models::ProvisionApplicationTypeKind,
+    /// Indicates whether or not provisioning should occur asynchronously. When set to true, the provision operation returns when the request is accepted by the system, and the provision operation continues without any timeout limit. The default value is false. For large application packages, we recommend setting the value to true.
+    #[serde(rename = "Async")]
+    pub r#async: bool,
     /// The relative path for the application package in the image store specified during the prior upload operation.
     #[serde(rename = "ApplicationTypeBuildPath")]
     pub application_type_build_path: String,
@@ -22,25 +26,19 @@ pub struct ProvisionApplicationTypeDescription {
         skip_serializing_if = "Option::is_none"
     )]
     pub application_package_cleanup_policy: Option<models::ApplicationPackageCleanupPolicy>,
-    #[serde(rename = "Kind")]
-    pub kind: models::ProvisionApplicationTypeKind,
-    /// Indicates whether or not provisioning should occur asynchronously. When set to true, the provision operation returns when the request is accepted by the system, and the provision operation continues without any timeout limit. The default value is false. For large application packages, we recommend setting the value to true.
-    #[serde(rename = "Async")]
-    pub r#async: bool,
 }
 
 impl ProvisionApplicationTypeDescription {
-    /// Describes the operation to register or provision an application type using an application package uploaded to the Service Fabric image store.
     pub fn new(
-        application_type_build_path: String,
         kind: models::ProvisionApplicationTypeKind,
         r#async: bool,
+        application_type_build_path: String,
     ) -> ProvisionApplicationTypeDescription {
         ProvisionApplicationTypeDescription {
-            application_type_build_path,
-            application_package_cleanup_policy: None,
             kind,
             r#async,
+            application_type_build_path,
+            application_package_cleanup_policy: None,
         }
     }
 }

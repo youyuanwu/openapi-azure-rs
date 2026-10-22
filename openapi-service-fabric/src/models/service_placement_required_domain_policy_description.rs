@@ -11,24 +11,22 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServicePlacementRequiredDomainPolicyDescription : Describes the policy to be used for placement of a Service Fabric service where the instances or replicas of that service must be placed in a particular domain
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServicePlacementRequiredDomainPolicyDescription {
+    #[serde(rename = "Type")]
+    pub r#type: models::ServicePlacementPolicyType,
     /// The name of the domain that should used for placement as per this policy.
     #[serde(rename = "DomainName", skip_serializing_if = "Option::is_none")]
     pub domain_name: Option<String>,
-    #[serde(rename = "Type")]
-    pub r#type: models::ServicePlacementPolicyType,
 }
 
 impl ServicePlacementRequiredDomainPolicyDescription {
-    /// Describes the policy to be used for placement of a Service Fabric service where the instances or replicas of that service must be placed in a particular domain
     pub fn new(
         r#type: models::ServicePlacementPolicyType,
     ) -> ServicePlacementRequiredDomainPolicyDescription {
         ServicePlacementRequiredDomainPolicyDescription {
-            domain_name: None,
             r#type,
+            domain_name: None,
         }
     }
 }

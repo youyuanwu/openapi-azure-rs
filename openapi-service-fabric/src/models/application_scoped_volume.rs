@@ -11,11 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationScopedVolume : Describes a volume whose lifetime is scoped to the application's lifetime.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationScopedVolume {
-    #[serde(rename = "creationParameters")]
-    pub creation_parameters: Box<models::ApplicationScopedVolumeCreationParameters>,
     /// Name of the volume being referenced.
     #[serde(rename = "name")]
     pub name: String,
@@ -25,20 +22,21 @@ pub struct ApplicationScopedVolume {
     /// The path within the container at which the volume should be mounted. Only valid path characters are allowed.
     #[serde(rename = "destinationPath")]
     pub destination_path: String,
+    #[serde(rename = "creationParameters")]
+    pub creation_parameters: Box<models::ApplicationScopedVolumeCreationParameters>,
 }
 
 impl ApplicationScopedVolume {
-    /// Describes a volume whose lifetime is scoped to the application's lifetime.
     pub fn new(
-        creation_parameters: models::ApplicationScopedVolumeCreationParameters,
         name: String,
         destination_path: String,
+        creation_parameters: models::ApplicationScopedVolumeCreationParameters,
     ) -> ApplicationScopedVolume {
         ApplicationScopedVolume {
-            creation_parameters: Box::new(creation_parameters),
             name,
             read_only: None,
             destination_path,
+            creation_parameters: Box::new(creation_parameters),
         }
     }
 }

@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// AverageLoadScalingTrigger : Describes the average load trigger used for auto scaling.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AverageLoadScalingTrigger {
+    #[serde(rename = "kind")]
+    pub kind: models::AutoScalingTriggerKind,
     #[serde(rename = "metric")]
     pub metric: Box<models::AutoScalingMetric>,
     /// Lower load threshold (if average load is below this threshold, service will scale down).
@@ -25,25 +26,22 @@ pub struct AverageLoadScalingTrigger {
     /// Scale interval that indicates how often will this trigger be checked.
     #[serde(rename = "scaleIntervalInSeconds")]
     pub scale_interval_in_seconds: i32,
-    #[serde(rename = "kind")]
-    pub kind: models::AutoScalingTriggerKind,
 }
 
 impl AverageLoadScalingTrigger {
-    /// Describes the average load trigger used for auto scaling.
     pub fn new(
+        kind: models::AutoScalingTriggerKind,
         metric: models::AutoScalingMetric,
         lower_load_threshold: f64,
         upper_load_threshold: f64,
         scale_interval_in_seconds: i32,
-        kind: models::AutoScalingTriggerKind,
     ) -> AverageLoadScalingTrigger {
         AverageLoadScalingTrigger {
+            kind,
             metric: Box::new(metric),
             lower_load_threshold,
             upper_load_threshold,
             scale_interval_in_seconds,
-            kind,
         }
     }
 }

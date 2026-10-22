@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PartitionInstanceCountScaleMechanism : Represents a scaling mechanism for adding or removing instances of stateless service partition.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PartitionInstanceCountScaleMechanism {
+    #[serde(rename = "Kind")]
+    pub kind: models::ScalingMechanismKind,
     /// Minimum number of instances of the partition.
     #[serde(rename = "MinInstanceCount")]
     pub min_instance_count: i32,
@@ -23,23 +24,20 @@ pub struct PartitionInstanceCountScaleMechanism {
     /// The number of instances to add or remove during a scaling operation.
     #[serde(rename = "ScaleIncrement")]
     pub scale_increment: i32,
-    #[serde(rename = "Kind")]
-    pub kind: models::ScalingMechanismKind,
 }
 
 impl PartitionInstanceCountScaleMechanism {
-    /// Represents a scaling mechanism for adding or removing instances of stateless service partition.
     pub fn new(
+        kind: models::ScalingMechanismKind,
         min_instance_count: i32,
         max_instance_count: i32,
         scale_increment: i32,
-        kind: models::ScalingMechanismKind,
     ) -> PartitionInstanceCountScaleMechanism {
         PartitionInstanceCountScaleMechanism {
+            kind,
             min_instance_count,
             max_instance_count,
             scale_increment,
-            kind,
         }
     }
 }

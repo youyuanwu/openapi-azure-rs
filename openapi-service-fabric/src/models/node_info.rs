@@ -69,10 +69,10 @@ pub struct NodeInfo {
     pub node_down_time_in_seconds: Option<String>,
     /// Date time in UTC when the node came up. If the node has never been up then this value will be zero date time.
     #[serde(rename = "NodeUpAt", skip_serializing_if = "Option::is_none")]
-    pub node_up_at: Option<String>,
+    pub node_up_at: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// Date time in UTC when the node went down. If node has never been down then this value will be zero date time.
     #[serde(rename = "NodeDownAt", skip_serializing_if = "Option::is_none")]
-    pub node_down_at: Option<String>,
+    pub node_down_at: Option<chrono::DateTime<chrono::FixedOffset>>,
     /// List that contains tags, which will be applied to the nodes.
     #[serde(rename = "NodeTags", skip_serializing_if = "Option::is_none")]
     pub node_tags: Option<Vec<String>>,
