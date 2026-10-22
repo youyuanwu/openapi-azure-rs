@@ -20,7 +20,7 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v7.26.0 ge
     -g rust\
     -o /local/openapi-service-fabric/ \
     --global-property=apiDocs=false,modelDocs=false \
-    --additional-properties=packageName=openapi-service-fabric,packageVersion=0.1.0,useChrono=false
+    --additional-properties=packageName=openapi-service-fabric,packageVersion=0.1.1,useChrono=false
 
 sudo chown -R $(whoami) .
 
@@ -44,7 +44,7 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v7.26.0 ge
     -g rust \
     -o /local/openapi-azure-storage-blob/ \
     --global-property=apiDocs=false,modelDocs=false \
-    --additional-properties=packageName=openapi-azure-storage-blob,packageVersion=0.1.1,useChrono=false
+    --additional-properties=packageName=openapi-azure-storage-blob,packageVersion=0.1.2,useChrono=false
 
 
 sudo chown -R $(whoami) .

@@ -1,6 +1,6 @@
 [package]
 name = "openapi-service-fabric"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["OpenAPI Generator team and contributors"]
 description = "Service Fabric REST Client APIs allows management of Service Fabric clusters, applications and services."
 # Override this license by providing a License Object in the OpenAPI.
