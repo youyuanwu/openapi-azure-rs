@@ -171,7 +171,7 @@ pub async fn create_application(
     api_version: &str,
     application_description: models::ApplicationDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<CreateApplicationError>> {
+) -> Result<(), Error<CreateApplicationError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_application_description = application_description;
@@ -197,7 +197,7 @@ pub async fn create_application(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<CreateApplicationError> = serde_json::from_str(&content).ok();
@@ -216,7 +216,7 @@ pub async fn delete_application(
     application_id: &str,
     force_remove: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<DeleteApplicationError>> {
+) -> Result<(), Error<DeleteApplicationError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -249,7 +249,7 @@ pub async fn delete_application(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteApplicationError> = serde_json::from_str(&content).ok();
@@ -994,7 +994,7 @@ pub async fn report_application_health(
     health_information: models::HealthInformation,
     immediate: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ReportApplicationHealthError>> {
+) -> Result<(), Error<ReportApplicationHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -1029,7 +1029,7 @@ pub async fn report_application_health(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ReportApplicationHealthError> = serde_json::from_str(&content).ok();
@@ -1050,7 +1050,7 @@ pub async fn report_deployed_application_health(
     health_information: models::HealthInformation,
     immediate: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ReportDeployedApplicationHealthError>> {
+) -> Result<(), Error<ReportDeployedApplicationHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -1087,7 +1087,7 @@ pub async fn report_deployed_application_health(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ReportDeployedApplicationHealthError> =
@@ -1107,7 +1107,7 @@ pub async fn resume_application_upgrade(
     application_id: &str,
     resume_application_upgrade_description: models::ResumeApplicationUpgradeDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ResumeApplicationUpgradeError>> {
+) -> Result<(), Error<ResumeApplicationUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -1138,7 +1138,7 @@ pub async fn resume_application_upgrade(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ResumeApplicationUpgradeError> = serde_json::from_str(&content).ok();
@@ -1156,7 +1156,7 @@ pub async fn rollback_application_upgrade(
     api_version: &str,
     application_id: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RollbackApplicationUpgradeError>> {
+) -> Result<(), Error<RollbackApplicationUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -1185,7 +1185,7 @@ pub async fn rollback_application_upgrade(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RollbackApplicationUpgradeError> = serde_json::from_str(&content).ok();
@@ -1204,7 +1204,7 @@ pub async fn start_application_upgrade(
     application_id: &str,
     application_upgrade_description: models::ApplicationUpgradeDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<StartApplicationUpgradeError>> {
+) -> Result<(), Error<StartApplicationUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -1235,7 +1235,7 @@ pub async fn start_application_upgrade(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<StartApplicationUpgradeError> = serde_json::from_str(&content).ok();
@@ -1254,7 +1254,7 @@ pub async fn update_application(
     application_id: &str,
     application_update_description: models::ApplicationUpdateDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<UpdateApplicationError>> {
+) -> Result<(), Error<UpdateApplicationError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -1285,7 +1285,7 @@ pub async fn update_application(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<UpdateApplicationError> = serde_json::from_str(&content).ok();
@@ -1304,7 +1304,7 @@ pub async fn update_application_upgrade(
     application_id: &str,
     application_upgrade_update_description: models::ApplicationUpgradeUpdateDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<UpdateApplicationUpgradeError>> {
+) -> Result<(), Error<UpdateApplicationUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -1335,7 +1335,7 @@ pub async fn update_application_upgrade(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<UpdateApplicationUpgradeError> = serde_json::from_str(&content).ok();

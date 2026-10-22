@@ -68,7 +68,7 @@ pub async fn deploy_service_package_to_node(
     node_name: &str,
     deploy_service_package_to_node_description: models::DeployServicePackageToNodeDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<DeployServicePackageToNodeError>> {
+) -> Result<(), Error<DeployServicePackageToNodeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -100,7 +100,7 @@ pub async fn deploy_service_package_to_node(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<DeployServicePackageToNodeError> = serde_json::from_str(&content).ok();
@@ -378,7 +378,7 @@ pub async fn report_deployed_service_package_health(
     health_information: models::HealthInformation,
     immediate: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ReportDeployedServicePackageHealthError>> {
+) -> Result<(), Error<ReportDeployedServicePackageHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -411,7 +411,7 @@ pub async fn report_deployed_service_package_health(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ReportDeployedServicePackageHealthError> =

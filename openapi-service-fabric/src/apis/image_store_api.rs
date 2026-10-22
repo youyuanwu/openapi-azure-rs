@@ -123,7 +123,7 @@ pub async fn commit_image_store_upload_session(
     api_version: &str,
     session_id: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<CommitImageStoreUploadSessionError>> {
+) -> Result<(), Error<CommitImageStoreUploadSessionError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_session_id = session_id;
@@ -152,7 +152,7 @@ pub async fn commit_image_store_upload_session(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<CommitImageStoreUploadSessionError> =
@@ -171,7 +171,7 @@ pub async fn copy_image_store_content(
     api_version: &str,
     image_store_copy_description: models::ImageStoreCopyDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<CopyImageStoreContentError>> {
+) -> Result<(), Error<CopyImageStoreContentError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_image_store_copy_description = image_store_copy_description;
@@ -197,7 +197,7 @@ pub async fn copy_image_store_content(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<CopyImageStoreContentError> = serde_json::from_str(&content).ok();
@@ -215,7 +215,7 @@ pub async fn delete_image_store_content(
     api_version: &str,
     content_path: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<DeleteImageStoreContentError>> {
+) -> Result<(), Error<DeleteImageStoreContentError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_content_path = content_path;
@@ -244,7 +244,7 @@ pub async fn delete_image_store_content(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteImageStoreContentError> = serde_json::from_str(&content).ok();
@@ -262,7 +262,7 @@ pub async fn delete_image_store_upload_session(
     api_version: &str,
     session_id: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<DeleteImageStoreUploadSessionError>> {
+) -> Result<(), Error<DeleteImageStoreUploadSessionError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_session_id = session_id;
@@ -291,7 +291,7 @@ pub async fn delete_image_store_upload_session(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteImageStoreUploadSessionError> =
@@ -684,7 +684,7 @@ pub async fn upload_file(
     content_path: &str,
     timeout: Option<i64>,
     body: Vec<u8>,
-) -> Result<reqwest::StatusCode, Error<UploadFileError>> {
+) -> Result<(), Error<UploadFileError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_content_path = content_path;
@@ -716,7 +716,7 @@ pub async fn upload_file(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<UploadFileError> = serde_json::from_str(&content).ok();
@@ -737,7 +737,7 @@ pub async fn upload_file_chunk(
     content_range: &str,
     timeout: Option<i64>,
     body: Vec<u8>,
-) -> Result<reqwest::StatusCode, Error<UploadFileChunkError>> {
+) -> Result<(), Error<UploadFileChunkError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_content_path = content_path;
@@ -773,7 +773,7 @@ pub async fn upload_file_chunk(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<UploadFileChunkError> = serde_json::from_str(&content).ok();

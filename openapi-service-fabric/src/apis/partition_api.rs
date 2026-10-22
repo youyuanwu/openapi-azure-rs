@@ -615,7 +615,7 @@ pub async fn move_auxiliary_replica(
     new_node_name: Option<&str>,
     ignore_constraints: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<MoveAuxiliaryReplicaError>> {
+) -> Result<(), Error<MoveAuxiliaryReplicaError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -658,7 +658,7 @@ pub async fn move_auxiliary_replica(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<MoveAuxiliaryReplicaError> = serde_json::from_str(&content).ok();
@@ -680,7 +680,7 @@ pub async fn move_instance(
     new_node_name: Option<&str>,
     ignore_constraints: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<MoveInstanceError>> {
+) -> Result<(), Error<MoveInstanceError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -723,7 +723,7 @@ pub async fn move_instance(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<MoveInstanceError> = serde_json::from_str(&content).ok();
@@ -743,7 +743,7 @@ pub async fn move_primary_replica(
     node_name: Option<&str>,
     ignore_constraints: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<MovePrimaryReplicaError>> {
+) -> Result<(), Error<MovePrimaryReplicaError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_partition_id = partition_id;
@@ -780,7 +780,7 @@ pub async fn move_primary_replica(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<MovePrimaryReplicaError> = serde_json::from_str(&content).ok();
@@ -801,7 +801,7 @@ pub async fn move_secondary_replica(
     new_node_name: Option<&str>,
     ignore_constraints: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<MoveSecondaryReplicaError>> {
+) -> Result<(), Error<MoveSecondaryReplicaError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_partition_id = partition_id;
@@ -840,7 +840,7 @@ pub async fn move_secondary_replica(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<MoveSecondaryReplicaError> = serde_json::from_str(&content).ok();
@@ -857,7 +857,7 @@ pub async fn recover_all_partitions(
     configuration: &configuration::Configuration,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RecoverAllPartitionsError>> {
+) -> Result<(), Error<RecoverAllPartitionsError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_timeout = timeout;
@@ -881,7 +881,7 @@ pub async fn recover_all_partitions(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RecoverAllPartitionsError> = serde_json::from_str(&content).ok();
@@ -899,7 +899,7 @@ pub async fn recover_partition(
     partition_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RecoverPartitionError>> {
+) -> Result<(), Error<RecoverPartitionError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_partition_id = partition_id;
     let p_query_api_version = api_version;
@@ -928,7 +928,7 @@ pub async fn recover_partition(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RecoverPartitionError> = serde_json::from_str(&content).ok();
@@ -946,7 +946,7 @@ pub async fn recover_service_partitions(
     service_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RecoverServicePartitionsError>> {
+) -> Result<(), Error<RecoverServicePartitionsError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_service_id = service_id;
     let p_query_api_version = api_version;
@@ -975,7 +975,7 @@ pub async fn recover_service_partitions(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RecoverServicePartitionsError> = serde_json::from_str(&content).ok();
@@ -992,7 +992,7 @@ pub async fn recover_system_partitions(
     configuration: &configuration::Configuration,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RecoverSystemPartitionsError>> {
+) -> Result<(), Error<RecoverSystemPartitionsError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_timeout = timeout;
@@ -1016,7 +1016,7 @@ pub async fn recover_system_partitions(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RecoverSystemPartitionsError> = serde_json::from_str(&content).ok();
@@ -1036,7 +1036,7 @@ pub async fn report_partition_health(
     health_information: models::HealthInformation,
     immediate: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ReportPartitionHealthError>> {
+) -> Result<(), Error<ReportPartitionHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_partition_id = partition_id;
@@ -1071,7 +1071,7 @@ pub async fn report_partition_health(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ReportPartitionHealthError> = serde_json::from_str(&content).ok();
@@ -1089,7 +1089,7 @@ pub async fn reset_partition_load(
     partition_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ResetPartitionLoadError>> {
+) -> Result<(), Error<ResetPartitionLoadError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_partition_id = partition_id;
     let p_query_api_version = api_version;
@@ -1118,7 +1118,7 @@ pub async fn reset_partition_load(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ResetPartitionLoadError> = serde_json::from_str(&content).ok();

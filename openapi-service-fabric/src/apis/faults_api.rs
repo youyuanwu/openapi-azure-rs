@@ -100,7 +100,7 @@ pub async fn cancel_operation(
     operation_id: &str,
     force: bool,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<CancelOperationError>> {
+) -> Result<(), Error<CancelOperationError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_operation_id = operation_id;
@@ -128,7 +128,7 @@ pub async fn cancel_operation(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<CancelOperationError> = serde_json::from_str(&content).ok();
@@ -450,7 +450,7 @@ pub async fn start_data_loss(
     operation_id: &str,
     data_loss_mode: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<StartDataLossError>> {
+) -> Result<(), Error<StartDataLossError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -485,7 +485,7 @@ pub async fn start_data_loss(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<StartDataLossError> = serde_json::from_str(&content).ok();
@@ -507,7 +507,7 @@ pub async fn start_node_transition(
     node_instance_id: &str,
     stop_duration_in_seconds: i32,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<StartNodeTransitionError>> {
+) -> Result<(), Error<StartNodeTransitionError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -550,7 +550,7 @@ pub async fn start_node_transition(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<StartNodeTransitionError> = serde_json::from_str(&content).ok();
@@ -571,7 +571,7 @@ pub async fn start_partition_restart(
     operation_id: &str,
     restart_partition_mode: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<StartPartitionRestartError>> {
+) -> Result<(), Error<StartPartitionRestartError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -609,7 +609,7 @@ pub async fn start_partition_restart(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<StartPartitionRestartError> = serde_json::from_str(&content).ok();
@@ -631,7 +631,7 @@ pub async fn start_quorum_loss(
     quorum_loss_mode: &str,
     quorum_loss_duration: i32,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<StartQuorumLossError>> {
+) -> Result<(), Error<StartQuorumLossError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -671,7 +671,7 @@ pub async fn start_quorum_loss(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<StartQuorumLossError> = serde_json::from_str(&content).ok();

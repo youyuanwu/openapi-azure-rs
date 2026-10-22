@@ -13,6 +13,28 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
+/// Documented success outcomes of [`mesh_application_create_or_update`], selected by HTTP status.
+#[derive(Clone, Debug, PartialEq)]
+pub enum MeshApplicationCreateOrUpdateSuccess {
+    /// OK
+    Status200(models::ApplicationResourceDescription),
+    /// Created
+    Status201(models::ApplicationResourceDescription),
+    /// Accepted
+    Status202,
+}
+
+/// Documented success outcomes of [`mesh_application_delete`], selected by HTTP status.
+#[derive(Clone, Debug, PartialEq)]
+pub enum MeshApplicationDeleteSuccess {
+    /// OK
+    Status200,
+    /// Accepted
+    Status202,
+    /// No Content - the specified application was not found.
+    Status204,
+}
+
 /// struct for typed errors of method [`mesh_application_create_or_update`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -59,8 +81,7 @@ pub async fn mesh_application_create_or_update(
     api_version: &str,
     application_resource_name: &str,
     application_resource_description: models::ApplicationResourceDescription,
-) -> Result<Option<models::ApplicationResourceDescription>, Error<MeshApplicationCreateOrUpdateError>>
-{
+) -> Result<MeshApplicationCreateOrUpdateSuccess, Error<MeshApplicationCreateOrUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_resource_name = application_resource_name;
@@ -83,9 +104,6 @@ pub async fn mesh_application_create_or_update(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
-    if status.as_u16() == 202 {
-        return Ok(None);
-    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -95,10 +113,39 @@ pub async fn mesh_application_create_or_update(
 
     if status.is_success() {
         let content = resp.text().await?;
-        match content_type {
-            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ApplicationResourceDescription`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ApplicationResourceDescription`")))),
+        match status.as_u16() {
+            200 => match content_type {
+                ContentType::Json => serde_json::from_str(&content)
+                    .map(MeshApplicationCreateOrUpdateSuccess::Status200)
+                    .map_err(Error::from),
+                ContentType::Text => Err(Error::from(serde_json::Error::custom(
+                    "Received text/plain where a JSON success body was expected",
+                ))),
+                ContentType::Unsupported(unknown_type) => {
+                    Err(Error::from(serde_json::Error::custom(format!(
+                        "Unsupported success body content type: {unknown_type}",
+                    ))))
+                }
+            },
+            201 => match content_type {
+                ContentType::Json => serde_json::from_str(&content)
+                    .map(MeshApplicationCreateOrUpdateSuccess::Status201)
+                    .map_err(Error::from),
+                ContentType::Text => Err(Error::from(serde_json::Error::custom(
+                    "Received text/plain where a JSON success body was expected",
+                ))),
+                ContentType::Unsupported(unknown_type) => {
+                    Err(Error::from(serde_json::Error::custom(format!(
+                        "Unsupported success body content type: {unknown_type}",
+                    ))))
+                }
+            },
+            202 => Ok(MeshApplicationCreateOrUpdateSuccess::Status202),
+            _ => Err(Error::ResponseError(ResponseContent {
+                status,
+                entity: serde_json::from_str(&content).ok(),
+                content,
+            })),
         }
     } else {
         let content = resp.text().await?;
@@ -117,7 +164,7 @@ pub async fn mesh_application_delete(
     configuration: &configuration::Configuration,
     api_version: &str,
     application_resource_name: &str,
-) -> Result<reqwest::StatusCode, Error<MeshApplicationDeleteError>> {
+) -> Result<MeshApplicationDeleteSuccess, Error<MeshApplicationDeleteError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_resource_name = application_resource_name;
@@ -142,7 +189,17 @@ pub async fn mesh_application_delete(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        let content = resp.text().await?;
+        match status.as_u16() {
+            200 => Ok(MeshApplicationDeleteSuccess::Status200),
+            202 => Ok(MeshApplicationDeleteSuccess::Status202),
+            204 => Ok(MeshApplicationDeleteSuccess::Status204),
+            _ => Err(Error::ResponseError(ResponseContent {
+                status,
+                entity: serde_json::from_str(&content).ok(),
+                content,
+            })),
+        }
     } else {
         let content = resp.text().await?;
         let entity: Option<MeshApplicationDeleteError> = serde_json::from_str(&content).ok();

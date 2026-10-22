@@ -174,7 +174,7 @@ pub async fn delete_repair_task(
     configuration: &configuration::Configuration,
     api_version: &str,
     repair_task_delete_description: models::RepairTaskDeleteDescription,
-) -> Result<reqwest::StatusCode, Error<DeleteRepairTaskError>> {
+) -> Result<(), Error<DeleteRepairTaskError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_repair_task_delete_description = repair_task_delete_description;
@@ -196,7 +196,7 @@ pub async fn delete_repair_task(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteRepairTaskError> = serde_json::from_str(&content).ok();

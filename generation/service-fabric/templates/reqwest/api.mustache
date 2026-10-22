@@ -68,6 +68,25 @@ pub enum {{{operationIdCamelCase}}}Success {
 {{/operation}}
 {{/operations}}
 {{/supportMultipleResponses}}
+{{^supportMultipleResponses}}
+{{#operations}}
+{{#operation}}
+{{#vendorExtensions.x-sf-typed-response}}
+/// Documented success outcomes of [`{{operationId}}`], selected by HTTP status.
+#[derive(Clone, Debug, PartialEq)]
+pub enum {{{operationIdCamelCase}}}Success {
+    {{#vendorExtensions.x-sf-success-responses}}
+    {{#message}}
+    /// {{{.}}}
+    {{/message}}
+    Status{{code}}{{#dataType}}({{{.}}}){{/dataType}},
+    {{/vendorExtensions.x-sf-success-responses}}
+}
+
+{{/vendorExtensions.x-sf-typed-response}}
+{{/operation}}
+{{/operations}}
+{{/supportMultipleResponses}}
 {{#operations}}
 {{#operation}}
 /// struct for typed errors of method [`{{operationId}}`]
@@ -115,7 +134,7 @@ pub {{#supportAsync}}async {{/supportAsync}}fn {{{operationId}}}(configuration: 
 ### Multi response support
 }}{{#supportMultipleResponses}}ResponseContent<{{{operationIdCamelCase}}}Success>{{/supportMultipleResponses}}{{!
 ### Regular return type
-}}{{^supportMultipleResponses}}{{^returnType}}reqwest::StatusCode{{/returnType}}{{#vendorExtensions.x-sf-optional-response}}Option<{{/vendorExtensions.x-sf-optional-response}}{{{returnType}}}{{#vendorExtensions.x-sf-optional-response}}>{{/vendorExtensions.x-sf-optional-response}}{{/supportMultipleResponses}}{{/isResponseFile}}{{!
+}}{{^supportMultipleResponses}}{{{vendorExtensions.x-sf-return-type}}}{{/supportMultipleResponses}}{{/isResponseFile}}{{!
 ### Error Type
 }}, Error<{{{operationIdCamelCase}}}Error>> {
 {{/vendorExtensions.x-group-parameters}}
@@ -142,7 +161,7 @@ pub {{#supportAsync}}async {{/supportAsync}}fn {{{operationId}}}(configuration: 
 ### Multi response support
 }}{{#supportMultipleResponses}}ResponseContent<{{{operationIdCamelCase}}}Success>{{/supportMultipleResponses}}{{!
 ### Regular return type
-}}{{^supportMultipleResponses}}{{^returnType}}reqwest::StatusCode{{/returnType}}{{#vendorExtensions.x-sf-optional-response}}Option<{{/vendorExtensions.x-sf-optional-response}}{{{returnType}}}{{#vendorExtensions.x-sf-optional-response}}>{{/vendorExtensions.x-sf-optional-response}}{{/supportMultipleResponses}}{{/isResponseFile}}{{!
+}}{{^supportMultipleResponses}}{{{vendorExtensions.x-sf-return-type}}}{{/supportMultipleResponses}}{{/isResponseFile}}{{!
 ### Error Type
 }}, Error<{{{operationIdCamelCase}}}Error>> {
     {{#allParams.0}}
@@ -617,8 +636,12 @@ pub {{#supportAsync}}async {{/supportAsync}}fn {{{operationId}}}(configuration: 
         Ok(resp)
         {{/isResponseFile}}
         {{^isResponseFile}}
+        {{#vendorExtensions.x-sf-typed-response}}
+        {{>typed_success}}
+        {{/vendorExtensions.x-sf-typed-response}}
+        {{^vendorExtensions.x-sf-typed-response}}
         {{^returnType}}
-        Ok(status)
+        Ok(())
         {{/returnType}}
         {{#returnType}}
         let content = resp.text(){{#supportAsync}}.await{{/supportAsync}}?;
@@ -638,6 +661,7 @@ pub {{#supportAsync}}async {{/supportAsync}}fn {{{operationId}}}(configuration: 
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `{{returnType}}`")))),
         }
         {{/returnType}}
+        {{/vendorExtensions.x-sf-typed-response}}
         {{/isResponseFile}}
         {{/supportMultipleResponses}}
         {{#supportMultipleResponses}}

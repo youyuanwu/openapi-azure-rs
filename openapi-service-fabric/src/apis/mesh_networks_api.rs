@@ -13,6 +13,28 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
+/// Documented success outcomes of [`mesh_network_create_or_update`], selected by HTTP status.
+#[derive(Clone, Debug, PartialEq)]
+pub enum MeshNetworkCreateOrUpdateSuccess {
+    /// OK
+    Status200(models::NetworkResourceDescription),
+    /// Created
+    Status201(models::NetworkResourceDescription),
+    /// Accepted
+    Status202,
+}
+
+/// Documented success outcomes of [`mesh_network_delete`], selected by HTTP status.
+#[derive(Clone, Debug, PartialEq)]
+pub enum MeshNetworkDeleteSuccess {
+    /// OK
+    Status200,
+    /// Accepted
+    Status202,
+    /// No Content - the specified network was not found.
+    Status204,
+}
+
 /// struct for typed errors of method [`mesh_network_create_or_update`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -51,7 +73,7 @@ pub async fn mesh_network_create_or_update(
     api_version: &str,
     network_resource_name: &str,
     network_resource_description: models::NetworkResourceDescription,
-) -> Result<Option<models::NetworkResourceDescription>, Error<MeshNetworkCreateOrUpdateError>> {
+) -> Result<MeshNetworkCreateOrUpdateSuccess, Error<MeshNetworkCreateOrUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_network_resource_name = network_resource_name;
@@ -74,9 +96,6 @@ pub async fn mesh_network_create_or_update(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
-    if status.as_u16() == 202 {
-        return Ok(None);
-    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -86,10 +105,39 @@ pub async fn mesh_network_create_or_update(
 
     if status.is_success() {
         let content = resp.text().await?;
-        match content_type {
-            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::NetworkResourceDescription`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::NetworkResourceDescription`")))),
+        match status.as_u16() {
+            200 => match content_type {
+                ContentType::Json => serde_json::from_str(&content)
+                    .map(MeshNetworkCreateOrUpdateSuccess::Status200)
+                    .map_err(Error::from),
+                ContentType::Text => Err(Error::from(serde_json::Error::custom(
+                    "Received text/plain where a JSON success body was expected",
+                ))),
+                ContentType::Unsupported(unknown_type) => {
+                    Err(Error::from(serde_json::Error::custom(format!(
+                        "Unsupported success body content type: {unknown_type}",
+                    ))))
+                }
+            },
+            201 => match content_type {
+                ContentType::Json => serde_json::from_str(&content)
+                    .map(MeshNetworkCreateOrUpdateSuccess::Status201)
+                    .map_err(Error::from),
+                ContentType::Text => Err(Error::from(serde_json::Error::custom(
+                    "Received text/plain where a JSON success body was expected",
+                ))),
+                ContentType::Unsupported(unknown_type) => {
+                    Err(Error::from(serde_json::Error::custom(format!(
+                        "Unsupported success body content type: {unknown_type}",
+                    ))))
+                }
+            },
+            202 => Ok(MeshNetworkCreateOrUpdateSuccess::Status202),
+            _ => Err(Error::ResponseError(ResponseContent {
+                status,
+                entity: serde_json::from_str(&content).ok(),
+                content,
+            })),
         }
     } else {
         let content = resp.text().await?;
@@ -107,7 +155,7 @@ pub async fn mesh_network_delete(
     configuration: &configuration::Configuration,
     api_version: &str,
     network_resource_name: &str,
-) -> Result<reqwest::StatusCode, Error<MeshNetworkDeleteError>> {
+) -> Result<MeshNetworkDeleteSuccess, Error<MeshNetworkDeleteError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_network_resource_name = network_resource_name;
@@ -132,7 +180,17 @@ pub async fn mesh_network_delete(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        let content = resp.text().await?;
+        match status.as_u16() {
+            200 => Ok(MeshNetworkDeleteSuccess::Status200),
+            202 => Ok(MeshNetworkDeleteSuccess::Status202),
+            204 => Ok(MeshNetworkDeleteSuccess::Status204),
+            _ => Err(Error::ResponseError(ResponseContent {
+                status,
+                entity: serde_json::from_str(&content).ok(),
+                content,
+            })),
+        }
     } else {
         let content = resp.text().await?;
         let entity: Option<MeshNetworkDeleteError> = serde_json::from_str(&content).ok();

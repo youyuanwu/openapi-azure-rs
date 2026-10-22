@@ -124,7 +124,7 @@ pub async fn create_service(
     application_id: &str,
     service_description: models::ServiceDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<CreateServiceError>> {
+) -> Result<(), Error<CreateServiceError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -155,7 +155,7 @@ pub async fn create_service(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<CreateServiceError> = serde_json::from_str(&content).ok();
@@ -174,7 +174,7 @@ pub async fn create_service_from_template(
     application_id: &str,
     service_from_template_description: models::ServiceFromTemplateDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<CreateServiceFromTemplateError>> {
+) -> Result<(), Error<CreateServiceFromTemplateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -205,7 +205,7 @@ pub async fn create_service_from_template(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<CreateServiceFromTemplateError> = serde_json::from_str(&content).ok();
@@ -224,7 +224,7 @@ pub async fn delete_service(
     service_id: &str,
     force_remove: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<DeleteServiceError>> {
+) -> Result<(), Error<DeleteServiceError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -257,7 +257,7 @@ pub async fn delete_service(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteServiceError> = serde_json::from_str(&content).ok();
@@ -733,7 +733,7 @@ pub async fn report_service_health(
     health_information: models::HealthInformation,
     immediate: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ReportServiceHealthError>> {
+) -> Result<(), Error<ReportServiceHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -768,7 +768,7 @@ pub async fn report_service_health(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ReportServiceHealthError> = serde_json::from_str(&content).ok();
@@ -858,7 +858,7 @@ pub async fn update_service(
     service_id: &str,
     service_update_description: models::ServiceUpdateDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<UpdateServiceError>> {
+) -> Result<(), Error<UpdateServiceError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -889,7 +889,7 @@ pub async fn update_service(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<UpdateServiceError> = serde_json::from_str(&content).ok();

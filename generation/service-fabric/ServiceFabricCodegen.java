@@ -8,6 +8,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.CodegenResponse;
 import org.openapitools.codegen.languages.RustClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
@@ -77,16 +78,23 @@ public class ServiceFabricCodegen extends RustClientCodegen {
                     parameter.dataType = "u32";
                 }
             }
-            if (operation.returnType != null) {
-                List<String> emptySuccessCodes = operation.responses.stream()
-                    .filter(response -> response.is2xx && response.dataType == null)
-                    .map(response -> response.code)
-                    .collect(Collectors.toList());
-                if (!emptySuccessCodes.isEmpty()) {
-                    operation.vendorExtensions.put("x-sf-optional-response", true);
-                    operation.vendorExtensions.put("x-sf-empty-success-codes", emptySuccessCodes);
-                }
+            List<CodegenResponse> successes = operation.responses.stream()
+                .filter(response -> response.is2xx)
+                .collect(Collectors.toList());
+            boolean optional = successes.size() == 2
+                && successes.stream().anyMatch(response -> "204".equals(response.code) && response.dataType == null)
+                && successes.stream().filter(response -> response.dataType != null).count() == 1;
+            String returnType = operation.returnType == null ? "()" : operation.returnType;
+            if (optional) {
+                operation.vendorExtensions.put("x-sf-optional-response", true);
+                operation.vendorExtensions.put("x-sf-empty-success-codes", List.of("204"));
+                returnType = "Option<" + returnType + ">";
+            } else if (successes.size() > 1) {
+                operation.vendorExtensions.put("x-sf-typed-response", true);
+                operation.vendorExtensions.put("x-sf-success-responses", successes);
+                returnType = operation.operationIdCamelCase + "Success";
             }
+            operation.vendorExtensions.put("x-sf-return-type", returnType);
             // The official upload operations describe raw data but omit a body parameter.
             if ("upload_file".equals(operation.operationId) || "upload_file_chunk".equals(operation.operationId)) {
                 CodegenParameter body = new CodegenParameter();

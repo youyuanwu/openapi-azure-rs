@@ -229,24 +229,75 @@ async fn application_lookup_preserves_http_errors() {
 }
 
 #[tokio::test]
-async fn model_responses_allow_only_documented_bodyless_successes() {
+async fn model_responses_distinguish_completed_created_and_accepted() {
+    use mesh_secrets_api::MeshSecretCreateOrUpdateSuccess;
+
     for status in [200, 201] {
         let body = r#"{"name":"example","properties":{"kind":"inlinedValue"}}"#;
         let (config, server) = serve(status, Some("application/json"), body);
-        let model = mesh_secrets_api::mesh_secret_create_or_update(
+        let outcome = mesh_secrets_api::mesh_secret_create_or_update(
             &config,
             "6.4-preview",
             "example",
             serde_json::from_str(body).unwrap(),
         )
         .await
-        .unwrap()
         .unwrap();
+        let model = match (outcome, status) {
+            (MeshSecretCreateOrUpdateSuccess::Status200(model), 200)
+            | (MeshSecretCreateOrUpdateSuccess::Status201(model), 201) => model,
+            other => panic!("Wrong success outcome: {other:?}"),
+        };
         assert_eq!(model.name, "example");
         server.join().unwrap();
     }
-    for (status, is_documented_empty) in [(200, false), (201, false), (202, true), (204, false)] {
-        let (config, server) = serve(status, Some("application/json"), "");
+    for content_type in [None, Some("application/json"), Some("text/plain")] {
+        let (config, server) = serve(202, content_type, "");
+        let outcome = mesh_secrets_api::mesh_secret_create_or_update(
+            &config,
+            "6.4-preview",
+            "example",
+            Default::default(),
+        )
+        .await
+        .unwrap();
+        assert_eq!(outcome, MeshSecretCreateOrUpdateSuccess::Status202);
+        server.join().unwrap();
+    }
+    for status in [200, 201] {
+        for body in ["", "{", r#"{"name":"example"}"#] {
+            let (config, server) = serve(status, Some("application/json"), body);
+            let result = mesh_secrets_api::mesh_secret_create_or_update(
+                &config,
+                "6.4-preview",
+                "example",
+                Default::default(),
+            )
+            .await;
+            assert!(matches!(result, Err(Error::Serde(_))), "{result:?}");
+            server.join().unwrap();
+        }
+        for content_type in [None, Some("text/plain"), Some("application/octet-stream")] {
+            let body = r#"{"name":"example","properties":{"kind":"inlinedValue"}}"#;
+            let (config, server) = serve(status, content_type, body);
+            let result = mesh_secrets_api::mesh_secret_create_or_update(
+                &config,
+                "6.4-preview",
+                "example",
+                Default::default(),
+            )
+            .await;
+            assert!(matches!(result, Err(Error::Serde(_))), "{result:?}");
+            server.join().unwrap();
+        }
+    }
+    for status in [203, 204, 206, 302, 404, 500] {
+        let body = if status == 204 {
+            ""
+        } else {
+            "Unexpected response"
+        };
+        let (config, server) = serve(status, None, body);
         let result = mesh_secrets_api::mesh_secret_create_or_update(
             &config,
             "6.4-preview",
@@ -254,11 +305,8 @@ async fn model_responses_allow_only_documented_bodyless_successes() {
             Default::default(),
         )
         .await;
-        if is_documented_empty {
-            assert!(result.unwrap().is_none());
-        } else {
-            assert!(matches!(result, Err(Error::Serde(_))), "{result:?}");
-        }
+        assert!(matches!(result, Err(Error::ResponseError(response))
+            if response.status.as_u16() == status && response.content == body));
         server.join().unwrap();
     }
 }
@@ -282,17 +330,46 @@ async fn service_api_returns_complete_subtype() {
 
 #[tokio::test]
 async fn provisioning_api_sends_complete_subtype() {
-    let (config, server) = serve(202, None, "");
-    let status =
-        application_type_api::provision_application_type(&config, "8.2", provision_request(), None)
-            .await
-            .unwrap();
-    assert_eq!(status, reqwest::StatusCode::ACCEPTED);
-    let request = server.join().unwrap();
-    assert_eq!(
-        serde_json::from_slice::<Value>(&request.body).unwrap(),
-        serde_json::to_value(provision_request()).unwrap()
-    );
+    use application_type_api::ProvisionApplicationTypeSuccess;
+
+    for (status, expected) in [
+        (200, ProvisionApplicationTypeSuccess::Status200),
+        (202, ProvisionApplicationTypeSuccess::Status202),
+    ] {
+        let (config, server) = serve(status, None, "");
+        let outcome = application_type_api::provision_application_type(
+            &config,
+            "8.2",
+            provision_request(),
+            None,
+        )
+        .await
+        .unwrap();
+        assert_eq!(outcome, expected);
+        let request = server.join().unwrap();
+        assert_eq!(
+            serde_json::from_slice::<Value>(&request.body).unwrap(),
+            serde_json::to_value(provision_request()).unwrap()
+        );
+    }
+    for status in [201, 204, 206, 302, 404, 500] {
+        let body = if status == 204 {
+            ""
+        } else {
+            "Unexpected response"
+        };
+        let (config, server) = serve(status, None, body);
+        let result = application_type_api::provision_application_type(
+            &config,
+            "8.2",
+            provision_request(),
+            None,
+        )
+        .await;
+        assert!(matches!(result, Err(Error::ResponseError(response))
+            if response.status.as_u16() == status && response.content == body));
+        server.join().unwrap();
+    }
 }
 
 #[tokio::test]
@@ -302,10 +379,9 @@ async fn upload_sends_binary_contents_and_empty_directory_markers() {
         ("package/_.dir", vec![]),
     ] {
         let (config, server) = serve(200, None, "");
-        let status = image_store_api::upload_file(&config, "8.2", path, None, bytes.clone())
+        let () = image_store_api::upload_file(&config, "8.2", path, None, bytes.clone())
             .await
             .unwrap();
-        assert_eq!(status, reqwest::StatusCode::OK);
         let request = server.join().unwrap();
         assert_eq!(request.method, "PUT");
         assert_eq!(
@@ -369,7 +445,7 @@ async fn health_filters_preserve_the_full_unsigned_range() {
 }
 
 #[tokio::test]
-async fn bodyless_operations_preserve_success_statuses_and_reject_redirects() {
+async fn single_bodyless_operations_return_unit_and_reject_redirects() {
     for status in [200, 201, 202, 204, 301, 302, 307, 308, 404, 500] {
         let (config, server) = serve(status, None, "");
         let result = property_management_api::create_name(
@@ -380,7 +456,7 @@ async fn bodyless_operations_preserve_success_statuses_and_reject_redirects() {
         )
         .await;
         if (200..300).contains(&status) {
-            assert_eq!(result.unwrap().as_u16(), status);
+            let () = result.unwrap();
         } else {
             assert!(matches!(result, Err(Error::ResponseError(response))
                 if response.status.as_u16() == status));
@@ -390,7 +466,7 @@ async fn bodyless_operations_preserve_success_statuses_and_reject_redirects() {
         let (config, server) = serve(status, None, "");
         let result = property_management_api::delete_name(&config, "8.2", "name", None).await;
         if (200..300).contains(&status) {
-            assert_eq!(result.unwrap().as_u16(), status);
+            let () = result.unwrap();
         } else {
             assert!(matches!(result, Err(Error::ResponseError(response))
                 if response.status.as_u16() == status));
@@ -401,11 +477,66 @@ async fn bodyless_operations_preserve_success_statuses_and_reject_redirects() {
         let result =
             property_management_api::get_name_exists_info(&config, "8.2", "name", None).await;
         if (200..300).contains(&status) {
-            assert_eq!(result.unwrap().as_u16(), status);
+            let () = result.unwrap();
         } else {
             assert!(matches!(result, Err(Error::ResponseError(response))
                 if response.status.as_u16() == status));
         }
+        server.join().unwrap();
+    }
+}
+
+#[tokio::test]
+async fn remove_node_state_returns_unit_and_preserves_http_errors() {
+    let (config, server) = serve(200, None, "");
+    let () = node_api::remove_node_state(&config, "8.2", "node", None)
+        .await
+        .unwrap();
+    let request = server.join().unwrap();
+    assert_eq!(request.method, "POST");
+    assert_eq!(
+        request.target,
+        "/Nodes/node/$/RemoveNodeState?api-version=8.2"
+    );
+
+    for status in [301, 302, 307, 308, 400, 404, 500] {
+        let body = r#"{"Error":{"Code":"FABRIC_E_NODE_NOT_FOUND","Message":"missing"}}"#;
+        let (config, server) = serve(status, Some("application/json"), body);
+        let result = node_api::remove_node_state(&config, "8.2", "node", None).await;
+        match result {
+            Err(Error::ResponseError(response)) => {
+                assert_eq!(response.status.as_u16(), status);
+                assert_eq!(response.content, body);
+                assert!(response.entity.is_some());
+            }
+            other => panic!("Expected HTTP error for {status}: {other:?}"),
+        }
+        server.join().unwrap();
+    }
+}
+
+#[tokio::test]
+async fn mesh_delete_distinguishes_completed_accepted_and_absent() {
+    use mesh_secrets_api::MeshSecretDeleteSuccess;
+
+    for (status, expected) in [
+        (200, MeshSecretDeleteSuccess::Status200),
+        (202, MeshSecretDeleteSuccess::Status202),
+        (204, MeshSecretDeleteSuccess::Status204),
+    ] {
+        let (config, server) = serve(status, None, "");
+        let outcome = mesh_secrets_api::mesh_secret_delete(&config, "6.4-preview", "example")
+            .await
+            .unwrap();
+        assert_eq!(outcome, expected);
+        server.join().unwrap();
+    }
+    for status in [201, 206, 301, 307, 404, 500] {
+        let body = "Unexpected response";
+        let (config, server) = serve(status, None, body);
+        let result = mesh_secrets_api::mesh_secret_delete(&config, "6.4-preview", "example").await;
+        assert!(matches!(result, Err(Error::ResponseError(response))
+            if response.status.as_u16() == status && response.content == body));
         server.join().unwrap();
     }
 }

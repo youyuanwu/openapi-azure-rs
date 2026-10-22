@@ -1027,7 +1027,7 @@ pub async fn provision_cluster(
     api_version: &str,
     provision_fabric_description: models::ProvisionFabricDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ProvisionClusterError>> {
+) -> Result<(), Error<ProvisionClusterError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_provision_fabric_description = provision_fabric_description;
@@ -1053,7 +1053,7 @@ pub async fn provision_cluster(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ProvisionClusterError> = serde_json::from_str(&content).ok();
@@ -1072,7 +1072,7 @@ pub async fn report_cluster_health(
     health_information: models::HealthInformation,
     immediate: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ReportClusterHealthError>> {
+) -> Result<(), Error<ReportClusterHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_health_information = health_information;
@@ -1102,7 +1102,7 @@ pub async fn report_cluster_health(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ReportClusterHealthError> = serde_json::from_str(&content).ok();
@@ -1120,7 +1120,7 @@ pub async fn resume_cluster_upgrade(
     api_version: &str,
     resume_cluster_upgrade_description: models::ResumeClusterUpgradeDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ResumeClusterUpgradeError>> {
+) -> Result<(), Error<ResumeClusterUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_resume_cluster_upgrade_description = resume_cluster_upgrade_description;
@@ -1146,7 +1146,7 @@ pub async fn resume_cluster_upgrade(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ResumeClusterUpgradeError> = serde_json::from_str(&content).ok();
@@ -1163,7 +1163,7 @@ pub async fn rollback_cluster_upgrade(
     configuration: &configuration::Configuration,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RollbackClusterUpgradeError>> {
+) -> Result<(), Error<RollbackClusterUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_timeout = timeout;
@@ -1187,7 +1187,7 @@ pub async fn rollback_cluster_upgrade(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RollbackClusterUpgradeError> = serde_json::from_str(&content).ok();
@@ -1267,7 +1267,7 @@ pub async fn start_cluster_configuration_upgrade(
     api_version: &str,
     cluster_configuration_upgrade_description: models::ClusterConfigurationUpgradeDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<StartClusterConfigurationUpgradeError>> {
+) -> Result<(), Error<StartClusterConfigurationUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_cluster_configuration_upgrade_description =
@@ -1297,7 +1297,7 @@ pub async fn start_cluster_configuration_upgrade(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<StartClusterConfigurationUpgradeError> =
@@ -1316,7 +1316,7 @@ pub async fn start_cluster_upgrade(
     api_version: &str,
     start_cluster_upgrade_description: models::StartClusterUpgradeDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<StartClusterUpgradeError>> {
+) -> Result<(), Error<StartClusterUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_start_cluster_upgrade_description = start_cluster_upgrade_description;
@@ -1342,7 +1342,7 @@ pub async fn start_cluster_upgrade(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<StartClusterUpgradeError> = serde_json::from_str(&content).ok();
@@ -1360,7 +1360,7 @@ pub async fn toggle_verbose_service_placement_health_reporting(
     api_version: &str,
     enabled: bool,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ToggleVerboseServicePlacementHealthReportingError>> {
+) -> Result<(), Error<ToggleVerboseServicePlacementHealthReportingError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_enabled = enabled;
@@ -1389,7 +1389,7 @@ pub async fn toggle_verbose_service_placement_health_reporting(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ToggleVerboseServicePlacementHealthReportingError> =
@@ -1408,7 +1408,7 @@ pub async fn unprovision_cluster(
     api_version: &str,
     unprovision_fabric_description: models::UnprovisionFabricDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<UnprovisionClusterError>> {
+) -> Result<(), Error<UnprovisionClusterError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_unprovision_fabric_description = unprovision_fabric_description;
@@ -1434,7 +1434,7 @@ pub async fn unprovision_cluster(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<UnprovisionClusterError> = serde_json::from_str(&content).ok();
@@ -1452,7 +1452,7 @@ pub async fn update_cluster_upgrade(
     api_version: &str,
     update_cluster_upgrade_description: models::UpdateClusterUpgradeDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<UpdateClusterUpgradeError>> {
+) -> Result<(), Error<UpdateClusterUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_update_cluster_upgrade_description = update_cluster_upgrade_description;
@@ -1478,7 +1478,7 @@ pub async fn update_cluster_upgrade(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<UpdateClusterUpgradeError> = serde_json::from_str(&content).ok();

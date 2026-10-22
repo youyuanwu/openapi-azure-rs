@@ -32,14 +32,23 @@ The subclass customizes generator metadata rather than editing the specification
   `Vec<u8>` arguments, including intentionally empty directory markers.
 - Represent query parameters ending in `HealthStateFilter` as `u32` masks
   (`0..=4294967295`), serialized as positive decimal values.
-- Mark model-returning operations with documented bodyless 2xx alternatives as
-  `Option<T>`; only those exact statuses become `None`, not decoding failures.
-  These include application lookup's 204 and Mesh create/update's 202.
+- Keep a single documented bodyless success as `()`, including
+  `remove_node_state`. Single model responses retain their model return type.
+- Use `Option<T>` when the only success alternatives are a model and an empty
+  204. Only 204 becomes `None`, not decoding failures.
+- Generate an operation-specific `...Success` enum for other multiple-success
+  operations, with a `Status200`, `Status201`, etc. variant for each documented
+  success. Variants carry the response model where applicable. Selection uses
+  HTTP status, not untagged body deserialization: provisioning distinguishes
+  completed 200 from accepted 202, and Mesh create/update distinguishes model
+  responses on 200/201 from bodyless acceptance on 202. Undocumented success
+  statuses are HTTP response errors for these enum-returning operations.
 
 `generation/service-fabric/templates/reqwest/api.mustache` was scaffolded from
-the pinned generator's `rust/reqwest/api.mustache`. Its focused overrides consume
-the above metadata, require 2xx success, and return `reqwest::StatusCode` instead
-of `()` for bodyless operations. Keep these overrides when updating the generator.
+the pinned generator's `rust/reqwest/api.mustache`. Its focused overrides and
+`templates/typed_success.mustache` consume the above metadata and require 2xx
+success without exposing status codes as the normal return value. Keep these
+overrides when updating the generator.
 The stock `supportMultipleResponses` option was tested but is not enabled:
 its untagged success decoding suppresses malformed-body errors and does not
 select response variants by HTTP status.

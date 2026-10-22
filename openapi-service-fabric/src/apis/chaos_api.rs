@@ -237,7 +237,7 @@ pub async fn post_chaos_schedule(
     api_version: &str,
     chaos_schedule: models::ChaosScheduleDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<PostChaosScheduleError>> {
+) -> Result<(), Error<PostChaosScheduleError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_chaos_schedule = chaos_schedule;
@@ -263,7 +263,7 @@ pub async fn post_chaos_schedule(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<PostChaosScheduleError> = serde_json::from_str(&content).ok();
@@ -281,7 +281,7 @@ pub async fn start_chaos(
     api_version: &str,
     chaos_parameters: models::ChaosParameters,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<StartChaosError>> {
+) -> Result<(), Error<StartChaosError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_chaos_parameters = chaos_parameters;
@@ -307,7 +307,7 @@ pub async fn start_chaos(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<StartChaosError> = serde_json::from_str(&content).ok();
@@ -324,7 +324,7 @@ pub async fn stop_chaos(
     configuration: &configuration::Configuration,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<StopChaosError>> {
+) -> Result<(), Error<StopChaosError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_timeout = timeout;
@@ -348,7 +348,7 @@ pub async fn stop_chaos(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<StopChaosError> = serde_json::from_str(&content).ok();

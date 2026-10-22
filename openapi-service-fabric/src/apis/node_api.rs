@@ -141,7 +141,7 @@ pub async fn add_configuration_parameter_overrides(
     config_parameter_override_list: Vec<models::ConfigParameterOverride>,
     force: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<AddConfigurationParameterOverridesError>> {
+) -> Result<(), Error<AddConfigurationParameterOverridesError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -176,7 +176,7 @@ pub async fn add_configuration_parameter_overrides(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<AddConfigurationParameterOverridesError> =
@@ -195,7 +195,7 @@ pub async fn add_node_tags(
     api_version: &str,
     node_name: &str,
     node_tags: Vec<String>,
-) -> Result<reqwest::StatusCode, Error<AddNodeTagsError>> {
+) -> Result<(), Error<AddNodeTagsError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -222,7 +222,7 @@ pub async fn add_node_tags(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<AddNodeTagsError> = serde_json::from_str(&content).ok();
@@ -241,7 +241,7 @@ pub async fn disable_node(
     node_name: &str,
     deactivation_intent_description: models::DeactivationIntentDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<DisableNodeError>> {
+) -> Result<(), Error<DisableNodeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -272,7 +272,7 @@ pub async fn disable_node(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<DisableNodeError> = serde_json::from_str(&content).ok();
@@ -290,7 +290,7 @@ pub async fn enable_node(
     api_version: &str,
     node_name: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<EnableNodeError>> {
+) -> Result<(), Error<EnableNodeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -319,7 +319,7 @@ pub async fn enable_node(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<EnableNodeError> = serde_json::from_str(&content).ok();
@@ -700,7 +700,7 @@ pub async fn remove_configuration_overrides(
     api_version: &str,
     node_name: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RemoveConfigurationOverridesError>> {
+) -> Result<(), Error<RemoveConfigurationOverridesError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -729,7 +729,7 @@ pub async fn remove_configuration_overrides(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RemoveConfigurationOverridesError> = serde_json::from_str(&content).ok();
@@ -747,7 +747,7 @@ pub async fn remove_node_state(
     api_version: &str,
     node_name: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RemoveNodeStateError>> {
+) -> Result<(), Error<RemoveNodeStateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -776,7 +776,7 @@ pub async fn remove_node_state(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RemoveNodeStateError> = serde_json::from_str(&content).ok();
@@ -794,7 +794,7 @@ pub async fn remove_node_tags(
     api_version: &str,
     node_name: &str,
     node_tags: Vec<String>,
-) -> Result<reqwest::StatusCode, Error<RemoveNodeTagsError>> {
+) -> Result<(), Error<RemoveNodeTagsError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -821,7 +821,7 @@ pub async fn remove_node_tags(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RemoveNodeTagsError> = serde_json::from_str(&content).ok();
@@ -841,7 +841,7 @@ pub async fn report_node_health(
     health_information: models::HealthInformation,
     immediate: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ReportNodeHealthError>> {
+) -> Result<(), Error<ReportNodeHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -876,7 +876,7 @@ pub async fn report_node_health(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ReportNodeHealthError> = serde_json::from_str(&content).ok();
@@ -895,7 +895,7 @@ pub async fn restart_node(
     node_name: &str,
     restart_node_description: models::RestartNodeDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RestartNodeError>> {
+) -> Result<(), Error<RestartNodeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -926,7 +926,7 @@ pub async fn restart_node(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RestartNodeError> = serde_json::from_str(&content).ok();

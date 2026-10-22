@@ -281,7 +281,7 @@ pub async fn restart_deployed_code_package(
     application_id: &str,
     restart_deployed_code_package_description: models::RestartDeployedCodePackageDescription,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RestartDeployedCodePackageError>> {
+) -> Result<(), Error<RestartDeployedCodePackageError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -315,7 +315,7 @@ pub async fn restart_deployed_code_package(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RestartDeployedCodePackageError> = serde_json::from_str(&content).ok();

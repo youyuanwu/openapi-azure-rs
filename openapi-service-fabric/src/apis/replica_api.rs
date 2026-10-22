@@ -561,7 +561,7 @@ pub async fn remove_replica(
     replica_id: &str,
     force_remove: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RemoveReplicaError>> {
+) -> Result<(), Error<RemoveReplicaError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -598,7 +598,7 @@ pub async fn remove_replica(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RemoveReplicaError> = serde_json::from_str(&content).ok();
@@ -620,7 +620,7 @@ pub async fn report_replica_health(
     health_information: models::HealthInformation,
     immediate: Option<bool>,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<ReportReplicaHealthError>> {
+) -> Result<(), Error<ReportReplicaHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_partition_id = partition_id;
@@ -659,7 +659,7 @@ pub async fn report_replica_health(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<ReportReplicaHealthError> = serde_json::from_str(&content).ok();
@@ -679,7 +679,7 @@ pub async fn restart_replica(
     partition_id: &str,
     replica_id: &str,
     timeout: Option<i64>,
-) -> Result<reqwest::StatusCode, Error<RestartReplicaError>> {
+) -> Result<(), Error<RestartReplicaError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -712,7 +712,7 @@ pub async fn restart_replica(
     let status = resp.status();
 
     if status.is_success() {
-        Ok(status)
+        Ok(())
     } else {
         let content = resp.text().await?;
         let entity: Option<RestartReplicaError> = serde_json::from_str(&content).ok();
