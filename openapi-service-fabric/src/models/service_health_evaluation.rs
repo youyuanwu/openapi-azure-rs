@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServiceHealthEvaluation : Represents health evaluation for a service, containing information about the data and the algorithm used by health store to evaluate health. The evaluation is returned only when the aggregated health state is either Error or Warning.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServiceHealthEvaluation {
-    /// The full name of the service with 'fabric:' URI scheme.
-    #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
-    pub service_name: Option<String>,
-    /// List of health evaluations that resulted in the current aggregated health state.
-    #[serde(
-        rename = "UnhealthyEvaluations",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "Kind")]
     pub kind: models::HealthEvaluationKind,
     #[serde(
@@ -33,17 +23,25 @@ pub struct ServiceHealthEvaluation {
     /// Description of the health evaluation, which represents a summary of the evaluation process.
     #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// The full name of the service with 'fabric:' URI scheme.
+    #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
+    pub service_name: Option<String>,
+    /// List of health evaluations that resulted in the current aggregated health state.
+    #[serde(
+        rename = "UnhealthyEvaluations",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
 }
 
 impl ServiceHealthEvaluation {
-    /// Represents health evaluation for a service, containing information about the data and the algorithm used by health store to evaluate health. The evaluation is returned only when the aggregated health state is either Error or Warning.
     pub fn new(kind: models::HealthEvaluationKind) -> ServiceHealthEvaluation {
         ServiceHealthEvaluation {
-            service_name: None,
-            unhealthy_evaluations: None,
             kind,
             aggregated_health_state: None,
             description: None,
+            service_name: None,
+            unhealthy_evaluations: None,
         }
     }
 }

@@ -11,26 +11,24 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ValidationFailedChaosEvent : Chaos event corresponding to a failure during validation.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ValidationFailedChaosEvent {
-    /// Describes why the ValidationFailedChaosEvent was generated. This may happen because more than MaxPercentUnhealthyNodes are unhealthy for more than MaxClusterStabilizationTimeout. This reason will be in the Reason property of the ValidationFailedChaosEvent as a string.
-    #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
-    pub reason: Option<String>,
     #[serde(rename = "Kind")]
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
     pub time_stamp_utc: String,
+    /// Describes why the ValidationFailedChaosEvent was generated. This may happen because more than MaxPercentUnhealthyNodes are unhealthy for more than MaxClusterStabilizationTimeout. This reason will be in the Reason property of the ValidationFailedChaosEvent as a string.
+    #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
 }
 
 impl ValidationFailedChaosEvent {
-    /// Chaos event corresponding to a failure during validation.
     pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> ValidationFailedChaosEvent {
         ValidationFailedChaosEvent {
-            reason: None,
             kind,
             time_stamp_utc,
+            reason: None,
         }
     }
 }

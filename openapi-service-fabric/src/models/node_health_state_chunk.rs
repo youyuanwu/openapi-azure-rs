@@ -11,22 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeHealthStateChunk : Represents the health state chunk of a node, which contains the node name and its aggregated health state.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeHealthStateChunk {
+    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
+    pub health_state: Option<models::HealthState>,
     /// The name of a Service Fabric node.
     #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
     pub node_name: Option<String>,
-    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
-    pub health_state: Option<models::HealthState>,
 }
 
 impl NodeHealthStateChunk {
-    /// Represents the health state chunk of a node, which contains the node name and its aggregated health state.
     pub fn new() -> NodeHealthStateChunk {
         NodeHealthStateChunk {
-            node_name: None,
             health_state: None,
+            node_name: None,
         }
     }
 }

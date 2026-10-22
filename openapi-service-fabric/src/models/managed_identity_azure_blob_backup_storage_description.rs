@@ -11,9 +11,13 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ManagedIdentityAzureBlobBackupStorageDescription : Describes the parameters for Azure blob store (connected using managed identity) used for storing and enumerating backups.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ManagedIdentityAzureBlobBackupStorageDescription {
+    #[serde(rename = "StorageKind")]
+    pub storage_kind: models::BackupStorageKind,
+    /// Friendly name for this backup storage.
+    #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
+    pub friendly_name: Option<String>,
     #[serde(rename = "ManagedIdentityType")]
     pub managed_identity_type: models::ManagedIdentityType,
     /// The Blob Service Uri to connect to the Azure blob store..
@@ -22,27 +26,21 @@ pub struct ManagedIdentityAzureBlobBackupStorageDescription {
     /// The name of the container in the blob store to store and enumerate backups from.
     #[serde(rename = "ContainerName")]
     pub container_name: String,
-    #[serde(rename = "StorageKind")]
-    pub storage_kind: models::BackupStorageKind,
-    /// Friendly name for this backup storage.
-    #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
-    pub friendly_name: Option<String>,
 }
 
 impl ManagedIdentityAzureBlobBackupStorageDescription {
-    /// Describes the parameters for Azure blob store (connected using managed identity) used for storing and enumerating backups.
     pub fn new(
+        storage_kind: models::BackupStorageKind,
         managed_identity_type: models::ManagedIdentityType,
         blob_service_uri: String,
         container_name: String,
-        storage_kind: models::BackupStorageKind,
     ) -> ManagedIdentityAzureBlobBackupStorageDescription {
         ManagedIdentityAzureBlobBackupStorageDescription {
+            storage_kind,
+            friendly_name: None,
             managed_identity_type,
             blob_service_uri,
             container_name,
-            storage_kind,
-            friendly_name: None,
         }
     }
 }

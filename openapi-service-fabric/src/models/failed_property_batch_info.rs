@@ -11,26 +11,24 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// FailedPropertyBatchInfo : Derived from PropertyBatchInfo. Represents the property batch failing. Contains information about the specific batch failure.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct FailedPropertyBatchInfo {
+    #[serde(rename = "Kind")]
+    pub kind: models::PropertyBatchInfoKind,
     /// The error message of the failed operation. Describes the exception thrown due to the first unsuccessful operation in the property batch.
     #[serde(rename = "ErrorMessage", skip_serializing_if = "Option::is_none")]
     pub error_message: Option<String>,
     /// The index of the unsuccessful operation in the property batch.
     #[serde(rename = "OperationIndex", skip_serializing_if = "Option::is_none")]
     pub operation_index: Option<i32>,
-    #[serde(rename = "Kind")]
-    pub kind: models::PropertyBatchInfoKind,
 }
 
 impl FailedPropertyBatchInfo {
-    /// Derived from PropertyBatchInfo. Represents the property batch failing. Contains information about the specific batch failure.
     pub fn new(kind: models::PropertyBatchInfoKind) -> FailedPropertyBatchInfo {
         FailedPropertyBatchInfo {
+            kind,
             error_message: None,
             operation_index: None,
-            kind,
         }
     }
 }

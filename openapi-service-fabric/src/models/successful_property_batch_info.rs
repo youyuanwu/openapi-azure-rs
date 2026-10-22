@@ -11,22 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// SuccessfulPropertyBatchInfo : Derived from PropertyBatchInfo. Represents the property batch succeeding. Contains the results of any \"Get\" operations in the batch.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SuccessfulPropertyBatchInfo {
+    #[serde(rename = "Kind")]
+    pub kind: models::PropertyBatchInfoKind,
     /// A map containing the properties that were requested through any \"Get\" property batch operations. The key represents the index of the \"Get\" operation in the original request, in string form. The value is the property. If a property is not found, it will not be in the map.
     #[serde(rename = "Properties", skip_serializing_if = "Option::is_none")]
     pub properties: Option<serde_json::Value>,
-    #[serde(rename = "Kind")]
-    pub kind: models::PropertyBatchInfoKind,
 }
 
 impl SuccessfulPropertyBatchInfo {
-    /// Derived from PropertyBatchInfo. Represents the property batch succeeding. Contains the results of any \"Get\" operations in the batch.
     pub fn new(kind: models::PropertyBatchInfoKind) -> SuccessfulPropertyBatchInfo {
         SuccessfulPropertyBatchInfo {
-            properties: None,
             kind,
+            properties: None,
         }
     }
 }

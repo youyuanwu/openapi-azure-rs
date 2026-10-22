@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PartitionHealthEvaluation : Represents health evaluation for a partition, containing information about the data and the algorithm used by health store to evaluate health. The evaluation is returned only when the aggregated health state is either Error or Warning.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PartitionHealthEvaluation {
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
-    pub partition_id: Option<uuid::Uuid>,
-    /// List of health evaluations that resulted in the current aggregated health state.
-    #[serde(
-        rename = "UnhealthyEvaluations",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "Kind")]
     pub kind: models::HealthEvaluationKind,
     #[serde(
@@ -33,17 +23,25 @@ pub struct PartitionHealthEvaluation {
     /// Description of the health evaluation, which represents a summary of the evaluation process.
     #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+    pub partition_id: Option<uuid::Uuid>,
+    /// List of health evaluations that resulted in the current aggregated health state.
+    #[serde(
+        rename = "UnhealthyEvaluations",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
 }
 
 impl PartitionHealthEvaluation {
-    /// Represents health evaluation for a partition, containing information about the data and the algorithm used by health store to evaluate health. The evaluation is returned only when the aggregated health state is either Error or Warning.
     pub fn new(kind: models::HealthEvaluationKind) -> PartitionHealthEvaluation {
         PartitionHealthEvaluation {
-            partition_id: None,
-            unhealthy_evaluations: None,
             kind,
             aggregated_health_state: None,
             description: None,
+            partition_id: None,
+            unhealthy_evaluations: None,
         }
     }
 }

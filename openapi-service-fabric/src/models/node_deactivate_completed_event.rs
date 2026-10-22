@@ -11,24 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeDeactivateCompletedEvent : Node Deactivate Completed event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeDeactivateCompletedEvent {
-    /// Id of Node instance.
-    #[serde(rename = "NodeInstance")]
-    pub node_instance: i64,
-    /// Describes deactivate intent.
-    #[serde(rename = "EffectiveDeactivateIntent")]
-    pub effective_deactivate_intent: String,
-    /// Batch Ids.
-    #[serde(rename = "BatchIdsWithDeactivateIntent")]
-    pub batch_ids_with_deactivate_intent: String,
-    /// Start time.
-    #[serde(rename = "StartTime")]
-    pub start_time: String,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName")]
-    pub node_name: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -46,31 +30,45 @@ pub struct NodeDeactivateCompletedEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName")]
+    pub node_name: String,
+    /// Id of Node instance.
+    #[serde(rename = "NodeInstance")]
+    pub node_instance: i64,
+    /// Describes deactivate intent.
+    #[serde(rename = "EffectiveDeactivateIntent")]
+    pub effective_deactivate_intent: String,
+    /// Batch Ids.
+    #[serde(rename = "BatchIdsWithDeactivateIntent")]
+    pub batch_ids_with_deactivate_intent: String,
+    /// Start time.
+    #[serde(rename = "StartTime")]
+    pub start_time: String,
 }
 
 impl NodeDeactivateCompletedEvent {
-    /// Node Deactivate Completed event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
+        node_name: String,
         node_instance: i64,
         effective_deactivate_intent: String,
         batch_ids_with_deactivate_intent: String,
         start_time: String,
-        node_name: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> NodeDeactivateCompletedEvent {
         NodeDeactivateCompletedEvent {
-            node_instance,
-            effective_deactivate_intent,
-            batch_ids_with_deactivate_intent,
-            start_time,
-            node_name,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            node_name,
+            node_instance,
+            effective_deactivate_intent,
+            batch_ids_with_deactivate_intent,
+            start_time,
         }
     }
 }

@@ -11,9 +11,31 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatefulReplicaHealthReportExpiredEvent : Stateful Replica Health Report Expired event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatefulReplicaHealthReportExpiredEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: String,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId")]
+    pub partition_id: uuid::Uuid,
+    /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+    #[serde(rename = "ReplicaId")]
+    pub replica_id: i64,
     /// Id of Replica instance.
     #[serde(rename = "ReplicaInstanceId")]
     pub replica_instance_id: i64,
@@ -41,34 +63,15 @@ pub struct StatefulReplicaHealthReportExpiredEvent {
     /// Source time.
     #[serde(rename = "SourceUtcTimestamp")]
     pub source_utc_timestamp: String,
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId")]
-    pub partition_id: uuid::Uuid,
-    /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
-    #[serde(rename = "ReplicaId")]
-    pub replica_id: i64,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl StatefulReplicaHealthReportExpiredEvent {
-    /// Stateful Replica Health Report Expired event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
+        partition_id: uuid::Uuid,
+        replica_id: i64,
         replica_instance_id: i64,
         source_id: String,
         property: String,
@@ -78,13 +81,15 @@ impl StatefulReplicaHealthReportExpiredEvent {
         description: String,
         remove_when_expired: bool,
         source_utc_timestamp: String,
-        partition_id: uuid::Uuid,
-        replica_id: i64,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> StatefulReplicaHealthReportExpiredEvent {
         StatefulReplicaHealthReportExpiredEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
+            partition_id,
+            replica_id,
             replica_instance_id,
             source_id,
             property,
@@ -94,13 +99,6 @@ impl StatefulReplicaHealthReportExpiredEvent {
             description,
             remove_when_expired,
             source_utc_timestamp,
-            partition_id,
-            replica_id,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

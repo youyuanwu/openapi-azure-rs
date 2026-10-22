@@ -11,21 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ClusterUpgradeDomainCompletedEvent : Cluster Upgrade Domain Completed event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClusterUpgradeDomainCompletedEvent {
-    /// Target Cluster version.
-    #[serde(rename = "TargetClusterVersion")]
-    pub target_cluster_version: String,
-    /// State of upgrade.
-    #[serde(rename = "UpgradeState")]
-    pub upgrade_state: String,
-    /// Upgrade domains.
-    #[serde(rename = "UpgradeDomains")]
-    pub upgrade_domains: String,
-    /// Duration of domain upgrade in milli-seconds.
-    #[serde(rename = "UpgradeDomainElapsedTimeInMs")]
-    pub upgrade_domain_elapsed_time_in_ms: f64,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -43,29 +30,40 @@ pub struct ClusterUpgradeDomainCompletedEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// Target Cluster version.
+    #[serde(rename = "TargetClusterVersion")]
+    pub target_cluster_version: String,
+    /// State of upgrade.
+    #[serde(rename = "UpgradeState")]
+    pub upgrade_state: String,
+    /// Upgrade domains.
+    #[serde(rename = "UpgradeDomains")]
+    pub upgrade_domains: String,
+    /// Duration of domain upgrade in milli-seconds.
+    #[serde(rename = "UpgradeDomainElapsedTimeInMs")]
+    pub upgrade_domain_elapsed_time_in_ms: f64,
 }
 
 impl ClusterUpgradeDomainCompletedEvent {
-    /// Cluster Upgrade Domain Completed event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
         target_cluster_version: String,
         upgrade_state: String,
         upgrade_domains: String,
         upgrade_domain_elapsed_time_in_ms: f64,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ClusterUpgradeDomainCompletedEvent {
         ClusterUpgradeDomainCompletedEvent {
-            target_cluster_version,
-            upgrade_state,
-            upgrade_domains,
-            upgrade_domain_elapsed_time_in_ms,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            target_cluster_version,
+            upgrade_state,
+            upgrade_domains,
+            upgrade_domain_elapsed_time_in_ms,
         }
     }
 }

@@ -11,29 +11,27 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// GetPropertyBatchOperation : Represents a PropertyBatchOperation that gets the specified property if it exists. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GetPropertyBatchOperation {
-    /// Whether or not to return the property value with the metadata. True if values should be returned with the metadata; False to return only property metadata.
-    #[serde(rename = "IncludeValue", skip_serializing_if = "Option::is_none")]
-    pub include_value: Option<bool>,
     #[serde(rename = "Kind")]
     pub kind: models::PropertyBatchOperationKind,
     /// The name of the Service Fabric property.
     #[serde(rename = "PropertyName")]
     pub property_name: String,
+    /// Whether or not to return the property value with the metadata. True if values should be returned with the metadata; False to return only property metadata.
+    #[serde(rename = "IncludeValue", skip_serializing_if = "Option::is_none")]
+    pub include_value: Option<bool>,
 }
 
 impl GetPropertyBatchOperation {
-    /// Represents a PropertyBatchOperation that gets the specified property if it exists. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
     pub fn new(
         kind: models::PropertyBatchOperationKind,
         property_name: String,
     ) -> GetPropertyBatchOperation {
         GetPropertyBatchOperation {
-            include_value: None,
             kind,
             property_name,
+            include_value: None,
         }
     }
 }

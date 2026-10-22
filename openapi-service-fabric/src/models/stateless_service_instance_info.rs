@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatelessServiceInstanceInfo : Represents a stateless service instance. This includes information about the identity, status, health, node name, uptime, and other details about the instance.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatelessServiceInstanceInfo {
-    /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
-    #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
-    pub instance_id: Option<String>,
     #[serde(rename = "ServiceKind")]
     pub service_kind: models::ServiceKind,
     #[serde(rename = "ReplicaStatus", skip_serializing_if = "Option::is_none")]
@@ -35,19 +31,21 @@ pub struct StatelessServiceInstanceInfo {
         skip_serializing_if = "Option::is_none"
     )]
     pub last_in_build_duration_in_seconds: Option<String>,
+    /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
+    #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
+    pub instance_id: Option<String>,
 }
 
 impl StatelessServiceInstanceInfo {
-    /// Represents a stateless service instance. This includes information about the identity, status, health, node name, uptime, and other details about the instance.
     pub fn new(service_kind: models::ServiceKind) -> StatelessServiceInstanceInfo {
         StatelessServiceInstanceInfo {
-            instance_id: None,
             service_kind,
             replica_status: None,
             health_state: None,
             node_name: None,
             address: None,
             last_in_build_duration_in_seconds: None,
+            instance_id: None,
         }
     }
 }

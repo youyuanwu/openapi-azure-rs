@@ -11,17 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatelessServiceInstanceHealth : Represents the health of the stateless service instance. Contains the instance aggregated health state, the health events and the unhealthy evaluations.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatelessServiceInstanceHealth {
-    /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
-    #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
-    pub instance_id: Option<String>,
-    #[serde(rename = "ServiceKind")]
-    pub service_kind: models::ServiceKind,
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
-    pub partition_id: Option<uuid::Uuid>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
@@ -38,19 +29,26 @@ pub struct StatelessServiceInstanceHealth {
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "HealthStatistics", skip_serializing_if = "Option::is_none")]
     pub health_statistics: Option<Box<models::HealthStatistics>>,
+    #[serde(rename = "ServiceKind")]
+    pub service_kind: models::ServiceKind,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+    pub partition_id: Option<uuid::Uuid>,
+    /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
+    #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
+    pub instance_id: Option<String>,
 }
 
 impl StatelessServiceInstanceHealth {
-    /// Represents the health of the stateless service instance. Contains the instance aggregated health state, the health events and the unhealthy evaluations.
     pub fn new(service_kind: models::ServiceKind) -> StatelessServiceInstanceHealth {
         StatelessServiceInstanceHealth {
-            instance_id: None,
-            service_kind,
-            partition_id: None,
             aggregated_health_state: None,
             health_events: None,
             unhealthy_evaluations: None,
             health_statistics: None,
+            service_kind,
+            partition_id: None,
+            instance_id: None,
         }
     }
 }

@@ -11,22 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServiceBackupEntity : Identifies the Service Fabric stateful service which is being backed up.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServiceBackupEntity {
+    #[serde(rename = "EntityKind")]
+    pub entity_kind: models::BackupEntityKind,
     /// The full name of the service with 'fabric:' URI scheme.
     #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
     pub service_name: Option<String>,
-    #[serde(rename = "EntityKind")]
-    pub entity_kind: models::BackupEntityKind,
 }
 
 impl ServiceBackupEntity {
-    /// Identifies the Service Fabric stateful service which is being backed up.
     pub fn new(entity_kind: models::BackupEntityKind) -> ServiceBackupEntity {
         ServiceBackupEntity {
-            service_name: None,
             entity_kind,
+            service_name: None,
         }
     }
 }

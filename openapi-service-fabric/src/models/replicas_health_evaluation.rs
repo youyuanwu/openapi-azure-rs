@@ -11,9 +11,18 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ReplicasHealthEvaluation : Represents health evaluation for replicas, containing health evaluations for each unhealthy replica that impacted current aggregated health state. Can be returned when evaluating partition health and the aggregated health state is either Error or Warning.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ReplicasHealthEvaluation {
+    #[serde(rename = "Kind")]
+    pub kind: models::HealthEvaluationKind,
+    #[serde(
+        rename = "AggregatedHealthState",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub aggregated_health_state: Option<models::HealthState>,
+    /// Description of the health evaluation, which represents a summary of the evaluation process.
+    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// Maximum allowed percentage of unhealthy replicas per partition from the ApplicationHealthPolicy.
     #[serde(
         rename = "MaxPercentUnhealthyReplicasPerPartition",
@@ -29,28 +38,17 @@ pub struct ReplicasHealthEvaluation {
         skip_serializing_if = "Option::is_none"
     )]
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::HealthEvaluationKind,
-    #[serde(
-        rename = "AggregatedHealthState",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub aggregated_health_state: Option<models::HealthState>,
-    /// Description of the health evaluation, which represents a summary of the evaluation process.
-    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
 }
 
 impl ReplicasHealthEvaluation {
-    /// Represents health evaluation for replicas, containing health evaluations for each unhealthy replica that impacted current aggregated health state. Can be returned when evaluating partition health and the aggregated health state is either Error or Warning.
     pub fn new(kind: models::HealthEvaluationKind) -> ReplicasHealthEvaluation {
         ReplicasHealthEvaluation {
-            max_percent_unhealthy_replicas_per_partition: None,
-            total_count: None,
-            unhealthy_evaluations: None,
             kind,
             aggregated_health_state: None,
             description: None,
+            max_percent_unhealthy_replicas_per_partition: None,
+            total_count: None,
+            unhealthy_evaluations: None,
         }
     }
 }

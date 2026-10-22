@@ -14,19 +14,19 @@ use serde::{Deserialize, Serialize};
 /// WaitForInbuildReplicaSafetyCheck : Safety check that waits for the replica build operation to finish. This indicates that there is a replica that is going through the copy or is providing data for building another replica. Bring the node down will abort this copy operation which are typically expensive involving data movements.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct WaitForInbuildReplicaSafetyCheck {
+    #[serde(rename = "Kind")]
+    pub kind: models::SafetyCheckKind,
     /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
     #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
     pub partition_id: Option<uuid::Uuid>,
-    #[serde(rename = "Kind")]
-    pub kind: models::SafetyCheckKind,
 }
 
 impl WaitForInbuildReplicaSafetyCheck {
     /// Safety check that waits for the replica build operation to finish. This indicates that there is a replica that is going through the copy or is providing data for building another replica. Bring the node down will abort this copy operation which are typically expensive involving data movements.
     pub fn new(kind: models::SafetyCheckKind) -> WaitForInbuildReplicaSafetyCheck {
         WaitForInbuildReplicaSafetyCheck {
-            partition_id: None,
             kind,
+            partition_id: None,
         }
     }
 }

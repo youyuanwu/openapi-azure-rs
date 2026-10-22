@@ -11,30 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// CheckSequencePropertyBatchOperation : Compares the Sequence Number of a property with the SequenceNumber argument. A property's sequence number can be thought of as that property's version. Every time the property is modified, its sequence number is increased. The sequence number can be found in a property's metadata. The comparison fails if the sequence numbers are not equal. CheckSequencePropertyBatchOperation is generally used as a precondition for the write operations in the batch. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CheckSequencePropertyBatchOperation {
-    /// The expected sequence number.
-    #[serde(rename = "SequenceNumber")]
-    pub sequence_number: String,
     #[serde(rename = "Kind")]
     pub kind: models::PropertyBatchOperationKind,
     /// The name of the Service Fabric property.
     #[serde(rename = "PropertyName")]
     pub property_name: String,
+    /// The expected sequence number.
+    #[serde(rename = "SequenceNumber")]
+    pub sequence_number: String,
 }
 
 impl CheckSequencePropertyBatchOperation {
-    /// Compares the Sequence Number of a property with the SequenceNumber argument. A property's sequence number can be thought of as that property's version. Every time the property is modified, its sequence number is increased. The sequence number can be found in a property's metadata. The comparison fails if the sequence numbers are not equal. CheckSequencePropertyBatchOperation is generally used as a precondition for the write operations in the batch. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
     pub fn new(
-        sequence_number: String,
         kind: models::PropertyBatchOperationKind,
         property_name: String,
+        sequence_number: String,
     ) -> CheckSequencePropertyBatchOperation {
         CheckSequencePropertyBatchOperation {
-            sequence_number,
             kind,
             property_name,
+            sequence_number,
         }
     }
 }

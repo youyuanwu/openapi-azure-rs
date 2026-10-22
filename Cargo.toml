@@ -10,4 +10,4 @@ package.repository = "https://github.com/youyuanwu/openapi-azure-rs.git"
 
 [workspace.dependencies]
 openapi-service-fabric = { path = "openapi-service-fabric" }
-tokio = { version = "1", default-features = false, features = ["macros"] }
+tokio = { version = "1.54.1", default-features = false, features = ["macros"] }

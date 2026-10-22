@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationEvent : Represents the base for all Application Events.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationEvent {
-    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
-    #[serde(rename = "ApplicationId")]
-    pub application_id: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -34,23 +30,25 @@ pub struct ApplicationEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+    #[serde(rename = "ApplicationId")]
+    pub application_id: String,
 }
 
 impl ApplicationEvent {
-    /// Represents the base for all Application Events.
     pub fn new(
-        application_id: String,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
         time_stamp: String,
+        application_id: String,
     ) -> ApplicationEvent {
         ApplicationEvent {
-            application_id,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            application_id,
         }
     }
 }

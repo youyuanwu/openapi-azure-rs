@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ChaosStoppedEvent : Chaos Stopped event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ChaosStoppedEvent {
-    /// Describes reason.
-    #[serde(rename = "Reason")]
-    pub reason: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -34,23 +30,25 @@ pub struct ChaosStoppedEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// Describes reason.
+    #[serde(rename = "Reason")]
+    pub reason: String,
 }
 
 impl ChaosStoppedEvent {
-    /// Chaos Stopped event.
     pub fn new(
-        reason: String,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
         time_stamp: String,
+        reason: String,
     ) -> ChaosStoppedEvent {
         ChaosStoppedEvent {
-            reason,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            reason,
         }
     }
 }

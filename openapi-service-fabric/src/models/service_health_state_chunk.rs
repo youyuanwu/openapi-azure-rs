@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServiceHealthStateChunk : Represents the health state chunk of a service, which contains the service name, its aggregated health state and any partitions that respect the filters in the cluster health chunk query description.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServiceHealthStateChunk {
+    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
+    pub health_state: Option<models::HealthState>,
     /// The full name of the service with 'fabric:' URI scheme.
     #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
     pub service_name: Option<String>,
@@ -22,17 +23,14 @@ pub struct ServiceHealthStateChunk {
         skip_serializing_if = "Option::is_none"
     )]
     pub partition_health_state_chunks: Option<Box<models::PartitionHealthStateChunkList>>,
-    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
-    pub health_state: Option<models::HealthState>,
 }
 
 impl ServiceHealthStateChunk {
-    /// Represents the health state chunk of a service, which contains the service name, its aggregated health state and any partitions that respect the filters in the cluster health chunk query description.
     pub fn new() -> ServiceHealthStateChunk {
         ServiceHealthStateChunk {
+            health_state: None,
             service_name: None,
             partition_health_state_chunks: None,
-            health_state: None,
         }
     }
 }

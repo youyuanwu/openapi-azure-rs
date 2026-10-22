@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// UniformInt64RangePartitionSchemeDescription : Describes a partitioning scheme where an integer range is allocated evenly across a number of partitions.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UniformInt64RangePartitionSchemeDescription {
+    #[serde(rename = "PartitionScheme")]
+    pub partition_scheme: models::PartitionScheme,
     /// The number of partitions.
     #[serde(rename = "Count")]
     pub count: i32,
@@ -23,23 +24,20 @@ pub struct UniformInt64RangePartitionSchemeDescription {
     /// String indicating the upper bound of the partition key range that should be split between the partitions.
     #[serde(rename = "HighKey")]
     pub high_key: String,
-    #[serde(rename = "PartitionScheme")]
-    pub partition_scheme: models::PartitionScheme,
 }
 
 impl UniformInt64RangePartitionSchemeDescription {
-    /// Describes a partitioning scheme where an integer range is allocated evenly across a number of partitions.
     pub fn new(
+        partition_scheme: models::PartitionScheme,
         count: i32,
         low_key: String,
         high_key: String,
-        partition_scheme: models::PartitionScheme,
     ) -> UniformInt64RangePartitionSchemeDescription {
         UniformInt64RangePartitionSchemeDescription {
+            partition_scheme,
             count,
             low_key,
             high_key,
-            partition_scheme,
         }
     }
 }

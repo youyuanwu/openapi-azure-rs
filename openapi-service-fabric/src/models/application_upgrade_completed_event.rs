@@ -11,21 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationUpgradeCompletedEvent : Application Upgrade Completed event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationUpgradeCompletedEvent {
-    /// Application type name.
-    #[serde(rename = "ApplicationTypeName")]
-    pub application_type_name: String,
-    /// Application type version.
-    #[serde(rename = "ApplicationTypeVersion")]
-    pub application_type_version: String,
-    /// Overall upgrade time in milli-seconds.
-    #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
-    pub overall_upgrade_elapsed_time_in_ms: f64,
-    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
-    #[serde(rename = "ApplicationId")]
-    pub application_id: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -43,29 +30,40 @@ pub struct ApplicationUpgradeCompletedEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+    #[serde(rename = "ApplicationId")]
+    pub application_id: String,
+    /// Application type name.
+    #[serde(rename = "ApplicationTypeName")]
+    pub application_type_name: String,
+    /// Application type version.
+    #[serde(rename = "ApplicationTypeVersion")]
+    pub application_type_version: String,
+    /// Overall upgrade time in milli-seconds.
+    #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
+    pub overall_upgrade_elapsed_time_in_ms: f64,
 }
 
 impl ApplicationUpgradeCompletedEvent {
-    /// Application Upgrade Completed event.
     pub fn new(
-        application_type_name: String,
-        application_type_version: String,
-        overall_upgrade_elapsed_time_in_ms: f64,
-        application_id: String,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
         time_stamp: String,
+        application_id: String,
+        application_type_name: String,
+        application_type_version: String,
+        overall_upgrade_elapsed_time_in_ms: f64,
     ) -> ApplicationUpgradeCompletedEvent {
         ApplicationUpgradeCompletedEvent {
-            application_type_name,
-            application_type_version,
-            overall_upgrade_elapsed_time_in_ms,
-            application_id,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            application_id,
+            application_type_name,
+            application_type_version,
+            overall_upgrade_elapsed_time_in_ms,
         }
     }
 }

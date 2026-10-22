@@ -11,9 +11,16 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// AzureInternalMonitoringPipelineSinkDescription : Diagnostics settings for Geneva.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AzureInternalMonitoringPipelineSinkDescription {
+    #[serde(rename = "kind")]
+    pub kind: models::DiagnosticsSinkKind,
+    /// Name of the sink. This value is referenced by DiagnosticsReferenceDescription
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// A description of the sink.
+    #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// Azure Internal monitoring pipeline account.
     #[serde(rename = "accountName", skip_serializing_if = "Option::is_none")]
     pub account_name: Option<String>,
@@ -29,30 +36,21 @@ pub struct AzureInternalMonitoringPipelineSinkDescription {
     /// Azure Internal monitoring pipeline autokey associated with the certificate.
     #[serde(rename = "autoKeyConfigUrl", skip_serializing_if = "Option::is_none")]
     pub auto_key_config_url: Option<String>,
-    #[serde(rename = "kind")]
-    pub kind: models::DiagnosticsSinkKind,
-    /// Name of the sink. This value is referenced by DiagnosticsReferenceDescription
-    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// A description of the sink.
-    #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
 }
 
 impl AzureInternalMonitoringPipelineSinkDescription {
-    /// Diagnostics settings for Geneva.
     pub fn new(
         kind: models::DiagnosticsSinkKind,
     ) -> AzureInternalMonitoringPipelineSinkDescription {
         AzureInternalMonitoringPipelineSinkDescription {
+            kind,
+            name: None,
+            description: None,
             account_name: None,
             namespace: None,
             ma_config_url: None,
             fluentd_config_url: None,
             auto_key_config_url: None,
-            kind,
-            name: None,
-            description: None,
         }
     }
 }

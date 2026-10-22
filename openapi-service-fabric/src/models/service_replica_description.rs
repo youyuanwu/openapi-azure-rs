@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServiceReplicaDescription : Describes a replica of a service resource.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServiceReplicaDescription {
-    /// Name of the replica.
-    #[serde(rename = "replicaName")]
-    pub replica_name: String,
     #[serde(rename = "osType")]
     pub os_type: models::OperatingSystemType,
     /// Describes the set of code packages that forms the service. A code package describes the container and the properties for running it. All the code packages are started together on the same host and share the same context (network, process etc.).
@@ -27,21 +23,23 @@ pub struct ServiceReplicaDescription {
     pub network_refs: Option<Vec<models::NetworkRef>>,
     #[serde(rename = "diagnostics", skip_serializing_if = "Option::is_none")]
     pub diagnostics: Option<Box<models::DiagnosticsRef>>,
+    /// Name of the replica.
+    #[serde(rename = "replicaName")]
+    pub replica_name: String,
 }
 
 impl ServiceReplicaDescription {
-    /// Describes a replica of a service resource.
     pub fn new(
-        replica_name: String,
         os_type: models::OperatingSystemType,
         code_packages: Vec<models::ContainerCodePackageProperties>,
+        replica_name: String,
     ) -> ServiceReplicaDescription {
         ServiceReplicaDescription {
-            replica_name,
             os_type,
             code_packages,
             network_refs: None,
             diagnostics: None,
+            replica_name,
         }
     }
 }

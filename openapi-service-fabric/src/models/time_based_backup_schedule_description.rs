@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// TimeBasedBackupScheduleDescription : Describes the time based backup schedule.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TimeBasedBackupScheduleDescription {
+    #[serde(rename = "ScheduleKind")]
+    pub schedule_kind: models::BackupScheduleKind,
     #[serde(rename = "ScheduleFrequencyType")]
     pub schedule_frequency_type: models::BackupScheduleFrequencyType,
     /// List of days of a week when to trigger the periodic backup. This is valid only when the backup schedule frequency type is weekly.
@@ -22,22 +23,19 @@ pub struct TimeBasedBackupScheduleDescription {
     /// Represents the list of exact time during the day in ISO8601 format. Like '19:00:00' will represent '7PM' during the day. Date specified along with time will be ignored.
     #[serde(rename = "RunTimes")]
     pub run_times: Vec<String>,
-    #[serde(rename = "ScheduleKind")]
-    pub schedule_kind: models::BackupScheduleKind,
 }
 
 impl TimeBasedBackupScheduleDescription {
-    /// Describes the time based backup schedule.
     pub fn new(
+        schedule_kind: models::BackupScheduleKind,
         schedule_frequency_type: models::BackupScheduleFrequencyType,
         run_times: Vec<String>,
-        schedule_kind: models::BackupScheduleKind,
     ) -> TimeBasedBackupScheduleDescription {
         TimeBasedBackupScheduleDescription {
+            schedule_kind,
             schedule_frequency_type,
             run_days: None,
             run_times,
-            schedule_kind,
         }
     }
 }

@@ -11,9 +11,13 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// FileShareBackupStorageDescription : Describes the parameters for file share storage used for storing or enumerating backups.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct FileShareBackupStorageDescription {
+    #[serde(rename = "StorageKind")]
+    pub storage_kind: models::BackupStorageKind,
+    /// Friendly name for this backup storage.
+    #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
+    pub friendly_name: Option<String>,
     /// UNC path of the file share where to store or enumerate backups from.
     #[serde(rename = "Path")]
     pub path: String,
@@ -29,27 +33,21 @@ pub struct FileShareBackupStorageDescription {
     /// Secondary password to access the share location
     #[serde(rename = "SecondaryPassword", skip_serializing_if = "Option::is_none")]
     pub secondary_password: Option<String>,
-    #[serde(rename = "StorageKind")]
-    pub storage_kind: models::BackupStorageKind,
-    /// Friendly name for this backup storage.
-    #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
-    pub friendly_name: Option<String>,
 }
 
 impl FileShareBackupStorageDescription {
-    /// Describes the parameters for file share storage used for storing or enumerating backups.
     pub fn new(
-        path: String,
         storage_kind: models::BackupStorageKind,
+        path: String,
     ) -> FileShareBackupStorageDescription {
         FileShareBackupStorageDescription {
+            storage_kind,
+            friendly_name: None,
             path,
             primary_user_name: None,
             primary_password: None,
             secondary_user_name: None,
             secondary_password: None,
-            storage_kind,
-            friendly_name: None,
         }
     }
 }

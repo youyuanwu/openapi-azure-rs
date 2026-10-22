@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// AveragePartitionLoadScalingTrigger : Represents a scaling trigger related to an average load of a metric/resource of a partition.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AveragePartitionLoadScalingTrigger {
+    #[serde(rename = "Kind")]
+    pub kind: models::ScalingTriggerKind,
     /// The name of the metric for which usage should be tracked.
     #[serde(rename = "MetricName")]
     pub metric_name: String,
@@ -26,25 +27,22 @@ pub struct AveragePartitionLoadScalingTrigger {
     /// The period in seconds on which a decision is made whether to scale or not.
     #[serde(rename = "ScaleIntervalInSeconds")]
     pub scale_interval_in_seconds: i64,
-    #[serde(rename = "Kind")]
-    pub kind: models::ScalingTriggerKind,
 }
 
 impl AveragePartitionLoadScalingTrigger {
-    /// Represents a scaling trigger related to an average load of a metric/resource of a partition.
     pub fn new(
+        kind: models::ScalingTriggerKind,
         metric_name: String,
         lower_load_threshold: f64,
         upper_load_threshold: f64,
         scale_interval_in_seconds: i64,
-        kind: models::ScalingTriggerKind,
     ) -> AveragePartitionLoadScalingTrigger {
         AveragePartitionLoadScalingTrigger {
+            kind,
             metric_name,
             lower_load_threshold,
             upper_load_threshold,
             scale_interval_in_seconds,
-            kind,
         }
     }
 }

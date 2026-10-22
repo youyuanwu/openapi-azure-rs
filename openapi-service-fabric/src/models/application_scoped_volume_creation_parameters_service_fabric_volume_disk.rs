@@ -11,29 +11,27 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk : Describes parameters for creating application-scoped volumes provided by Service Fabric Volume Disks
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk {
-    /// Volume size
-    #[serde(rename = "sizeDisk")]
-    pub size_disk: SizeDisk,
     #[serde(rename = "kind")]
     pub kind: models::ApplicationScopedVolumeKind,
     /// User readable description of the volume.
     #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// Volume size
+    #[serde(rename = "sizeDisk")]
+    pub size_disk: SizeDisk,
 }
 
 impl ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk {
-    /// Describes parameters for creating application-scoped volumes provided by Service Fabric Volume Disks
     pub fn new(
-        size_disk: SizeDisk,
         kind: models::ApplicationScopedVolumeKind,
+        size_disk: SizeDisk,
     ) -> ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk {
         ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk {
-            size_disk,
             kind,
             description: None,
+            size_disk,
         }
     }
 }

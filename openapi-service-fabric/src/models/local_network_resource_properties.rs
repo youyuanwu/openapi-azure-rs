@@ -11,15 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// LocalNetworkResourceProperties : Information about a Service Fabric container network local to a single Service Fabric cluster.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LocalNetworkResourceProperties {
-    /// Address space for a container network. This is expressed in CIDR notation.
-    #[serde(
-        rename = "networkAddressPrefix",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub network_address_prefix: Option<String>,
+    #[serde(rename = "kind")]
+    pub kind: models::NetworkKind,
     /// User readable description of the network.
     #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -28,19 +23,22 @@ pub struct LocalNetworkResourceProperties {
     /// Gives additional information about the current status of the network.
     #[serde(rename = "statusDetails", skip_serializing_if = "Option::is_none")]
     pub status_details: Option<String>,
-    #[serde(rename = "kind")]
-    pub kind: models::NetworkKind,
+    /// Address space for a container network. This is expressed in CIDR notation.
+    #[serde(
+        rename = "networkAddressPrefix",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub network_address_prefix: Option<String>,
 }
 
 impl LocalNetworkResourceProperties {
-    /// Information about a Service Fabric container network local to a single Service Fabric cluster.
     pub fn new(kind: models::NetworkKind) -> LocalNetworkResourceProperties {
         LocalNetworkResourceProperties {
-            network_address_prefix: None,
+            kind,
             description: None,
             status: None,
             status_details: None,
-            kind,
+            network_address_prefix: None,
         }
     }
 }

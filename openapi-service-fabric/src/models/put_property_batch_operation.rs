@@ -11,33 +11,31 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PutPropertyBatchOperation : Puts the specified property under the specified name. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PutPropertyBatchOperation {
-    #[serde(rename = "Value")]
-    pub value: Box<models::PropertyValue>,
-    /// The property's custom type ID. Using this property, the user is able to tag the type of the value of the property.
-    #[serde(rename = "CustomTypeId", skip_serializing_if = "Option::is_none")]
-    pub custom_type_id: Option<String>,
     #[serde(rename = "Kind")]
     pub kind: models::PropertyBatchOperationKind,
     /// The name of the Service Fabric property.
     #[serde(rename = "PropertyName")]
     pub property_name: String,
+    #[serde(rename = "Value")]
+    pub value: Box<models::PropertyValue>,
+    /// The property's custom type ID. Using this property, the user is able to tag the type of the value of the property.
+    #[serde(rename = "CustomTypeId", skip_serializing_if = "Option::is_none")]
+    pub custom_type_id: Option<String>,
 }
 
 impl PutPropertyBatchOperation {
-    /// Puts the specified property under the specified name. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
     pub fn new(
-        value: models::PropertyValue,
         kind: models::PropertyBatchOperationKind,
         property_name: String,
+        value: models::PropertyValue,
     ) -> PutPropertyBatchOperation {
         PutPropertyBatchOperation {
-            value: Box::new(value),
-            custom_type_id: None,
             kind,
             property_name,
+            value: Box::new(value),
+            custom_type_id: None,
         }
     }
 }

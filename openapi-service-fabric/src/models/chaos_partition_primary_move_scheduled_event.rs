@@ -11,27 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ChaosPartitionPrimaryMoveScheduledEvent : Chaos Move Primary Fault Scheduled event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ChaosPartitionPrimaryMoveScheduledEvent {
-    /// Id of fault group.
-    #[serde(rename = "FaultGroupId")]
-    pub fault_group_id: uuid::Uuid,
-    /// Id of fault.
-    #[serde(rename = "FaultId")]
-    pub fault_id: uuid::Uuid,
-    /// Service name.
-    #[serde(rename = "ServiceName")]
-    pub service_name: String,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeTo")]
-    pub node_to: String,
-    /// Indicates a forced move.
-    #[serde(rename = "ForcedMove")]
-    pub forced_move: bool,
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId")]
-    pub partition_id: uuid::Uuid,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -49,33 +30,50 @@ pub struct ChaosPartitionPrimaryMoveScheduledEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId")]
+    pub partition_id: uuid::Uuid,
+    /// Id of fault group.
+    #[serde(rename = "FaultGroupId")]
+    pub fault_group_id: uuid::Uuid,
+    /// Id of fault.
+    #[serde(rename = "FaultId")]
+    pub fault_id: uuid::Uuid,
+    /// Service name.
+    #[serde(rename = "ServiceName")]
+    pub service_name: String,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeTo")]
+    pub node_to: String,
+    /// Indicates a forced move.
+    #[serde(rename = "ForcedMove")]
+    pub forced_move: bool,
 }
 
 impl ChaosPartitionPrimaryMoveScheduledEvent {
-    /// Chaos Move Primary Fault Scheduled event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
+        partition_id: uuid::Uuid,
         fault_group_id: uuid::Uuid,
         fault_id: uuid::Uuid,
         service_name: String,
         node_to: String,
         forced_move: bool,
-        partition_id: uuid::Uuid,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ChaosPartitionPrimaryMoveScheduledEvent {
         ChaosPartitionPrimaryMoveScheduledEvent {
-            fault_group_id,
-            fault_id,
-            service_name,
-            node_to,
-            forced_move,
-            partition_id,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            partition_id,
+            fault_group_id,
+            fault_id,
+            service_name,
+            node_to,
+            forced_move,
         }
     }
 }

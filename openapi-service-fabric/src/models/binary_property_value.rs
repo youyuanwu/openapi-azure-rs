@@ -11,19 +11,17 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// BinaryPropertyValue : Describes a Service Fabric property value of type Binary.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BinaryPropertyValue {
+    #[serde(rename = "Kind")]
+    pub kind: models::PropertyValueKind,
     /// Array of bytes to be sent as an integer array. Each element of array is a number between 0 and 255.
     #[serde(rename = "Data")]
     pub data: Vec<i32>,
-    #[serde(rename = "Kind")]
-    pub kind: models::PropertyValueKind,
 }
 
 impl BinaryPropertyValue {
-    /// Describes a Service Fabric property value of type Binary.
-    pub fn new(data: Vec<i32>, kind: models::PropertyValueKind) -> BinaryPropertyValue {
-        BinaryPropertyValue { data, kind }
+    pub fn new(kind: models::PropertyValueKind, data: Vec<i32>) -> BinaryPropertyValue {
+        BinaryPropertyValue { kind, data }
     }
 }

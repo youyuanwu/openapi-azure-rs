@@ -11,9 +11,13 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedServicePackageHealthState : Represents the health state of a deployed service package, containing the entity identifier and the aggregated health state.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedServicePackageHealthState {
+    #[serde(
+        rename = "AggregatedHealthState",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub aggregated_health_state: Option<models::HealthState>,
     /// The name of a Service Fabric node.
     #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
     pub node_name: Option<String>,
@@ -32,22 +36,16 @@ pub struct DeployedServicePackageHealthState {
         skip_serializing_if = "Option::is_none"
     )]
     pub service_package_activation_id: Option<String>,
-    #[serde(
-        rename = "AggregatedHealthState",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub aggregated_health_state: Option<models::HealthState>,
 }
 
 impl DeployedServicePackageHealthState {
-    /// Represents the health state of a deployed service package, containing the entity identifier and the aggregated health state.
     pub fn new() -> DeployedServicePackageHealthState {
         DeployedServicePackageHealthState {
+            aggregated_health_state: None,
             node_name: None,
             application_name: None,
             service_manifest_name: None,
             service_package_activation_id: None,
-            aggregated_health_state: None,
         }
     }
 }

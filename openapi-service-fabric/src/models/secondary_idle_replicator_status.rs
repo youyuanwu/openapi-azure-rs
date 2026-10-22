@@ -14,6 +14,8 @@ use serde::{Deserialize, Serialize};
 /// SecondaryIdleReplicatorStatus : Status of the secondary replicator when it is in idle mode and is being built by the primary.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SecondaryIdleReplicatorStatus {
+    #[serde(rename = "Kind")]
+    pub kind: models::ReplicaRole,
     #[serde(
         rename = "ReplicationQueueStatus",
         skip_serializing_if = "Option::is_none"
@@ -42,21 +44,19 @@ pub struct SecondaryIdleReplicatorStatus {
         skip_serializing_if = "Option::is_none"
     )]
     pub last_acknowledgement_sent_time_utc: Option<String>,
-    #[serde(rename = "Kind")]
-    pub kind: models::ReplicaRole,
 }
 
 impl SecondaryIdleReplicatorStatus {
     /// Status of the secondary replicator when it is in idle mode and is being built by the primary.
     pub fn new(kind: models::ReplicaRole) -> SecondaryIdleReplicatorStatus {
         SecondaryIdleReplicatorStatus {
+            kind,
             replication_queue_status: None,
             last_replication_operation_received_time_utc: None,
             is_in_build: None,
             copy_queue_status: None,
             last_copy_operation_received_time_utc: None,
             last_acknowledgement_sent_time_utc: None,
-            kind,
         }
     }
 }

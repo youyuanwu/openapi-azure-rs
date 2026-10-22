@@ -11,9 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeOpenSucceededEvent : Node Opened Succeeded event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeOpenSucceededEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: String,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName")]
+    pub node_name: String,
     /// Id of Node instance.
     #[serde(rename = "NodeInstance")]
     pub node_instance: i64,
@@ -38,31 +57,14 @@ pub struct NodeOpenSucceededEvent {
     /// Version of Node.
     #[serde(rename = "NodeVersion")]
     pub node_version: String,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName")]
-    pub node_name: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl NodeOpenSucceededEvent {
-    /// Node Opened Succeeded event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
+        node_name: String,
         node_instance: i64,
         node_id: String,
         upgrade_domain: String,
@@ -71,12 +73,14 @@ impl NodeOpenSucceededEvent {
         hostname: String,
         is_seed_node: bool,
         node_version: String,
-        node_name: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> NodeOpenSucceededEvent {
         NodeOpenSucceededEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
+            node_name,
             node_instance,
             node_id,
             upgrade_domain,
@@ -85,12 +89,6 @@ impl NodeOpenSucceededEvent {
             hostname,
             is_seed_node,
             node_version,
-            node_name,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// BasicRetentionPolicyDescription : Describes basic retention policy.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BasicRetentionPolicyDescription {
+    #[serde(rename = "RetentionPolicyType")]
+    pub retention_policy_type: models::RetentionPolicyType,
     /// It is the minimum duration for which a backup created, will remain stored in the storage and might get deleted after that span of time. It should be specified in ISO8601 format.
     #[serde(rename = "RetentionDuration")]
     pub retention_duration: String,
@@ -23,20 +24,17 @@ pub struct BasicRetentionPolicyDescription {
         skip_serializing_if = "Option::is_none"
     )]
     pub minimum_number_of_backups: Option<i32>,
-    #[serde(rename = "RetentionPolicyType")]
-    pub retention_policy_type: models::RetentionPolicyType,
 }
 
 impl BasicRetentionPolicyDescription {
-    /// Describes basic retention policy.
     pub fn new(
-        retention_duration: String,
         retention_policy_type: models::RetentionPolicyType,
+        retention_duration: String,
     ) -> BasicRetentionPolicyDescription {
         BasicRetentionPolicyDescription {
+            retention_policy_type,
             retention_duration,
             minimum_number_of_backups: None,
-            retention_policy_type,
         }
     }
 }

@@ -11,9 +11,18 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedServicePackageHealthEvaluation : Represents health evaluation for a deployed service package, containing information about the data and the algorithm used by health store to evaluate health. The evaluation is returned only when the aggregated health state is either Error or Warning.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedServicePackageHealthEvaluation {
+    #[serde(rename = "Kind")]
+    pub kind: models::HealthEvaluationKind,
+    #[serde(
+        rename = "AggregatedHealthState",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub aggregated_health_state: Option<models::HealthState>,
+    /// Description of the health evaluation, which represents a summary of the evaluation process.
+    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// The name of a Service Fabric node.
     #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
     pub node_name: Option<String>,
@@ -32,29 +41,18 @@ pub struct DeployedServicePackageHealthEvaluation {
         skip_serializing_if = "Option::is_none"
     )]
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::HealthEvaluationKind,
-    #[serde(
-        rename = "AggregatedHealthState",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub aggregated_health_state: Option<models::HealthState>,
-    /// Description of the health evaluation, which represents a summary of the evaluation process.
-    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
 }
 
 impl DeployedServicePackageHealthEvaluation {
-    /// Represents health evaluation for a deployed service package, containing information about the data and the algorithm used by health store to evaluate health. The evaluation is returned only when the aggregated health state is either Error or Warning.
     pub fn new(kind: models::HealthEvaluationKind) -> DeployedServicePackageHealthEvaluation {
         DeployedServicePackageHealthEvaluation {
+            kind,
+            aggregated_health_state: None,
+            description: None,
             node_name: None,
             application_name: None,
             service_manifest_name: None,
             unhealthy_evaluations: None,
-            kind,
-            aggregated_health_state: None,
-            description: None,
         }
     }
 }

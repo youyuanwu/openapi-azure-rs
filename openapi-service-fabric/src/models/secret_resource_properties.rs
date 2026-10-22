@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// SecretResourceProperties : Describes the properties of a secret resource.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SecretResourceProperties {
+    #[serde(rename = "kind")]
+    pub kind: models::SecretKind,
     /// User readable description of the secret.
     #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -25,19 +26,16 @@ pub struct SecretResourceProperties {
     /// The type of the content stored in the secret value. The value of this property is opaque to Service Fabric. Once set, the value of this property cannot be changed.
     #[serde(rename = "contentType", skip_serializing_if = "Option::is_none")]
     pub content_type: Option<String>,
-    #[serde(rename = "kind")]
-    pub kind: models::SecretKind,
 }
 
 impl SecretResourceProperties {
-    /// Describes the properties of a secret resource.
     pub fn new(kind: models::SecretKind) -> SecretResourceProperties {
         SecretResourceProperties {
+            kind,
             description: None,
             status: None,
             status_details: None,
             content_type: None,
-            kind,
         }
     }
 }

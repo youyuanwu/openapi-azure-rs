@@ -11,24 +11,22 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServicePlacementInvalidDomainPolicyDescription : Describes the policy to be used for placement of a Service Fabric service where a particular fault or upgrade domain should not be used for placement of the instances or replicas of that service.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServicePlacementInvalidDomainPolicyDescription {
+    #[serde(rename = "Type")]
+    pub r#type: models::ServicePlacementPolicyType,
     /// The name of the domain that should not be used for placement.
     #[serde(rename = "DomainName", skip_serializing_if = "Option::is_none")]
     pub domain_name: Option<String>,
-    #[serde(rename = "Type")]
-    pub r#type: models::ServicePlacementPolicyType,
 }
 
 impl ServicePlacementInvalidDomainPolicyDescription {
-    /// Describes the policy to be used for placement of a Service Fabric service where a particular fault or upgrade domain should not be used for placement of the instances or replicas of that service.
     pub fn new(
         r#type: models::ServicePlacementPolicyType,
     ) -> ServicePlacementInvalidDomainPolicyDescription {
         ServicePlacementInvalidDomainPolicyDescription {
-            domain_name: None,
             r#type,
+            domain_name: None,
         }
     }
 }

@@ -11,9 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeAddedToClusterEvent : Node Added event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeAddedToClusterEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: String,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName")]
+    pub node_name: String,
     /// Id of Node.
     #[serde(rename = "NodeId")]
     pub node_id: String,
@@ -32,55 +51,34 @@ pub struct NodeAddedToClusterEvent {
     /// Capacities.
     #[serde(rename = "NodeCapacities")]
     pub node_capacities: String,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName")]
-    pub node_name: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl NodeAddedToClusterEvent {
-    /// Node Added event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
+        node_name: String,
         node_id: String,
         node_instance: i64,
         node_type: String,
         fabric_version: String,
         ip_address_or_fqdn: String,
         node_capacities: String,
-        node_name: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> NodeAddedToClusterEvent {
         NodeAddedToClusterEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
+            node_name,
             node_id,
             node_instance,
             node_type,
             fabric_version,
             ip_address_or_fqdn,
             node_capacities,
-            node_name,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

@@ -11,9 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServiceDeletedEvent : Service Deleted event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServiceDeletedEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: String,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
+    #[serde(rename = "ServiceId")]
+    pub service_id: String,
     /// Service type name.
     #[serde(rename = "ServiceTypeName")]
     pub service_type_name: String,
@@ -41,31 +60,14 @@ pub struct ServiceDeletedEvent {
     /// Version of Service package.
     #[serde(rename = "ServicePackageVersion")]
     pub service_package_version: String,
-    /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
-    #[serde(rename = "ServiceId")]
-    pub service_id: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl ServiceDeletedEvent {
-    /// Service Deleted event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
+        service_id: String,
         service_type_name: String,
         application_name: String,
         application_type_name: String,
@@ -75,12 +77,14 @@ impl ServiceDeletedEvent {
         target_replica_set_size: i32,
         min_replica_set_size: i32,
         service_package_version: String,
-        service_id: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ServiceDeletedEvent {
         ServiceDeletedEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
+            service_id,
             service_type_name,
             application_name,
             application_type_name,
@@ -90,12 +94,6 @@ impl ServiceDeletedEvent {
             target_replica_set_size,
             min_replica_set_size,
             service_package_version,
-            service_id,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

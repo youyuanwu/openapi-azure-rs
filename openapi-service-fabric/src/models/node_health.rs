@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeHealth : Information about the health of a Service Fabric node.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeHealth {
-    /// The name of a Service Fabric node.
-    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
@@ -33,17 +29,19 @@ pub struct NodeHealth {
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "HealthStatistics", skip_serializing_if = "Option::is_none")]
     pub health_statistics: Option<Box<models::HealthStatistics>>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 impl NodeHealth {
-    /// Information about the health of a Service Fabric node.
     pub fn new() -> NodeHealth {
         NodeHealth {
-            name: None,
             aggregated_health_state: None,
             health_events: None,
             unhealthy_evaluations: None,
             health_statistics: None,
+            name: None,
         }
     }
 }

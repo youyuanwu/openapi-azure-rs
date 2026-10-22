@@ -11,14 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PartitionAnalysisEvent : Represents the base for all Partition Analysis Events.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PartitionAnalysisEvent {
-    #[serde(rename = "Metadata")]
-    pub metadata: Box<models::AnalysisEventMetadata>,
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId")]
-    pub partition_id: uuid::Uuid,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -36,25 +30,29 @@ pub struct PartitionAnalysisEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId")]
+    pub partition_id: uuid::Uuid,
+    #[serde(rename = "Metadata")]
+    pub metadata: Box<models::AnalysisEventMetadata>,
 }
 
 impl PartitionAnalysisEvent {
-    /// Represents the base for all Partition Analysis Events.
     pub fn new(
-        metadata: models::AnalysisEventMetadata,
-        partition_id: uuid::Uuid,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
         time_stamp: String,
+        partition_id: uuid::Uuid,
+        metadata: models::AnalysisEventMetadata,
     ) -> PartitionAnalysisEvent {
         PartitionAnalysisEvent {
-            metadata: Box::new(metadata),
-            partition_id,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            partition_id,
+            metadata: Box::new(metadata),
         }
     }
 }

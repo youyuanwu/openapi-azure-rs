@@ -11,41 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatelessServiceDescription : Describes a stateless service.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatelessServiceDescription {
-    /// The instance count.
-    #[serde(rename = "InstanceCount")]
-    pub instance_count: i32,
-    /// MinInstanceCount is the minimum number of instances that must be up to meet the EnsureAvailability safety check during operations like upgrade or deactivate node. The actual number that is used is max( MinInstanceCount, ceil( MinInstancePercentage/100.0 * InstanceCount) ). Note, if InstanceCount is set to -1, during MinInstanceCount computation -1 is first converted into the number of nodes on which the instances are allowed to be placed according to the placement constraints on the service.
-    #[serde(rename = "MinInstanceCount", skip_serializing_if = "Option::is_none")]
-    pub min_instance_count: Option<i32>,
-    /// MinInstancePercentage is the minimum percentage of InstanceCount that must be up to meet the EnsureAvailability safety check during operations like upgrade or deactivate node. The actual number that is used is max( MinInstanceCount, ceil( MinInstancePercentage/100.0 * InstanceCount) ). Note, if InstanceCount is set to -1, during MinInstancePercentage computation, -1 is first converted into the number of nodes on which the instances are allowed to be placed according to the placement constraints on the service.
-    #[serde(
-        rename = "MinInstancePercentage",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub min_instance_percentage: Option<i32>,
-    /// Flags indicating whether other properties are set. Each of the associated properties corresponds to a flag, specified below, which, if set, indicate that the property is specified. This property can be a combination of those flags obtained using bitwise 'OR' operator. For example, if the provided value is 1 then the flags for InstanceCloseDelayDuration is set.  - None - Does not indicate any other properties are set. The value is zero. - InstanceCloseDelayDuration - Indicates the InstanceCloseDelayDuration property is set. The value is 1. - InstanceRestartWaitDuration - Indicates the InstanceRestartWaitDurationSeconds property is set. The value is 2.
-    #[serde(rename = "Flags", skip_serializing_if = "Option::is_none")]
-    pub flags: Option<i32>,
-    /// Duration in seconds, to wait before a stateless instance is closed, to allow the active requests to drain gracefully. This would be effective when the instance is closing during the application/cluster upgrade and disabling node. The endpoint exposed on this instance is removed prior to starting the delay, which prevents new connections to this instance. In addition, clients that have subscribed to service endpoint change events(https://docs.microsoft.com/dotnet/api/system.fabric.fabricclient.servicemanagementclient.registerservicenotificationfilterasync), can do the following upon receiving the endpoint removal notification:     - Stop sending new requests to this instance.     - Close existing connections after in-flight requests have completed.     - Connect to a different instance of the service partition for future requests. Note, the default value of InstanceCloseDelayDuration is 0, which indicates that there won't be any delay or removal of the endpoint prior to closing the instance.
-    #[serde(
-        rename = "InstanceCloseDelayDurationSeconds",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub instance_close_delay_duration_seconds: Option<i64>,
-    #[serde(
-        rename = "InstanceLifecycleDescription",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub instance_lifecycle_description: Option<Box<models::InstanceLifecycleDescription>>,
-    /// When a stateless instance goes down, this timer starts. When it expires Service Fabric will create a new instance on any node in the cluster.  This configuration is to reduce unnecessary creation of a new instance in situations where the instance going down is likely to recover in a short time. For example, during an upgrade. The default value is 0, which indicates that when stateless instance goes down, Service Fabric will immediately start building its replacement.
-    #[serde(
-        rename = "InstanceRestartWaitDurationSeconds",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub instance_restart_wait_duration_seconds: Option<i64>,
     #[serde(rename = "ServiceKind")]
     pub service_kind: models::ServiceKind,
     /// The name of the application, including the 'fabric:' URI scheme.
@@ -106,25 +73,49 @@ pub struct StatelessServiceDescription {
     pub tags_required_to_place: Option<Box<models::NodeTagsDescription>>,
     #[serde(rename = "TagsRequiredToRun", skip_serializing_if = "Option::is_none")]
     pub tags_required_to_run: Option<Box<models::NodeTagsDescription>>,
+    /// The instance count.
+    #[serde(rename = "InstanceCount")]
+    pub instance_count: i32,
+    /// MinInstanceCount is the minimum number of instances that must be up to meet the EnsureAvailability safety check during operations like upgrade or deactivate node. The actual number that is used is max( MinInstanceCount, ceil( MinInstancePercentage/100.0 * InstanceCount) ). Note, if InstanceCount is set to -1, during MinInstanceCount computation -1 is first converted into the number of nodes on which the instances are allowed to be placed according to the placement constraints on the service.
+    #[serde(rename = "MinInstanceCount", skip_serializing_if = "Option::is_none")]
+    pub min_instance_count: Option<i32>,
+    /// MinInstancePercentage is the minimum percentage of InstanceCount that must be up to meet the EnsureAvailability safety check during operations like upgrade or deactivate node. The actual number that is used is max( MinInstanceCount, ceil( MinInstancePercentage/100.0 * InstanceCount) ). Note, if InstanceCount is set to -1, during MinInstancePercentage computation, -1 is first converted into the number of nodes on which the instances are allowed to be placed according to the placement constraints on the service.
+    #[serde(
+        rename = "MinInstancePercentage",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub min_instance_percentage: Option<i32>,
+    /// Flags indicating whether other properties are set. Each of the associated properties corresponds to a flag, specified below, which, if set, indicate that the property is specified. This property can be a combination of those flags obtained using bitwise 'OR' operator. For example, if the provided value is 1 then the flags for InstanceCloseDelayDuration is set.  - None - Does not indicate any other properties are set. The value is zero. - InstanceCloseDelayDuration - Indicates the InstanceCloseDelayDuration property is set. The value is 1. - InstanceRestartWaitDuration - Indicates the InstanceRestartWaitDurationSeconds property is set. The value is 2.
+    #[serde(rename = "Flags", skip_serializing_if = "Option::is_none")]
+    pub flags: Option<i32>,
+    /// Duration in seconds, to wait before a stateless instance is closed, to allow the active requests to drain gracefully. This would be effective when the instance is closing during the application/cluster upgrade and disabling node. The endpoint exposed on this instance is removed prior to starting the delay, which prevents new connections to this instance. In addition, clients that have subscribed to service endpoint change events(https://docs.microsoft.com/dotnet/api/system.fabric.fabricclient.servicemanagementclient.registerservicenotificationfilterasync), can do the following upon receiving the endpoint removal notification:     - Stop sending new requests to this instance.     - Close existing connections after in-flight requests have completed.     - Connect to a different instance of the service partition for future requests. Note, the default value of InstanceCloseDelayDuration is 0, which indicates that there won't be any delay or removal of the endpoint prior to closing the instance.
+    #[serde(
+        rename = "InstanceCloseDelayDurationSeconds",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub instance_close_delay_duration_seconds: Option<i64>,
+    #[serde(
+        rename = "InstanceLifecycleDescription",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub instance_lifecycle_description: Option<Box<models::InstanceLifecycleDescription>>,
+    /// When a stateless instance goes down, this timer starts. When it expires Service Fabric will create a new instance on any node in the cluster.  This configuration is to reduce unnecessary creation of a new instance in situations where the instance going down is likely to recover in a short time. For example, during an upgrade. The default value is 0, which indicates that when stateless instance goes down, Service Fabric will immediately start building its replacement.
+    #[serde(
+        rename = "InstanceRestartWaitDurationSeconds",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub instance_restart_wait_duration_seconds: Option<i64>,
 }
 
 impl StatelessServiceDescription {
-    /// Describes a stateless service.
     pub fn new(
-        instance_count: i32,
         service_kind: models::ServiceKind,
         service_name: String,
         service_type_name: String,
         partition_description: models::PartitionSchemeDescription,
+        instance_count: i32,
     ) -> StatelessServiceDescription {
         StatelessServiceDescription {
-            instance_count,
-            min_instance_count: None,
-            min_instance_percentage: None,
-            flags: None,
-            instance_close_delay_duration_seconds: None,
-            instance_lifecycle_description: None,
-            instance_restart_wait_duration_seconds: None,
             service_kind,
             application_name: None,
             service_name,
@@ -142,6 +133,13 @@ impl StatelessServiceDescription {
             scaling_policies: None,
             tags_required_to_place: None,
             tags_required_to_run: None,
+            instance_count,
+            min_instance_count: None,
+            min_instance_percentage: None,
+            flags: None,
+            instance_close_delay_duration_seconds: None,
+            instance_lifecycle_description: None,
+            instance_restart_wait_duration_seconds: None,
         }
     }
 }

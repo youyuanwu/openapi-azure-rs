@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeEvent : Represents the base for all Node Events.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeEvent {
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName")]
-    pub node_name: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -34,23 +30,25 @@ pub struct NodeEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName")]
+    pub node_name: String,
 }
 
 impl NodeEvent {
-    /// Represents the base for all Node Events.
     pub fn new(
-        node_name: String,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
         time_stamp: String,
+        node_name: String,
     ) -> NodeEvent {
         NodeEvent {
-            node_name,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            node_name,
         }
     }
 }

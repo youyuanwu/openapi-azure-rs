@@ -11,17 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// EventHealthEvaluation : Represents health evaluation of a HealthEvent that was reported on the entity. The health evaluation is returned when evaluating health of an entity results in Error or Warning.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EventHealthEvaluation {
-    /// Indicates whether warnings are treated with the same severity as errors. The field is specified in the health policy used to evaluate the entity.
-    #[serde(
-        rename = "ConsiderWarningAsError",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub consider_warning_as_error: Option<bool>,
-    #[serde(rename = "UnhealthyEvent", skip_serializing_if = "Option::is_none")]
-    pub unhealthy_event: Option<Box<models::HealthEvent>>,
     #[serde(rename = "Kind")]
     pub kind: models::HealthEvaluationKind,
     #[serde(
@@ -32,17 +23,24 @@ pub struct EventHealthEvaluation {
     /// Description of the health evaluation, which represents a summary of the evaluation process.
     #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// Indicates whether warnings are treated with the same severity as errors. The field is specified in the health policy used to evaluate the entity.
+    #[serde(
+        rename = "ConsiderWarningAsError",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub consider_warning_as_error: Option<bool>,
+    #[serde(rename = "UnhealthyEvent", skip_serializing_if = "Option::is_none")]
+    pub unhealthy_event: Option<Box<models::HealthEvent>>,
 }
 
 impl EventHealthEvaluation {
-    /// Represents health evaluation of a HealthEvent that was reported on the entity. The health evaluation is returned when evaluating health of an entity results in Error or Warning.
     pub fn new(kind: models::HealthEvaluationKind) -> EventHealthEvaluation {
         EventHealthEvaluation {
-            consider_warning_as_error: None,
-            unhealthy_event: None,
             kind,
             aggregated_health_state: None,
             description: None,
+            consider_warning_as_error: None,
+            unhealthy_event: None,
         }
     }
 }

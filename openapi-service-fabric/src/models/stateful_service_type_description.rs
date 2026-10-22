@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatefulServiceTypeDescription : Describes a stateful service type defined in the service manifest of a provisioned application type.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatefulServiceTypeDescription {
-    /// A flag indicating whether this is a persistent service which stores states on the local disk. If it is then the value of this property is true, if not it is false.
-    #[serde(rename = "HasPersistedState", skip_serializing_if = "Option::is_none")]
-    pub has_persisted_state: Option<bool>,
     #[serde(rename = "Kind")]
     pub kind: models::ServiceKind,
     /// Indicates whether the service type is a stateful service type or a stateless service type. This property is true if the service type is a stateful service type, false otherwise.
@@ -43,13 +39,14 @@ pub struct StatefulServiceTypeDescription {
     /// List of service type extensions.
     #[serde(rename = "Extensions", skip_serializing_if = "Option::is_none")]
     pub extensions: Option<Vec<models::ServiceTypeExtensionDescription>>,
+    /// A flag indicating whether this is a persistent service which stores states on the local disk. If it is then the value of this property is true, if not it is false.
+    #[serde(rename = "HasPersistedState", skip_serializing_if = "Option::is_none")]
+    pub has_persisted_state: Option<bool>,
 }
 
 impl StatefulServiceTypeDescription {
-    /// Describes a stateful service type defined in the service manifest of a provisioned application type.
     pub fn new(kind: models::ServiceKind) -> StatefulServiceTypeDescription {
         StatefulServiceTypeDescription {
-            has_persisted_state: None,
             kind,
             is_stateful: None,
             service_type_name: None,
@@ -57,6 +54,7 @@ impl StatefulServiceTypeDescription {
             load_metrics: None,
             service_placement_policies: None,
             extensions: None,
+            has_persisted_state: None,
         }
     }
 }

@@ -11,9 +11,18 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeTypeNodesHealthEvaluation : Represents health evaluation for nodes of a particular node type. The node type nodes evaluation can be returned when cluster health evaluation returns unhealthy aggregated health state, either Error or Warning. It contains health evaluations for each unhealthy node of the included node type that impacted current aggregated health state.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeTypeNodesHealthEvaluation {
+    #[serde(rename = "Kind")]
+    pub kind: models::HealthEvaluationKind,
+    #[serde(
+        rename = "AggregatedHealthState",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub aggregated_health_state: Option<models::HealthState>,
+    /// Description of the health evaluation, which represents a summary of the evaluation process.
+    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// The node type name as defined in the cluster manifest.
     #[serde(rename = "NodeTypeName", skip_serializing_if = "Option::is_none")]
     pub node_type_name: Option<String>,
@@ -32,29 +41,18 @@ pub struct NodeTypeNodesHealthEvaluation {
         skip_serializing_if = "Option::is_none"
     )]
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::HealthEvaluationKind,
-    #[serde(
-        rename = "AggregatedHealthState",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub aggregated_health_state: Option<models::HealthState>,
-    /// Description of the health evaluation, which represents a summary of the evaluation process.
-    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
 }
 
 impl NodeTypeNodesHealthEvaluation {
-    /// Represents health evaluation for nodes of a particular node type. The node type nodes evaluation can be returned when cluster health evaluation returns unhealthy aggregated health state, either Error or Warning. It contains health evaluations for each unhealthy node of the included node type that impacted current aggregated health state.
     pub fn new(kind: models::HealthEvaluationKind) -> NodeTypeNodesHealthEvaluation {
         NodeTypeNodesHealthEvaluation {
+            kind,
+            aggregated_health_state: None,
+            description: None,
             node_type_name: None,
             max_percent_unhealthy_nodes: None,
             total_count: None,
             unhealthy_evaluations: None,
-            kind,
-            aggregated_health_state: None,
-            description: None,
         }
     }
 }

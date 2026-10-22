@@ -11,22 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PartitionSafetyCheck : Represents a safety check for the service partition being performed by service fabric before continuing with operations.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PartitionSafetyCheck {
+    #[serde(rename = "Kind")]
+    pub kind: models::SafetyCheckKind,
     /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
     #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
     pub partition_id: Option<uuid::Uuid>,
-    #[serde(rename = "Kind")]
-    pub kind: models::SafetyCheckKind,
 }
 
 impl PartitionSafetyCheck {
-    /// Represents a safety check for the service partition being performed by service fabric before continuing with operations.
     pub fn new(kind: models::SafetyCheckKind) -> PartitionSafetyCheck {
         PartitionSafetyCheck {
-            partition_id: None,
             kind,
+            partition_id: None,
         }
     }
 }

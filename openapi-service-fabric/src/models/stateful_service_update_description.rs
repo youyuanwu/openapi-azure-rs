@@ -11,9 +11,43 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatefulServiceUpdateDescription : Describes an update for a stateful service.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatefulServiceUpdateDescription {
+    #[serde(rename = "ServiceKind")]
+    pub service_kind: models::ServiceKind,
+    /// Flags indicating whether other properties are set. Each of the associated properties corresponds to a flag, specified below, which, if set, indicate that the property is specified. This property can be a combination of those flags obtained using bitwise 'OR' operator. For example, if the provided value is 6 then the flags for ReplicaRestartWaitDuration (2) and QuorumLossWaitDuration (4) are set.  - None - Does not indicate any other properties are set. The value is zero. - TargetReplicaSetSize/InstanceCount - Indicates whether the TargetReplicaSetSize property (for Stateful services) or the InstanceCount property (for Stateless services) is set. The value is 1. - ReplicaRestartWaitDuration - Indicates the ReplicaRestartWaitDuration property is set. The value is  2. - QuorumLossWaitDuration - Indicates the QuorumLossWaitDuration property is set. The value is 4. - StandByReplicaKeepDuration - Indicates the StandByReplicaKeepDuration property is set. The value is 8. - MinReplicaSetSize - Indicates the MinReplicaSetSize property is set. The value is 16. - PlacementConstraints - Indicates the PlacementConstraints property is set. The value is 32. - PlacementPolicyList - Indicates the ServicePlacementPolicies property is set. The value is 64. - Correlation - Indicates the CorrelationScheme property is set. The value is 128. - Metrics - Indicates the ServiceLoadMetrics property is set. The value is 256. - DefaultMoveCost - Indicates the DefaultMoveCost property is set. The value is 512. - ScalingPolicy - Indicates the ScalingPolicies property is set. The value is 1024. - ServicePlacementTimeLimit - Indicates the ServicePlacementTimeLimit property is set. The value is 2048. - MinInstanceCount - Indicates the MinInstanceCount property is set. The value is 4096. - MinInstancePercentage - Indicates the MinInstancePercentage property is set. The value is 8192. - InstanceCloseDelayDuration - Indicates the InstanceCloseDelayDuration property is set. The value is 16384. - InstanceRestartWaitDuration - Indicates the InstanceCloseDelayDuration property is set. The value is 32768. - DropSourceReplicaOnMove - Indicates the DropSourceReplicaOnMove property is set. The value is 65536. - ServiceDnsName - Indicates the ServiceDnsName property is set. The value is 131072. - TagsForPlacement - Indicates the TagsForPlacement property is set. The value is 1048576. - TagsForRunning - Indicates the TagsForRunning property is set. The value is 2097152.
+    #[serde(rename = "Flags", skip_serializing_if = "Option::is_none")]
+    pub flags: Option<String>,
+    /// The placement constraints as a string. Placement constraints are boolean expressions on node properties and allow for restricting a service to particular nodes based on the service requirements. For example, to place a service on nodes where NodeType is blue specify the following: \"NodeColor == blue)\".
+    #[serde(
+        rename = "PlacementConstraints",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub placement_constraints: Option<String>,
+    /// A list that describes the correlation of the service with other services.
+    #[serde(rename = "CorrelationScheme", skip_serializing_if = "Option::is_none")]
+    pub correlation_scheme: Option<Vec<models::ServiceCorrelationDescription>>,
+    /// The service load metrics is given as an array of ServiceLoadMetricDescription objects.
+    #[serde(rename = "LoadMetrics", skip_serializing_if = "Option::is_none")]
+    pub load_metrics: Option<Vec<models::ServiceLoadMetricDescription>>,
+    /// A list that describes the correlation of the service with other services.
+    #[serde(
+        rename = "ServicePlacementPolicies",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub service_placement_policies: Option<Vec<models::ServicePlacementPolicyDescription>>,
+    #[serde(rename = "DefaultMoveCost", skip_serializing_if = "Option::is_none")]
+    pub default_move_cost: Option<models::MoveCost>,
+    /// A list that describes the scaling policies.
+    #[serde(rename = "ScalingPolicies", skip_serializing_if = "Option::is_none")]
+    pub scaling_policies: Option<Vec<models::ScalingPolicyDescription>>,
+    /// The DNS name of the service.
+    #[serde(rename = "ServiceDnsName", skip_serializing_if = "Option::is_none")]
+    pub service_dns_name: Option<String>,
+    #[serde(rename = "TagsForPlacement", skip_serializing_if = "Option::is_none")]
+    pub tags_for_placement: Option<Box<models::NodeTagsDescription>>,
+    #[serde(rename = "TagsForRunning", skip_serializing_if = "Option::is_none")]
+    pub tags_for_running: Option<Box<models::NodeTagsDescription>>,
     /// The target replica set size as a number.
     #[serde(
         rename = "TargetReplicaSetSize",
@@ -64,56 +98,11 @@ pub struct StatefulServiceUpdateDescription {
         skip_serializing_if = "Option::is_none"
     )]
     pub auxiliary_replica_count: Option<i32>,
-    #[serde(rename = "ServiceKind")]
-    pub service_kind: models::ServiceKind,
-    /// Flags indicating whether other properties are set. Each of the associated properties corresponds to a flag, specified below, which, if set, indicate that the property is specified. This property can be a combination of those flags obtained using bitwise 'OR' operator. For example, if the provided value is 6 then the flags for ReplicaRestartWaitDuration (2) and QuorumLossWaitDuration (4) are set.  - None - Does not indicate any other properties are set. The value is zero. - TargetReplicaSetSize/InstanceCount - Indicates whether the TargetReplicaSetSize property (for Stateful services) or the InstanceCount property (for Stateless services) is set. The value is 1. - ReplicaRestartWaitDuration - Indicates the ReplicaRestartWaitDuration property is set. The value is  2. - QuorumLossWaitDuration - Indicates the QuorumLossWaitDuration property is set. The value is 4. - StandByReplicaKeepDuration - Indicates the StandByReplicaKeepDuration property is set. The value is 8. - MinReplicaSetSize - Indicates the MinReplicaSetSize property is set. The value is 16. - PlacementConstraints - Indicates the PlacementConstraints property is set. The value is 32. - PlacementPolicyList - Indicates the ServicePlacementPolicies property is set. The value is 64. - Correlation - Indicates the CorrelationScheme property is set. The value is 128. - Metrics - Indicates the ServiceLoadMetrics property is set. The value is 256. - DefaultMoveCost - Indicates the DefaultMoveCost property is set. The value is 512. - ScalingPolicy - Indicates the ScalingPolicies property is set. The value is 1024. - ServicePlacementTimeLimit - Indicates the ServicePlacementTimeLimit property is set. The value is 2048. - MinInstanceCount - Indicates the MinInstanceCount property is set. The value is 4096. - MinInstancePercentage - Indicates the MinInstancePercentage property is set. The value is 8192. - InstanceCloseDelayDuration - Indicates the InstanceCloseDelayDuration property is set. The value is 16384. - InstanceRestartWaitDuration - Indicates the InstanceCloseDelayDuration property is set. The value is 32768. - DropSourceReplicaOnMove - Indicates the DropSourceReplicaOnMove property is set. The value is 65536. - ServiceDnsName - Indicates the ServiceDnsName property is set. The value is 131072. - TagsForPlacement - Indicates the TagsForPlacement property is set. The value is 1048576. - TagsForRunning - Indicates the TagsForRunning property is set. The value is 2097152.
-    #[serde(rename = "Flags", skip_serializing_if = "Option::is_none")]
-    pub flags: Option<String>,
-    /// The placement constraints as a string. Placement constraints are boolean expressions on node properties and allow for restricting a service to particular nodes based on the service requirements. For example, to place a service on nodes where NodeType is blue specify the following: \"NodeColor == blue)\".
-    #[serde(
-        rename = "PlacementConstraints",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub placement_constraints: Option<String>,
-    /// A list that describes the correlation of the service with other services.
-    #[serde(rename = "CorrelationScheme", skip_serializing_if = "Option::is_none")]
-    pub correlation_scheme: Option<Vec<models::ServiceCorrelationDescription>>,
-    /// The service load metrics is given as an array of ServiceLoadMetricDescription objects.
-    #[serde(rename = "LoadMetrics", skip_serializing_if = "Option::is_none")]
-    pub load_metrics: Option<Vec<models::ServiceLoadMetricDescription>>,
-    /// A list that describes the correlation of the service with other services.
-    #[serde(
-        rename = "ServicePlacementPolicies",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub service_placement_policies: Option<Vec<models::ServicePlacementPolicyDescription>>,
-    #[serde(rename = "DefaultMoveCost", skip_serializing_if = "Option::is_none")]
-    pub default_move_cost: Option<models::MoveCost>,
-    /// A list that describes the scaling policies.
-    #[serde(rename = "ScalingPolicies", skip_serializing_if = "Option::is_none")]
-    pub scaling_policies: Option<Vec<models::ScalingPolicyDescription>>,
-    /// The DNS name of the service.
-    #[serde(rename = "ServiceDnsName", skip_serializing_if = "Option::is_none")]
-    pub service_dns_name: Option<String>,
-    #[serde(rename = "TagsForPlacement", skip_serializing_if = "Option::is_none")]
-    pub tags_for_placement: Option<Box<models::NodeTagsDescription>>,
-    #[serde(rename = "TagsForRunning", skip_serializing_if = "Option::is_none")]
-    pub tags_for_running: Option<Box<models::NodeTagsDescription>>,
 }
 
 impl StatefulServiceUpdateDescription {
-    /// Describes an update for a stateful service.
     pub fn new(service_kind: models::ServiceKind) -> StatefulServiceUpdateDescription {
         StatefulServiceUpdateDescription {
-            target_replica_set_size: None,
-            min_replica_set_size: None,
-            replica_restart_wait_duration_seconds: None,
-            quorum_loss_wait_duration_seconds: None,
-            stand_by_replica_keep_duration_seconds: None,
-            service_placement_time_limit_seconds: None,
-            drop_source_replica_on_move: None,
-            replica_lifecycle_description: None,
-            auxiliary_replica_count: None,
             service_kind,
             flags: None,
             placement_constraints: None,
@@ -125,6 +114,15 @@ impl StatefulServiceUpdateDescription {
             service_dns_name: None,
             tags_for_placement: None,
             tags_for_running: None,
+            target_replica_set_size: None,
+            min_replica_set_size: None,
+            replica_restart_wait_duration_seconds: None,
+            quorum_loss_wait_duration_seconds: None,
+            stand_by_replica_keep_duration_seconds: None,
+            service_placement_time_limit_seconds: None,
+            drop_source_replica_on_move: None,
+            replica_lifecycle_description: None,
+            auxiliary_replica_count: None,
         }
     }
 }

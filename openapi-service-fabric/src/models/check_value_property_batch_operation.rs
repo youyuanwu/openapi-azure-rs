@@ -11,29 +11,27 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// CheckValuePropertyBatchOperation : Represents a PropertyBatchOperation that compares the value of the property with the expected value. The CheckValuePropertyBatchOperation is generally used as a precondition for the write operations in the batch. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CheckValuePropertyBatchOperation {
-    #[serde(rename = "Value")]
-    pub value: Box<models::PropertyValue>,
     #[serde(rename = "Kind")]
     pub kind: models::PropertyBatchOperationKind,
     /// The name of the Service Fabric property.
     #[serde(rename = "PropertyName")]
     pub property_name: String,
+    #[serde(rename = "Value")]
+    pub value: Box<models::PropertyValue>,
 }
 
 impl CheckValuePropertyBatchOperation {
-    /// Represents a PropertyBatchOperation that compares the value of the property with the expected value. The CheckValuePropertyBatchOperation is generally used as a precondition for the write operations in the batch. Note that if one PropertyBatchOperation in a PropertyBatch fails, the entire batch fails and cannot be committed in a transactional manner.
     pub fn new(
-        value: models::PropertyValue,
         kind: models::PropertyBatchOperationKind,
         property_name: String,
+        value: models::PropertyValue,
     ) -> CheckValuePropertyBatchOperation {
         CheckValuePropertyBatchOperation {
-            value: Box::new(value),
             kind,
             property_name,
+            value: Box::new(value),
         }
     }
 }

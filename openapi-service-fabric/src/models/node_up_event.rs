@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeUpEvent : Node Up event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeUpEvent {
-    /// Id of Node instance.
-    #[serde(rename = "NodeInstance")]
-    pub node_instance: i64,
-    /// Time when Node was last down.
-    #[serde(rename = "LastNodeDownAt")]
-    pub last_node_down_at: String,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName")]
-    pub node_name: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -40,27 +30,35 @@ pub struct NodeUpEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName")]
+    pub node_name: String,
+    /// Id of Node instance.
+    #[serde(rename = "NodeInstance")]
+    pub node_instance: i64,
+    /// Time when Node was last down.
+    #[serde(rename = "LastNodeDownAt")]
+    pub last_node_down_at: String,
 }
 
 impl NodeUpEvent {
-    /// Node Up event.
     pub fn new(
-        node_instance: i64,
-        last_node_down_at: String,
-        node_name: String,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
         time_stamp: String,
+        node_name: String,
+        node_instance: i64,
+        last_node_down_at: String,
     ) -> NodeUpEvent {
         NodeUpEvent {
-            node_instance,
-            last_node_down_at,
-            node_name,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            node_name,
+            node_instance,
+            last_node_down_at,
         }
     }
 }

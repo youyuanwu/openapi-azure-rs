@@ -11,24 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ClusterUpgradeStartedEvent : Cluster Upgrade Started event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClusterUpgradeStartedEvent {
-    /// Current Cluster version.
-    #[serde(rename = "CurrentClusterVersion")]
-    pub current_cluster_version: String,
-    /// Target Cluster version.
-    #[serde(rename = "TargetClusterVersion")]
-    pub target_cluster_version: String,
-    /// Type of upgrade.
-    #[serde(rename = "UpgradeType")]
-    pub upgrade_type: String,
-    /// Mode of upgrade.
-    #[serde(rename = "RollingUpgradeMode")]
-    pub rolling_upgrade_mode: String,
-    /// Action if failed.
-    #[serde(rename = "FailureAction")]
-    pub failure_action: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -46,31 +30,45 @@ pub struct ClusterUpgradeStartedEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// Current Cluster version.
+    #[serde(rename = "CurrentClusterVersion")]
+    pub current_cluster_version: String,
+    /// Target Cluster version.
+    #[serde(rename = "TargetClusterVersion")]
+    pub target_cluster_version: String,
+    /// Type of upgrade.
+    #[serde(rename = "UpgradeType")]
+    pub upgrade_type: String,
+    /// Mode of upgrade.
+    #[serde(rename = "RollingUpgradeMode")]
+    pub rolling_upgrade_mode: String,
+    /// Action if failed.
+    #[serde(rename = "FailureAction")]
+    pub failure_action: String,
 }
 
 impl ClusterUpgradeStartedEvent {
-    /// Cluster Upgrade Started event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
         current_cluster_version: String,
         target_cluster_version: String,
         upgrade_type: String,
         rolling_upgrade_mode: String,
         failure_action: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ClusterUpgradeStartedEvent {
         ClusterUpgradeStartedEvent {
-            current_cluster_version,
-            target_cluster_version,
-            upgrade_type,
-            rolling_upgrade_mode,
-            failure_action,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            current_cluster_version,
+            target_cluster_version,
+            upgrade_type,
+            rolling_upgrade_mode,
+            failure_action,
         }
     }
 }

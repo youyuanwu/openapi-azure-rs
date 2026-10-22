@@ -11,9 +11,25 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ChaosStartedEvent : Chaos Started event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ChaosStartedEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: String,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
     /// Maximum number of concurrent faults.
     #[serde(rename = "MaxConcurrentFaults")]
     pub max_concurrent_faults: i64,
@@ -44,28 +60,13 @@ pub struct ChaosStartedEvent {
     /// Chaos Context.
     #[serde(rename = "ChaosContext")]
     pub chaos_context: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl ChaosStartedEvent {
-    /// Chaos Started event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
         max_concurrent_faults: i64,
         time_to_run_in_seconds: f64,
         max_cluster_stabilization_timeout_in_seconds: f64,
@@ -76,11 +77,13 @@ impl ChaosStartedEvent {
         included_application_list: String,
         cluster_health_policy: String,
         chaos_context: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ChaosStartedEvent {
         ChaosStartedEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
             max_concurrent_faults,
             time_to_run_in_seconds,
             max_cluster_stabilization_timeout_in_seconds,
@@ -91,11 +94,6 @@ impl ChaosStartedEvent {
             included_application_list,
             cluster_health_policy,
             chaos_context,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

@@ -11,25 +11,23 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// FrequencyBasedBackupScheduleDescription : Describes the frequency based backup schedule.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct FrequencyBasedBackupScheduleDescription {
+    #[serde(rename = "ScheduleKind")]
+    pub schedule_kind: models::BackupScheduleKind,
     /// Defines the interval with which backups are periodically taken. It should be specified in ISO8601 format. Timespan in seconds is not supported and will be ignored while creating the policy.
     #[serde(rename = "Interval")]
     pub interval: String,
-    #[serde(rename = "ScheduleKind")]
-    pub schedule_kind: models::BackupScheduleKind,
 }
 
 impl FrequencyBasedBackupScheduleDescription {
-    /// Describes the frequency based backup schedule.
     pub fn new(
-        interval: String,
         schedule_kind: models::BackupScheduleKind,
+        interval: String,
     ) -> FrequencyBasedBackupScheduleDescription {
         FrequencyBasedBackupScheduleDescription {
-            interval,
             schedule_kind,
+            interval,
         }
     }
 }

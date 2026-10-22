@@ -11,19 +11,17 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// GuidPropertyValue : Describes a Service Fabric property value of type Guid.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GuidPropertyValue {
+    #[serde(rename = "Kind")]
+    pub kind: models::PropertyValueKind,
     /// The data of the property value.
     #[serde(rename = "Data")]
     pub data: uuid::Uuid,
-    #[serde(rename = "Kind")]
-    pub kind: models::PropertyValueKind,
 }
 
 impl GuidPropertyValue {
-    /// Describes a Service Fabric property value of type Guid.
-    pub fn new(data: uuid::Uuid, kind: models::PropertyValueKind) -> GuidPropertyValue {
-        GuidPropertyValue { data, kind }
+    pub fn new(kind: models::PropertyValueKind, data: uuid::Uuid) -> GuidPropertyValue {
+        GuidPropertyValue { kind, data }
     }
 }

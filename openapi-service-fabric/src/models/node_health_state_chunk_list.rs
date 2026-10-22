@@ -11,23 +11,21 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeHealthStateChunkList : The list of node health state chunks in the cluster that respect the input filters in the chunk query. Returned by get cluster health state chunks query.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeHealthStateChunkList {
-    /// The list of node health state chunks that respect the input filters in the chunk query.
-    #[serde(rename = "Items", skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<models::NodeHealthStateChunk>>,
     /// Total number of entity health state objects that match the specified filters from the cluster health chunk query description.
     #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
     pub total_count: Option<i64>,
+    /// The list of node health state chunks that respect the input filters in the chunk query.
+    #[serde(rename = "Items", skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<models::NodeHealthStateChunk>>,
 }
 
 impl NodeHealthStateChunkList {
-    /// The list of node health state chunks in the cluster that respect the input filters in the chunk query. Returned by get cluster health state chunks query.
     pub fn new() -> NodeHealthStateChunkList {
         NodeHealthStateChunkList {
-            items: None,
             total_count: None,
+            items: None,
         }
     }
 }

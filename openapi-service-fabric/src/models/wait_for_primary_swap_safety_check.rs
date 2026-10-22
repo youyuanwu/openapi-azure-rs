@@ -14,19 +14,19 @@ use serde::{Deserialize, Serialize};
 /// WaitForPrimarySwapSafetyCheck : Safety check that waits for the primary replica to be moved out of the node before starting an upgrade to ensure the availability of the primary replica for the partition.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct WaitForPrimarySwapSafetyCheck {
+    #[serde(rename = "Kind")]
+    pub kind: models::SafetyCheckKind,
     /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
     #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
     pub partition_id: Option<uuid::Uuid>,
-    #[serde(rename = "Kind")]
-    pub kind: models::SafetyCheckKind,
 }
 
 impl WaitForPrimarySwapSafetyCheck {
     /// Safety check that waits for the primary replica to be moved out of the node before starting an upgrade to ensure the availability of the primary replica for the partition.
     pub fn new(kind: models::SafetyCheckKind) -> WaitForPrimarySwapSafetyCheck {
         WaitForPrimarySwapSafetyCheck {
-            partition_id: None,
             kind,
+            partition_id: None,
         }
     }
 }

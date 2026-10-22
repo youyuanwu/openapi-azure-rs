@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationHealthStateChunk : Represents the health state chunk of a application. The application health state chunk contains the application name, its aggregated health state and any children services and deployed applications that respect the filters in cluster health chunk query description.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationHealthStateChunk {
+    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
+    pub health_state: Option<models::HealthState>,
     /// The name of the application, including the 'fabric:' URI scheme.
     #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
     pub application_name: Option<String>,
@@ -34,19 +35,16 @@ pub struct ApplicationHealthStateChunk {
     )]
     pub deployed_application_health_state_chunks:
         Option<Box<models::DeployedApplicationHealthStateChunkList>>,
-    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
-    pub health_state: Option<models::HealthState>,
 }
 
 impl ApplicationHealthStateChunk {
-    /// Represents the health state chunk of a application. The application health state chunk contains the application name, its aggregated health state and any children services and deployed applications that respect the filters in cluster health chunk query description.
     pub fn new() -> ApplicationHealthStateChunk {
         ApplicationHealthStateChunk {
+            health_state: None,
             application_name: None,
             application_type_name: None,
             service_health_state_chunks: None,
             deployed_application_health_state_chunks: None,
-            health_state: None,
         }
     }
 }

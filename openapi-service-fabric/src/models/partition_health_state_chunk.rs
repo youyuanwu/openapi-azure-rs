@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PartitionHealthStateChunk : Represents the health state chunk of a partition, which contains the partition ID, its aggregated health state and any replicas that respect the filters in the cluster health chunk query description.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PartitionHealthStateChunk {
+    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
+    pub health_state: Option<models::HealthState>,
     /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
     #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
     pub partition_id: Option<uuid::Uuid>,
@@ -22,17 +23,14 @@ pub struct PartitionHealthStateChunk {
         skip_serializing_if = "Option::is_none"
     )]
     pub replica_health_state_chunks: Option<Box<models::ReplicaHealthStateChunkList>>,
-    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
-    pub health_state: Option<models::HealthState>,
 }
 
 impl PartitionHealthStateChunk {
-    /// Represents the health state chunk of a partition, which contains the partition ID, its aggregated health state and any replicas that respect the filters in the cluster health chunk query description.
     pub fn new() -> PartitionHealthStateChunk {
         PartitionHealthStateChunk {
+            health_state: None,
             partition_id: None,
             replica_health_state_chunks: None,
-            health_state: None,
         }
     }
 }

@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ClusterUpgradeRollbackCompletedEvent : Cluster Upgrade Rollback Completed event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClusterUpgradeRollbackCompletedEvent {
-    /// Target Cluster version.
-    #[serde(rename = "TargetClusterVersion")]
-    pub target_cluster_version: String,
-    /// Describes failure.
-    #[serde(rename = "FailureReason")]
-    pub failure_reason: String,
-    /// Overall duration of upgrade in milli-seconds.
-    #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
-    pub overall_upgrade_elapsed_time_in_ms: f64,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -40,27 +30,35 @@ pub struct ClusterUpgradeRollbackCompletedEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// Target Cluster version.
+    #[serde(rename = "TargetClusterVersion")]
+    pub target_cluster_version: String,
+    /// Describes failure.
+    #[serde(rename = "FailureReason")]
+    pub failure_reason: String,
+    /// Overall duration of upgrade in milli-seconds.
+    #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
+    pub overall_upgrade_elapsed_time_in_ms: f64,
 }
 
 impl ClusterUpgradeRollbackCompletedEvent {
-    /// Cluster Upgrade Rollback Completed event.
     pub fn new(
-        target_cluster_version: String,
-        failure_reason: String,
-        overall_upgrade_elapsed_time_in_ms: f64,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
         time_stamp: String,
+        target_cluster_version: String,
+        failure_reason: String,
+        overall_upgrade_elapsed_time_in_ms: f64,
     ) -> ClusterUpgradeRollbackCompletedEvent {
         ClusterUpgradeRollbackCompletedEvent {
-            target_cluster_version,
-            failure_reason,
-            overall_upgrade_elapsed_time_in_ms,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            target_cluster_version,
+            failure_reason,
+            overall_upgrade_elapsed_time_in_ms,
         }
     }
 }

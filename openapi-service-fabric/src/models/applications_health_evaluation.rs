@@ -11,9 +11,18 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationsHealthEvaluation : Represents health evaluation for applications, containing health evaluations for each unhealthy application that impacted current aggregated health state.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationsHealthEvaluation {
+    #[serde(rename = "Kind")]
+    pub kind: models::HealthEvaluationKind,
+    #[serde(
+        rename = "AggregatedHealthState",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub aggregated_health_state: Option<models::HealthState>,
+    /// Description of the health evaluation, which represents a summary of the evaluation process.
+    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// Maximum allowed percentage of unhealthy applications from the ClusterHealthPolicy.
     #[serde(
         rename = "MaxPercentUnhealthyApplications",
@@ -29,28 +38,17 @@ pub struct ApplicationsHealthEvaluation {
         skip_serializing_if = "Option::is_none"
     )]
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::HealthEvaluationKind,
-    #[serde(
-        rename = "AggregatedHealthState",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub aggregated_health_state: Option<models::HealthState>,
-    /// Description of the health evaluation, which represents a summary of the evaluation process.
-    #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
 }
 
 impl ApplicationsHealthEvaluation {
-    /// Represents health evaluation for applications, containing health evaluations for each unhealthy application that impacted current aggregated health state.
     pub fn new(kind: models::HealthEvaluationKind) -> ApplicationsHealthEvaluation {
         ApplicationsHealthEvaluation {
-            max_percent_unhealthy_applications: None,
-            total_count: None,
-            unhealthy_evaluations: None,
             kind,
             aggregated_health_state: None,
             description: None,
+            max_percent_unhealthy_applications: None,
+            total_count: None,
+            unhealthy_evaluations: None,
         }
     }
 }

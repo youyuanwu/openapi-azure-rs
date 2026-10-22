@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationHealthEvaluation : Represents health evaluation for an application, containing information about the data and the algorithm used by the health store to evaluate health.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationHealthEvaluation {
-    /// The name of the application, including the 'fabric:' URI scheme.
-    #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
-    pub application_name: Option<String>,
-    /// List of health evaluations that resulted in the current aggregated health state.
-    #[serde(
-        rename = "UnhealthyEvaluations",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "Kind")]
     pub kind: models::HealthEvaluationKind,
     #[serde(
@@ -33,17 +23,25 @@ pub struct ApplicationHealthEvaluation {
     /// Description of the health evaluation, which represents a summary of the evaluation process.
     #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// The name of the application, including the 'fabric:' URI scheme.
+    #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
+    pub application_name: Option<String>,
+    /// List of health evaluations that resulted in the current aggregated health state.
+    #[serde(
+        rename = "UnhealthyEvaluations",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
 }
 
 impl ApplicationHealthEvaluation {
-    /// Represents health evaluation for an application, containing information about the data and the algorithm used by the health store to evaluate health.
     pub fn new(kind: models::HealthEvaluationKind) -> ApplicationHealthEvaluation {
         ApplicationHealthEvaluation {
-            application_name: None,
-            unhealthy_evaluations: None,
             kind,
             aggregated_health_state: None,
             description: None,
+            application_name: None,
+            unhealthy_evaluations: None,
         }
     }
 }

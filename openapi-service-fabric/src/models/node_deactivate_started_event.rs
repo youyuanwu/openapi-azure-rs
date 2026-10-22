@@ -11,21 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeDeactivateStartedEvent : Node Deactivate Started event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeDeactivateStartedEvent {
-    /// Id of Node instance.
-    #[serde(rename = "NodeInstance")]
-    pub node_instance: i64,
-    /// Batch Id.
-    #[serde(rename = "BatchId")]
-    pub batch_id: String,
-    /// Describes deactivate intent.
-    #[serde(rename = "DeactivateIntent")]
-    pub deactivate_intent: String,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName")]
-    pub node_name: String,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -43,29 +30,40 @@ pub struct NodeDeactivateStartedEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName")]
+    pub node_name: String,
+    /// Id of Node instance.
+    #[serde(rename = "NodeInstance")]
+    pub node_instance: i64,
+    /// Batch Id.
+    #[serde(rename = "BatchId")]
+    pub batch_id: String,
+    /// Describes deactivate intent.
+    #[serde(rename = "DeactivateIntent")]
+    pub deactivate_intent: String,
 }
 
 impl NodeDeactivateStartedEvent {
-    /// Node Deactivate Started event.
     pub fn new(
-        node_instance: i64,
-        batch_id: String,
-        deactivate_intent: String,
-        node_name: String,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
         time_stamp: String,
+        node_name: String,
+        node_instance: i64,
+        batch_id: String,
+        deactivate_intent: String,
     ) -> NodeDeactivateStartedEvent {
         NodeDeactivateStartedEvent {
-            node_instance,
-            batch_id,
-            deactivate_intent,
-            node_name,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            node_name,
+            node_instance,
+            batch_id,
+            deactivate_intent,
         }
     }
 }

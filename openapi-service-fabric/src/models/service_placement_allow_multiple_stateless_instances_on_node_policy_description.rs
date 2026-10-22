@@ -11,24 +11,22 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription : Describes the policy to be used for placement of a Service Fabric service allowing multiple stateless instances of a partition of the service to be placed on a node.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription {
+    #[serde(rename = "Type")]
+    pub r#type: models::ServicePlacementPolicyType,
     /// Holdover from other policy descriptions, not used for this policy, values are ignored by runtime. Keeping it for any backwards-compatibility with clients.
     #[serde(rename = "DomainName", skip_serializing_if = "Option::is_none")]
     pub domain_name: Option<String>,
-    #[serde(rename = "Type")]
-    pub r#type: models::ServicePlacementPolicyType,
 }
 
 impl ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription {
-    /// Describes the policy to be used for placement of a Service Fabric service allowing multiple stateless instances of a partition of the service to be placed on a node.
     pub fn new(
         r#type: models::ServicePlacementPolicyType,
     ) -> ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription {
         ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription {
-            domain_name: None,
             r#type,
+            domain_name: None,
         }
     }
 }

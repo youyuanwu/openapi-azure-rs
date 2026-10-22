@@ -11,22 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedApplicationHealth : Information about the health of an application deployed on a Service Fabric node.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedApplicationHealth {
-    /// The name of the application, including the 'fabric:' URI scheme.
-    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// The name of a Service Fabric node.
-    #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
-    pub node_name: Option<String>,
-    /// List of health states for a service package deployed on a Service Fabric node.
-    #[serde(
-        rename = "DeployedServicePackageHealthStates",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub deployed_service_package_health_states:
-        Option<Vec<models::DeployedServicePackageHealthState>>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
@@ -43,19 +29,31 @@ pub struct DeployedApplicationHealth {
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "HealthStatistics", skip_serializing_if = "Option::is_none")]
     pub health_statistics: Option<Box<models::HealthStatistics>>,
+    /// The name of the application, including the 'fabric:' URI scheme.
+    #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The name of a Service Fabric node.
+    #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
+    pub node_name: Option<String>,
+    /// List of health states for a service package deployed on a Service Fabric node.
+    #[serde(
+        rename = "DeployedServicePackageHealthStates",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub deployed_service_package_health_states:
+        Option<Vec<models::DeployedServicePackageHealthState>>,
 }
 
 impl DeployedApplicationHealth {
-    /// Information about the health of an application deployed on a Service Fabric node.
     pub fn new() -> DeployedApplicationHealth {
         DeployedApplicationHealth {
-            name: None,
-            node_name: None,
-            deployed_service_package_health_states: None,
             aggregated_health_state: None,
             health_events: None,
             unhealthy_evaluations: None,
             health_statistics: None,
+            name: None,
+            node_name: None,
+            deployed_service_package_health_states: None,
         }
     }
 }

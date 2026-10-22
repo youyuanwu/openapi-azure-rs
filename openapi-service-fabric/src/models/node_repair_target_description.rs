@@ -11,22 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeRepairTargetDescription : Describes the list of nodes targeted by a repair action.  This type supports the Service Fabric platform; it is not meant to be used directly from your code.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeRepairTargetDescription {
+    #[serde(rename = "Kind")]
+    pub kind: models::RepairTargetKind,
     /// The list of nodes targeted by a repair action.
     #[serde(rename = "NodeNames", skip_serializing_if = "Option::is_none")]
     pub node_names: Option<Vec<String>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::RepairTargetKind,
 }
 
 impl NodeRepairTargetDescription {
-    /// Describes the list of nodes targeted by a repair action.  This type supports the Service Fabric platform; it is not meant to be used directly from your code.
     pub fn new(kind: models::RepairTargetKind) -> NodeRepairTargetDescription {
         NodeRepairTargetDescription {
-            node_names: None,
             kind,
+            node_names: None,
         }
     }
 }

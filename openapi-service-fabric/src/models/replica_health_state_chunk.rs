@@ -11,25 +11,23 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ReplicaHealthStateChunk : Represents the health state chunk of a stateful service replica or a stateless service instance. The replica health state contains the replica ID and its aggregated health state.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ReplicaHealthStateChunk {
+    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
+    pub health_state: Option<models::HealthState>,
     /// Id of a stateful service replica or a stateless service instance. This ID is used in the queries that apply to both stateful and stateless services. It is used by Service Fabric to uniquely identify a replica of a partition of a stateful service or an instance of a stateless service partition. It is unique within a partition and does not change for the lifetime of the replica or the instance. If a stateful replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the ID. If a stateless instance is failed over on the same or different node it will get a different value for the ID.
     #[serde(
         rename = "ReplicaOrInstanceId",
         skip_serializing_if = "Option::is_none"
     )]
     pub replica_or_instance_id: Option<String>,
-    #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
-    pub health_state: Option<models::HealthState>,
 }
 
 impl ReplicaHealthStateChunk {
-    /// Represents the health state chunk of a stateful service replica or a stateless service instance. The replica health state contains the replica ID and its aggregated health state.
     pub fn new() -> ReplicaHealthStateChunk {
         ReplicaHealthStateChunk {
-            replica_or_instance_id: None,
             health_state: None,
+            replica_or_instance_id: None,
         }
     }
 }

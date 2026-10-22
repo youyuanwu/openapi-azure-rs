@@ -11,19 +11,17 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StringPropertyValue : Describes a Service Fabric property value of type String.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StringPropertyValue {
+    #[serde(rename = "Kind")]
+    pub kind: models::PropertyValueKind,
     /// The data of the property value.
     #[serde(rename = "Data")]
     pub data: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::PropertyValueKind,
 }
 
 impl StringPropertyValue {
-    /// Describes a Service Fabric property value of type String.
-    pub fn new(data: String, kind: models::PropertyValueKind) -> StringPropertyValue {
-        StringPropertyValue { data, kind }
+    pub fn new(kind: models::PropertyValueKind, data: String) -> StringPropertyValue {
+        StringPropertyValue { kind, data }
     }
 }

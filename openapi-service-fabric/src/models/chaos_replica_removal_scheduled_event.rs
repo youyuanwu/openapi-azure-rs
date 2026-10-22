@@ -11,24 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ChaosReplicaRemovalScheduledEvent : Chaos Remove Replica Fault Scheduled event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ChaosReplicaRemovalScheduledEvent {
-    /// Id of fault group.
-    #[serde(rename = "FaultGroupId")]
-    pub fault_group_id: uuid::Uuid,
-    /// Id of fault.
-    #[serde(rename = "FaultId")]
-    pub fault_id: uuid::Uuid,
-    /// Service name.
-    #[serde(rename = "ServiceUri")]
-    pub service_uri: String,
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId")]
-    pub partition_id: uuid::Uuid,
-    /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
-    #[serde(rename = "ReplicaId")]
-    pub replica_id: i64,
     #[serde(rename = "Kind")]
     pub kind: models::FabricEventKind,
     /// The identifier for the FabricEvent instance.
@@ -46,31 +30,45 @@ pub struct ChaosReplicaRemovalScheduledEvent {
         skip_serializing_if = "Option::is_none"
     )]
     pub has_correlated_events: Option<bool>,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId")]
+    pub partition_id: uuid::Uuid,
+    /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+    #[serde(rename = "ReplicaId")]
+    pub replica_id: i64,
+    /// Id of fault group.
+    #[serde(rename = "FaultGroupId")]
+    pub fault_group_id: uuid::Uuid,
+    /// Id of fault.
+    #[serde(rename = "FaultId")]
+    pub fault_id: uuid::Uuid,
+    /// Service name.
+    #[serde(rename = "ServiceUri")]
+    pub service_uri: String,
 }
 
 impl ChaosReplicaRemovalScheduledEvent {
-    /// Chaos Remove Replica Fault Scheduled event.
     pub fn new(
-        fault_group_id: uuid::Uuid,
-        fault_id: uuid::Uuid,
-        service_uri: String,
-        partition_id: uuid::Uuid,
-        replica_id: i64,
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
         time_stamp: String,
+        partition_id: uuid::Uuid,
+        replica_id: i64,
+        fault_group_id: uuid::Uuid,
+        fault_id: uuid::Uuid,
+        service_uri: String,
     ) -> ChaosReplicaRemovalScheduledEvent {
         ChaosReplicaRemovalScheduledEvent {
-            fault_group_id,
-            fault_id,
-            service_uri,
-            partition_id,
-            replica_id,
             kind,
             event_instance_id,
             category: None,
             time_stamp,
             has_correlated_events: None,
+            partition_id,
+            replica_id,
+            fault_group_id,
+            fault_id,
+            service_uri,
         }
     }
 }

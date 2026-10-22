@@ -11,9 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NetworkResourceProperties : Describes properties of a network resource.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NetworkResourceProperties {
+    #[serde(rename = "kind")]
+    pub kind: models::NetworkKind,
     /// User readable description of the network.
     #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -22,18 +23,15 @@ pub struct NetworkResourceProperties {
     /// Gives additional information about the current status of the network.
     #[serde(rename = "statusDetails", skip_serializing_if = "Option::is_none")]
     pub status_details: Option<String>,
-    #[serde(rename = "kind")]
-    pub kind: models::NetworkKind,
 }
 
 impl NetworkResourceProperties {
-    /// Describes properties of a network resource.
     pub fn new(kind: models::NetworkKind) -> NetworkResourceProperties {
         NetworkResourceProperties {
+            kind,
             description: None,
             status: None,
             status_details: None,
-            kind,
         }
     }
 }

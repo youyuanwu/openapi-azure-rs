@@ -11,9 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationNewHealthReportEvent : Application Health Report Created event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationNewHealthReportEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: String,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+    #[serde(rename = "ApplicationId")]
+    pub application_id: String,
     /// Id of Application instance.
     #[serde(rename = "ApplicationInstanceId")]
     pub application_instance_id: i64,
@@ -41,31 +60,14 @@ pub struct ApplicationNewHealthReportEvent {
     /// Source time.
     #[serde(rename = "SourceUtcTimestamp")]
     pub source_utc_timestamp: String,
-    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
-    #[serde(rename = "ApplicationId")]
-    pub application_id: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl ApplicationNewHealthReportEvent {
-    /// Application Health Report Created event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
+        application_id: String,
         application_instance_id: i64,
         source_id: String,
         property: String,
@@ -75,12 +77,14 @@ impl ApplicationNewHealthReportEvent {
         description: String,
         remove_when_expired: bool,
         source_utc_timestamp: String,
-        application_id: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ApplicationNewHealthReportEvent {
         ApplicationNewHealthReportEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
+            application_id,
             application_instance_id,
             source_id,
             property,
@@ -90,12 +94,6 @@ impl ApplicationNewHealthReportEvent {
             description,
             remove_when_expired,
             source_utc_timestamp,
-            application_id,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }

@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// PartitionHealth : Information about the health of a Service Fabric partition.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PartitionHealth {
-    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
-    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
-    pub partition_id: Option<uuid::Uuid>,
-    /// The list of replica health states associated with the partition.
-    #[serde(
-        rename = "ReplicaHealthStates",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub replica_health_states: Option<Vec<models::ReplicaHealthState>>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
@@ -39,18 +29,26 @@ pub struct PartitionHealth {
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "HealthStatistics", skip_serializing_if = "Option::is_none")]
     pub health_statistics: Option<Box<models::HealthStatistics>>,
+    /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+    #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+    pub partition_id: Option<uuid::Uuid>,
+    /// The list of replica health states associated with the partition.
+    #[serde(
+        rename = "ReplicaHealthStates",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub replica_health_states: Option<Vec<models::ReplicaHealthState>>,
 }
 
 impl PartitionHealth {
-    /// Information about the health of a Service Fabric partition.
     pub fn new() -> PartitionHealth {
         PartitionHealth {
-            partition_id: None,
-            replica_health_states: None,
             aggregated_health_state: None,
             health_events: None,
             unhealthy_evaluations: None,
             health_statistics: None,
+            partition_id: None,
+            replica_health_states: None,
         }
     }
 }

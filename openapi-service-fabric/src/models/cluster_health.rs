@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ClusterHealth : Represents the health of the cluster. Contains the cluster aggregated health state, the cluster application and node health states as well as the health events and the unhealthy evaluations.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClusterHealth {
-    /// Cluster node health states as found in the health store.
-    #[serde(rename = "NodeHealthStates", skip_serializing_if = "Option::is_none")]
-    pub node_health_states: Option<Vec<models::NodeHealthState>>,
-    /// Cluster application health states as found in the health store.
-    #[serde(
-        rename = "ApplicationHealthStates",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub application_health_states: Option<Vec<models::ApplicationHealthState>>,
     #[serde(
         rename = "AggregatedHealthState",
         skip_serializing_if = "Option::is_none"
@@ -39,18 +29,26 @@ pub struct ClusterHealth {
     pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "HealthStatistics", skip_serializing_if = "Option::is_none")]
     pub health_statistics: Option<Box<models::HealthStatistics>>,
+    /// Cluster node health states as found in the health store.
+    #[serde(rename = "NodeHealthStates", skip_serializing_if = "Option::is_none")]
+    pub node_health_states: Option<Vec<models::NodeHealthState>>,
+    /// Cluster application health states as found in the health store.
+    #[serde(
+        rename = "ApplicationHealthStates",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub application_health_states: Option<Vec<models::ApplicationHealthState>>,
 }
 
 impl ClusterHealth {
-    /// Represents the health of the cluster. Contains the cluster aggregated health state, the cluster application and node health states as well as the health events and the unhealthy evaluations.
     pub fn new() -> ClusterHealth {
         ClusterHealth {
-            node_health_states: None,
-            application_health_states: None,
             aggregated_health_state: None,
             health_events: None,
             unhealthy_evaluations: None,
             health_statistics: None,
+            node_health_states: None,
+            application_health_states: None,
         }
     }
 }

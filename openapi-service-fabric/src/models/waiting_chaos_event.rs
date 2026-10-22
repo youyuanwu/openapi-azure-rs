@@ -11,26 +11,24 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// WaitingChaosEvent : Describes a Chaos event that gets generated when Chaos is waiting for the cluster to become ready for faulting, for example, Chaos may be waiting for the on-going upgrade to finish.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct WaitingChaosEvent {
-    /// Describes why the WaitingChaosEvent was generated, for example, due to a cluster upgrade.
-    #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
-    pub reason: Option<String>,
     #[serde(rename = "Kind")]
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
     pub time_stamp_utc: String,
+    /// Describes why the WaitingChaosEvent was generated, for example, due to a cluster upgrade.
+    #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
 }
 
 impl WaitingChaosEvent {
-    /// Describes a Chaos event that gets generated when Chaos is waiting for the cluster to become ready for faulting, for example, Chaos may be waiting for the on-going upgrade to finish.
     pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> WaitingChaosEvent {
         WaitingChaosEvent {
-            reason: None,
             kind,
             time_stamp_utc,
+            reason: None,
         }
     }
 }

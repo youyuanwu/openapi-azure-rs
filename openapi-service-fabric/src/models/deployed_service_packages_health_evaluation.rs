@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedServicePackagesHealthEvaluation : Represents health evaluation for deployed service packages, containing health evaluations for each unhealthy deployed service package that impacted current aggregated health state. Can be returned when evaluating deployed application health and the aggregated health state is either Error or Warning.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedServicePackagesHealthEvaluation {
-    /// Total number of deployed service packages of the deployed application in the health store.
-    #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
-    pub total_count: Option<i64>,
-    /// List of health evaluations that resulted in the current aggregated health state.
-    #[serde(
-        rename = "UnhealthyEvaluations",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     #[serde(rename = "Kind")]
     pub kind: models::HealthEvaluationKind,
     #[serde(
@@ -33,17 +23,25 @@ pub struct DeployedServicePackagesHealthEvaluation {
     /// Description of the health evaluation, which represents a summary of the evaluation process.
     #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// Total number of deployed service packages of the deployed application in the health store.
+    #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+    pub total_count: Option<i64>,
+    /// List of health evaluations that resulted in the current aggregated health state.
+    #[serde(
+        rename = "UnhealthyEvaluations",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
 }
 
 impl DeployedServicePackagesHealthEvaluation {
-    /// Represents health evaluation for deployed service packages, containing health evaluations for each unhealthy deployed service package that impacted current aggregated health state. Can be returned when evaluating deployed application health and the aggregated health state is either Error or Warning.
     pub fn new(kind: models::HealthEvaluationKind) -> DeployedServicePackagesHealthEvaluation {
         DeployedServicePackagesHealthEvaluation {
-            total_count: None,
-            unhealthy_evaluations: None,
             kind,
             aggregated_health_state: None,
             description: None,
+            total_count: None,
+            unhealthy_evaluations: None,
         }
     }
 }

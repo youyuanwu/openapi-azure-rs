@@ -11,22 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// NodeRepairImpactDescription : Describes the expected impact of a repair on a set of nodes.  This type supports the Service Fabric platform; it is not meant to be used directly from your code.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeRepairImpactDescription {
+    #[serde(rename = "Kind")]
+    pub kind: models::RepairImpactKind,
     /// The list of nodes impacted by a repair action and their respective expected impact.
     #[serde(rename = "NodeImpactList", skip_serializing_if = "Option::is_none")]
     pub node_impact_list: Option<Vec<models::NodeImpact>>,
-    #[serde(rename = "Kind")]
-    pub kind: models::RepairImpactKind,
 }
 
 impl NodeRepairImpactDescription {
-    /// Describes the expected impact of a repair on a set of nodes.  This type supports the Service Fabric platform; it is not meant to be used directly from your code.
     pub fn new(kind: models::RepairImpactKind) -> NodeRepairImpactDescription {
         NodeRepairImpactDescription {
-            node_impact_list: None,
             kind,
+            node_impact_list: None,
         }
     }
 }

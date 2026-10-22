@@ -5700,7 +5700,7 @@ pub async fn container_submit_batch(
     let p_header_content_length = content_length;
     let p_header_x_ms_version = x_ms_version;
     let p_form_name = name;
-    let _p_form_body = body;
+    let p_form_body = body;
     let p_query_timeout = timeout;
     let p_header_x_ms_client_request_id = x_ms_client_request_id;
 
@@ -5729,7 +5729,15 @@ pub async fn container_submit_batch(
     };
     let mut multipart_form = reqwest::multipart::Form::new();
     multipart_form = multipart_form.text("name", p_form_name.to_string());
-    // TODO: support file upload for 'body' parameter
+    let file = TokioFile::open(&p_form_body).await?;
+    let stream = FramedRead::new(file, BytesCodec::new());
+    let file_name = p_form_body
+        .file_name()
+        .map(|n| n.to_string_lossy().to_string())
+        .unwrap_or_default();
+    let file_part =
+        reqwest::multipart::Part::stream(reqwest::Body::wrap_stream(stream)).file_name(file_name);
+    multipart_form = multipart_form.part("body", file_part);
     req_builder = req_builder.multipart(multipart_form);
 
     let req = req_builder.build()?;
@@ -7250,7 +7258,7 @@ pub async fn submit_batch(
     let p_header_x_ms_version = x_ms_version;
     let p_header_content_length = content_length;
     let p_form_name = name;
-    let _p_form_body = body;
+    let p_form_body = body;
     let p_query_timeout = timeout;
     let p_header_x_ms_client_request_id = x_ms_client_request_id;
 
@@ -7275,7 +7283,15 @@ pub async fn submit_batch(
     };
     let mut multipart_form = reqwest::multipart::Form::new();
     multipart_form = multipart_form.text("name", p_form_name.to_string());
-    // TODO: support file upload for 'body' parameter
+    let file = TokioFile::open(&p_form_body).await?;
+    let stream = FramedRead::new(file, BytesCodec::new());
+    let file_name = p_form_body
+        .file_name()
+        .map(|n| n.to_string_lossy().to_string())
+        .unwrap_or_default();
+    let file_part =
+        reqwest::multipart::Part::stream(reqwest::Body::wrap_stream(stream)).file_name(file_name);
+    multipart_form = multipart_form.part("body", file_part);
     req_builder = req_builder.multipart(multipart_form);
 
     let req = req_builder.build()?;

@@ -11,12 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatefulServiceInfo : Information about a stateful Service Fabric service.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatefulServiceInfo {
-    /// Whether the service has persisted state.
-    #[serde(rename = "HasPersistedState", skip_serializing_if = "Option::is_none")]
-    pub has_persisted_state: Option<bool>,
     /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
     #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -38,13 +34,14 @@ pub struct StatefulServiceInfo {
     /// Whether the service is in a service group.
     #[serde(rename = "IsServiceGroup", skip_serializing_if = "Option::is_none")]
     pub is_service_group: Option<bool>,
+    /// Whether the service has persisted state.
+    #[serde(rename = "HasPersistedState", skip_serializing_if = "Option::is_none")]
+    pub has_persisted_state: Option<bool>,
 }
 
 impl StatefulServiceInfo {
-    /// Information about a stateful Service Fabric service.
     pub fn new(service_kind: models::ServiceKind) -> StatefulServiceInfo {
         StatefulServiceInfo {
-            has_persisted_state: None,
             id: None,
             service_kind,
             name: None,
@@ -53,6 +50,7 @@ impl StatefulServiceInfo {
             health_state: None,
             service_status: None,
             is_service_group: None,
+            has_persisted_state: None,
         }
     }
 }

@@ -11,18 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// DeployedStatelessServiceInstanceDetailInfo : Information about a stateless instance running in a code package. Note that DeployedServiceReplicaQueryResult will contain duplicate data like ServiceKind, ServiceName, PartitionId and InstanceId.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DeployedStatelessServiceInstanceDetailInfo {
-    /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
-    #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
-    pub instance_id: Option<String>,
-    #[serde(
-        rename = "DeployedServiceReplicaQueryResult",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub deployed_service_replica_query_result:
-        Option<Box<models::DeployedStatelessServiceInstanceInfo>>,
     #[serde(rename = "ServiceKind")]
     pub service_kind: models::ServiceKind,
     /// The full name of the service with 'fabric:' URI scheme.
@@ -45,20 +35,28 @@ pub struct DeployedStatelessServiceInstanceDetailInfo {
     /// List of load reported by replica.
     #[serde(rename = "ReportedLoad", skip_serializing_if = "Option::is_none")]
     pub reported_load: Option<Vec<models::LoadMetricReportInfo>>,
+    /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
+    #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
+    pub instance_id: Option<String>,
+    #[serde(
+        rename = "DeployedServiceReplicaQueryResult",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub deployed_service_replica_query_result:
+        Option<Box<models::DeployedStatelessServiceInstanceInfo>>,
 }
 
 impl DeployedStatelessServiceInstanceDetailInfo {
-    /// Information about a stateless instance running in a code package. Note that DeployedServiceReplicaQueryResult will contain duplicate data like ServiceKind, ServiceName, PartitionId and InstanceId.
     pub fn new(service_kind: models::ServiceKind) -> DeployedStatelessServiceInstanceDetailInfo {
         DeployedStatelessServiceInstanceDetailInfo {
-            instance_id: None,
-            deployed_service_replica_query_result: None,
             service_kind,
             service_name: None,
             partition_id: None,
             current_service_operation: None,
             current_service_operation_start_time_utc: None,
             reported_load: None,
+            instance_id: None,
+            deployed_service_replica_query_result: None,
         }
     }
 }

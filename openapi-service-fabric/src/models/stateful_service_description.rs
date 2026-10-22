@@ -11,62 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// StatefulServiceDescription : Describes a stateful service.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatefulServiceDescription {
-    /// The target replica set size as a number.
-    #[serde(rename = "TargetReplicaSetSize")]
-    pub target_replica_set_size: i32,
-    /// The minimum replica set size as a number.
-    #[serde(rename = "MinReplicaSetSize")]
-    pub min_replica_set_size: i32,
-    /// A flag indicating whether this is a persistent service which stores states on the local disk. If it is then the value of this property is true, if not it is false.
-    #[serde(rename = "HasPersistedState")]
-    pub has_persisted_state: bool,
-    /// Flags indicating whether other properties are set. Each of the associated properties corresponds to a flag, specified below, which, if set, indicate that the property is specified. This property can be a combination of those flags obtained using bitwise 'OR' operator. For example, if the provided value is 6 then the flags for QuorumLossWaitDuration (2) and StandByReplicaKeepDuration(4) are set.  - None - Does not indicate any other properties are set. The value is zero. - ReplicaRestartWaitDuration - Indicates the ReplicaRestartWaitDuration property is set. The value is 1. - QuorumLossWaitDuration - Indicates the QuorumLossWaitDuration property is set. The value is 2. - StandByReplicaKeepDuration - Indicates the StandByReplicaKeepDuration property is set. The value is 4. - ServicePlacementTimeLimit - Indicates the ServicePlacementTimeLimit property is set. The value is 8. - DropSourceReplicaOnMove - Indicates the DropSourceReplicaOnMove property is set. The value is 16.
-    #[serde(rename = "Flags", skip_serializing_if = "Option::is_none")]
-    pub flags: Option<i32>,
-    /// The duration, in seconds, between when a replica goes down and when a new replica is created.
-    #[serde(
-        rename = "ReplicaRestartWaitDurationSeconds",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub replica_restart_wait_duration_seconds: Option<i64>,
-    /// The maximum duration, in seconds, for which a partition is allowed to be in a state of quorum loss.
-    #[serde(
-        rename = "QuorumLossWaitDurationSeconds",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub quorum_loss_wait_duration_seconds: Option<i64>,
-    /// The definition on how long StandBy replicas should be maintained before being removed.
-    #[serde(
-        rename = "StandByReplicaKeepDurationSeconds",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub stand_by_replica_keep_duration_seconds: Option<i64>,
-    /// The duration for which replicas can stay InBuild before reporting that build is stuck.
-    #[serde(
-        rename = "ServicePlacementTimeLimitSeconds",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub service_placement_time_limit_seconds: Option<i64>,
-    /// Indicates whether to drop source Secondary replica even if the target replica has not finished build. If desired behavior is to drop it as soon as possible the value of this property is true, if not it is false.
-    #[serde(
-        rename = "DropSourceReplicaOnMove",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub drop_source_replica_on_move: Option<bool>,
-    #[serde(
-        rename = "ReplicaLifecycleDescription",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub replica_lifecycle_description: Option<Box<models::ReplicaLifecycleDescription>>,
-    /// The auxiliary replica count as a number. To use Auxiliary replicas, the following must be true: AuxiliaryReplicaCount < (TargetReplicaSetSize+1)/2 and TargetReplicaSetSize >=3.
-    #[serde(
-        rename = "AuxiliaryReplicaCount",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub auxiliary_replica_count: Option<i32>,
     #[serde(rename = "ServiceKind")]
     pub service_kind: models::ServiceKind,
     /// The name of the application, including the 'fabric:' URI scheme.
@@ -127,31 +73,72 @@ pub struct StatefulServiceDescription {
     pub tags_required_to_place: Option<Box<models::NodeTagsDescription>>,
     #[serde(rename = "TagsRequiredToRun", skip_serializing_if = "Option::is_none")]
     pub tags_required_to_run: Option<Box<models::NodeTagsDescription>>,
+    /// The target replica set size as a number.
+    #[serde(rename = "TargetReplicaSetSize")]
+    pub target_replica_set_size: i32,
+    /// The minimum replica set size as a number.
+    #[serde(rename = "MinReplicaSetSize")]
+    pub min_replica_set_size: i32,
+    /// A flag indicating whether this is a persistent service which stores states on the local disk. If it is then the value of this property is true, if not it is false.
+    #[serde(rename = "HasPersistedState")]
+    pub has_persisted_state: bool,
+    /// Flags indicating whether other properties are set. Each of the associated properties corresponds to a flag, specified below, which, if set, indicate that the property is specified. This property can be a combination of those flags obtained using bitwise 'OR' operator. For example, if the provided value is 6 then the flags for QuorumLossWaitDuration (2) and StandByReplicaKeepDuration(4) are set.  - None - Does not indicate any other properties are set. The value is zero. - ReplicaRestartWaitDuration - Indicates the ReplicaRestartWaitDuration property is set. The value is 1. - QuorumLossWaitDuration - Indicates the QuorumLossWaitDuration property is set. The value is 2. - StandByReplicaKeepDuration - Indicates the StandByReplicaKeepDuration property is set. The value is 4. - ServicePlacementTimeLimit - Indicates the ServicePlacementTimeLimit property is set. The value is 8. - DropSourceReplicaOnMove - Indicates the DropSourceReplicaOnMove property is set. The value is 16.
+    #[serde(rename = "Flags", skip_serializing_if = "Option::is_none")]
+    pub flags: Option<i32>,
+    /// The duration, in seconds, between when a replica goes down and when a new replica is created.
+    #[serde(
+        rename = "ReplicaRestartWaitDurationSeconds",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub replica_restart_wait_duration_seconds: Option<i64>,
+    /// The maximum duration, in seconds, for which a partition is allowed to be in a state of quorum loss.
+    #[serde(
+        rename = "QuorumLossWaitDurationSeconds",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub quorum_loss_wait_duration_seconds: Option<i64>,
+    /// The definition on how long StandBy replicas should be maintained before being removed.
+    #[serde(
+        rename = "StandByReplicaKeepDurationSeconds",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub stand_by_replica_keep_duration_seconds: Option<i64>,
+    /// The duration for which replicas can stay InBuild before reporting that build is stuck.
+    #[serde(
+        rename = "ServicePlacementTimeLimitSeconds",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub service_placement_time_limit_seconds: Option<i64>,
+    /// Indicates whether to drop source Secondary replica even if the target replica has not finished build. If desired behavior is to drop it as soon as possible the value of this property is true, if not it is false.
+    #[serde(
+        rename = "DropSourceReplicaOnMove",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub drop_source_replica_on_move: Option<bool>,
+    #[serde(
+        rename = "ReplicaLifecycleDescription",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub replica_lifecycle_description: Option<Box<models::ReplicaLifecycleDescription>>,
+    /// The auxiliary replica count as a number. To use Auxiliary replicas, the following must be true: AuxiliaryReplicaCount < (TargetReplicaSetSize+1)/2 and TargetReplicaSetSize >=3.
+    #[serde(
+        rename = "AuxiliaryReplicaCount",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub auxiliary_replica_count: Option<i32>,
 }
 
 impl StatefulServiceDescription {
-    /// Describes a stateful service.
     pub fn new(
-        target_replica_set_size: i32,
-        min_replica_set_size: i32,
-        has_persisted_state: bool,
         service_kind: models::ServiceKind,
         service_name: String,
         service_type_name: String,
         partition_description: models::PartitionSchemeDescription,
+        target_replica_set_size: i32,
+        min_replica_set_size: i32,
+        has_persisted_state: bool,
     ) -> StatefulServiceDescription {
         StatefulServiceDescription {
-            target_replica_set_size,
-            min_replica_set_size,
-            has_persisted_state,
-            flags: None,
-            replica_restart_wait_duration_seconds: None,
-            quorum_loss_wait_duration_seconds: None,
-            stand_by_replica_keep_duration_seconds: None,
-            service_placement_time_limit_seconds: None,
-            drop_source_replica_on_move: None,
-            replica_lifecycle_description: None,
-            auxiliary_replica_count: None,
             service_kind,
             application_name: None,
             service_name,
@@ -169,6 +156,17 @@ impl StatefulServiceDescription {
             scaling_policies: None,
             tags_required_to_place: None,
             tags_required_to_run: None,
+            target_replica_set_size,
+            min_replica_set_size,
+            has_persisted_state,
+            flags: None,
+            replica_restart_wait_duration_seconds: None,
+            quorum_loss_wait_duration_seconds: None,
+            stand_by_replica_keep_duration_seconds: None,
+            service_placement_time_limit_seconds: None,
+            drop_source_replica_on_move: None,
+            replica_lifecycle_description: None,
+            auxiliary_replica_count: None,
         }
     }
 }

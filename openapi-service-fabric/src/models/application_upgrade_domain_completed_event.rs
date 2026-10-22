@@ -11,9 +11,28 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ApplicationUpgradeDomainCompletedEvent : Application Upgrade Domain Completed event.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ApplicationUpgradeDomainCompletedEvent {
+    #[serde(rename = "Kind")]
+    pub kind: models::FabricEventKind,
+    /// The identifier for the FabricEvent instance.
+    #[serde(rename = "EventInstanceId")]
+    pub event_instance_id: uuid::Uuid,
+    /// The category of event.
+    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+    /// The time event was logged.
+    #[serde(rename = "TimeStamp")]
+    pub time_stamp: String,
+    /// Shows there is existing related events available.
+    #[serde(
+        rename = "HasCorrelatedEvents",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub has_correlated_events: Option<bool>,
+    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+    #[serde(rename = "ApplicationId")]
+    pub application_id: String,
     /// Application type name.
     #[serde(rename = "ApplicationTypeName")]
     pub application_type_name: String,
@@ -32,55 +51,34 @@ pub struct ApplicationUpgradeDomainCompletedEvent {
     /// Upgrade time of domain in milli-seconds.
     #[serde(rename = "UpgradeDomainElapsedTimeInMs")]
     pub upgrade_domain_elapsed_time_in_ms: f64,
-    /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
-    #[serde(rename = "ApplicationId")]
-    pub application_id: String,
-    #[serde(rename = "Kind")]
-    pub kind: models::FabricEventKind,
-    /// The identifier for the FabricEvent instance.
-    #[serde(rename = "EventInstanceId")]
-    pub event_instance_id: uuid::Uuid,
-    /// The category of event.
-    #[serde(rename = "Category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<String>,
-    /// The time event was logged.
-    #[serde(rename = "TimeStamp")]
-    pub time_stamp: String,
-    /// Shows there is existing related events available.
-    #[serde(
-        rename = "HasCorrelatedEvents",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub has_correlated_events: Option<bool>,
 }
 
 impl ApplicationUpgradeDomainCompletedEvent {
-    /// Application Upgrade Domain Completed event.
     pub fn new(
+        kind: models::FabricEventKind,
+        event_instance_id: uuid::Uuid,
+        time_stamp: String,
+        application_id: String,
         application_type_name: String,
         current_application_type_version: String,
         application_type_version: String,
         upgrade_state: String,
         upgrade_domains: String,
         upgrade_domain_elapsed_time_in_ms: f64,
-        application_id: String,
-        kind: models::FabricEventKind,
-        event_instance_id: uuid::Uuid,
-        time_stamp: String,
     ) -> ApplicationUpgradeDomainCompletedEvent {
         ApplicationUpgradeDomainCompletedEvent {
+            kind,
+            event_instance_id,
+            category: None,
+            time_stamp,
+            has_correlated_events: None,
+            application_id,
             application_type_name,
             current_application_type_version,
             application_type_version,
             upgrade_state,
             upgrade_domains,
             upgrade_domain_elapsed_time_in_ms,
-            application_id,
-            kind,
-            event_instance_id,
-            category: None,
-            time_stamp,
-            has_correlated_events: None,
         }
     }
 }
