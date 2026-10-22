@@ -34,7 +34,7 @@ pub struct ReconfigurationInformation {
         rename = "ReconfigurationStartTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub reconfiguration_start_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub reconfiguration_start_time_utc: Option<String>,
 }
 
 impl ReconfigurationInformation {

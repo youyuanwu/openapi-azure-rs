@@ -23,7 +23,7 @@ pub struct NodeDeactivateCompletedEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp: String,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
@@ -44,19 +44,19 @@ pub struct NodeDeactivateCompletedEvent {
     pub batch_ids_with_deactivate_intent: String,
     /// Start time.
     #[serde(rename = "StartTime")]
-    pub start_time: chrono::DateTime<chrono::FixedOffset>,
+    pub start_time: String,
 }
 
 impl NodeDeactivateCompletedEvent {
     pub fn new(
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        time_stamp: String,
         node_name: String,
         node_instance: i64,
         effective_deactivate_intent: String,
         batch_ids_with_deactivate_intent: String,
-        start_time: chrono::DateTime<chrono::FixedOffset>,
+        start_time: String,
     ) -> NodeDeactivateCompletedEvent {
         NodeDeactivateCompletedEvent {
             kind,

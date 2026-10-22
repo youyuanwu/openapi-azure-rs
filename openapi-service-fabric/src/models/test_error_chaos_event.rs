@@ -17,17 +17,14 @@ pub struct TestErrorChaosEvent {
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
-    pub time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp_utc: String,
     /// Describes why TestErrorChaosEvent was generated. For example, Chaos tries to fault a partition but finds that the partition is no longer fault tolerant, then a TestErrorEvent gets generated with the reason stating that the partition is not fault tolerant.
     #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
 
 impl TestErrorChaosEvent {
-    pub fn new(
-        kind: models::ChaosEventKind,
-        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
-    ) -> TestErrorChaosEvent {
+    pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> TestErrorChaosEvent {
         TestErrorChaosEvent {
             kind,
             time_stamp_utc,

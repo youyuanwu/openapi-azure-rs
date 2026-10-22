@@ -26,7 +26,7 @@ pub struct SecondaryIdleReplicatorStatus {
         rename = "LastReplicationOperationReceivedTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_replication_operation_received_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub last_replication_operation_received_time_utc: Option<String>,
     /// Value that indicates whether the replica is currently being built.
     #[serde(rename = "IsInBuild", skip_serializing_if = "Option::is_none")]
     pub is_in_build: Option<bool>,
@@ -37,13 +37,13 @@ pub struct SecondaryIdleReplicatorStatus {
         rename = "LastCopyOperationReceivedTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_copy_operation_received_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub last_copy_operation_received_time_utc: Option<String>,
     /// The last time-stamp (UTC) at which an acknowledgment was sent to the primary replicator. UTC 0 represents an invalid value, indicating that an acknowledgment message was never sent.
     #[serde(
         rename = "LastAcknowledgementSentTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_acknowledgement_sent_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub last_acknowledgement_sent_time_utc: Option<String>,
 }
 
 impl SecondaryIdleReplicatorStatus {

@@ -33,7 +33,7 @@ pub enum DeployedServiceReplicaDetailInfo {
             rename = "CurrentServiceOperationStartTimeUtc",
             skip_serializing_if = "Option::is_none"
         )]
-        current_service_operation_start_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+        current_service_operation_start_time_utc: Option<String>,
         /// List of load reported by replica.
         #[serde(rename = "ReportedLoad", skip_serializing_if = "Option::is_none")]
         reported_load: Option<Vec<models::LoadMetricReportInfo>>,
@@ -56,7 +56,7 @@ pub enum DeployedServiceReplicaDetailInfo {
             rename = "CurrentServiceOperationStartTimeUtc",
             skip_serializing_if = "Option::is_none"
         )]
-        current_service_operation_start_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+        current_service_operation_start_time_utc: Option<String>,
         /// List of load reported by replica.
         #[serde(rename = "ReportedLoad", skip_serializing_if = "Option::is_none")]
         reported_load: Option<Vec<models::LoadMetricReportInfo>>,

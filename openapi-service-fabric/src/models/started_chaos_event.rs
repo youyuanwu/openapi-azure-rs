@@ -17,16 +17,13 @@ pub struct StartedChaosEvent {
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
-    pub time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp_utc: String,
     #[serde(rename = "ChaosParameters", skip_serializing_if = "Option::is_none")]
     pub chaos_parameters: Option<Box<models::ChaosParameters>>,
 }
 
 impl StartedChaosEvent {
-    pub fn new(
-        kind: models::ChaosEventKind,
-        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
-    ) -> StartedChaosEvent {
+    pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> StartedChaosEvent {
         StartedChaosEvent {
             kind,
             time_stamp_utc,

@@ -32,7 +32,7 @@ pub struct CodePackageEntryPoint {
     pub status: Option<models::EntryPointStatus>,
     /// The time (in UTC) when the entry point executable will be run next.
     #[serde(rename = "NextActivationTime", skip_serializing_if = "Option::is_none")]
-    pub next_activation_time: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub next_activation_time: Option<String>,
     /// The instance ID for current running entry point. For a code package setup entry point (if specified) runs first and after it finishes main entry point is started. Each time entry point executable is run, its instance id will change.
     #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
     pub instance_id: Option<String>,

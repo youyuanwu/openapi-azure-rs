@@ -22,14 +22,14 @@ pub struct TimeBasedBackupScheduleDescription {
     pub run_days: Option<Vec<models::DayOfWeek>>,
     /// Represents the list of exact time during the day in ISO8601 format. Like '19:00:00' will represent '7PM' during the day. Date specified along with time will be ignored.
     #[serde(rename = "RunTimes")]
-    pub run_times: Vec<chrono::DateTime<chrono::FixedOffset>>,
+    pub run_times: Vec<String>,
 }
 
 impl TimeBasedBackupScheduleDescription {
     pub fn new(
         schedule_kind: models::BackupScheduleKind,
         schedule_frequency_type: models::BackupScheduleFrequencyType,
-        run_times: Vec<chrono::DateTime<chrono::FixedOffset>>,
+        run_times: Vec<String>,
     ) -> TimeBasedBackupScheduleDescription {
         TimeBasedBackupScheduleDescription {
             schedule_kind,

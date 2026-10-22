@@ -23,7 +23,7 @@ pub struct DeployedApplicationHealthReportExpiredEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp: String,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
@@ -62,14 +62,14 @@ pub struct DeployedApplicationHealthReportExpiredEvent {
     pub remove_when_expired: bool,
     /// Source time.
     #[serde(rename = "SourceUtcTimestamp")]
-    pub source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
+    pub source_utc_timestamp: String,
 }
 
 impl DeployedApplicationHealthReportExpiredEvent {
     pub fn new(
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        time_stamp: String,
         application_id: String,
         application_instance_id: i64,
         node_name: String,
@@ -80,7 +80,7 @@ impl DeployedApplicationHealthReportExpiredEvent {
         sequence_number: i64,
         description: String,
         remove_when_expired: bool,
-        source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
+        source_utc_timestamp: String,
     ) -> DeployedApplicationHealthReportExpiredEvent {
         DeployedApplicationHealthReportExpiredEvent {
             kind,

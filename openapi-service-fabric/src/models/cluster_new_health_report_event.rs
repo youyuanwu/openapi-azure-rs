@@ -23,7 +23,7 @@ pub struct ClusterNewHealthReportEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp: String,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
@@ -53,14 +53,14 @@ pub struct ClusterNewHealthReportEvent {
     pub remove_when_expired: bool,
     /// Source time.
     #[serde(rename = "SourceUtcTimestamp")]
-    pub source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
+    pub source_utc_timestamp: String,
 }
 
 impl ClusterNewHealthReportEvent {
     pub fn new(
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        time_stamp: String,
         source_id: String,
         property: String,
         health_state: String,
@@ -68,7 +68,7 @@ impl ClusterNewHealthReportEvent {
         sequence_number: i64,
         description: String,
         remove_when_expired: bool,
-        source_utc_timestamp: chrono::DateTime<chrono::FixedOffset>,
+        source_utc_timestamp: String,
     ) -> ClusterNewHealthReportEvent {
         ClusterNewHealthReportEvent {
             kind,

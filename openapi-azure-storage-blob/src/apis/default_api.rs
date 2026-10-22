@@ -1953,8 +1953,8 @@ pub async fn blob_download(
     x_ms_if_tags: Option<&str>,
     if_match: Option<&str>,
     if_none_match: Option<&str>,
-    if_unmodified_since: Option<chrono::DateTime<chrono::FixedOffset>>,
-    if_modified_since: Option<chrono::DateTime<chrono::FixedOffset>>,
+    if_unmodified_since: Option<String>,
+    if_modified_since: Option<String>,
 ) -> Result<reqwest::Response, Error<BlobDownloadError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_header_x_ms_version = x_ms_version;

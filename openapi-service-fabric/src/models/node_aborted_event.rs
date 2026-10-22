@@ -23,7 +23,7 @@ pub struct NodeAbortedEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp: String,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
@@ -63,7 +63,7 @@ impl NodeAbortedEvent {
     pub fn new(
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        time_stamp: String,
         node_name: String,
         node_instance: i64,
         node_id: String,

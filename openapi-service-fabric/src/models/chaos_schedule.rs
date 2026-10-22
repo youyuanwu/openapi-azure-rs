@@ -16,10 +16,10 @@ use serde::{Deserialize, Serialize};
 pub struct ChaosSchedule {
     /// The date and time Chaos will start using this schedule.
     #[serde(rename = "StartDate", skip_serializing_if = "Option::is_none")]
-    pub start_date: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub start_date: Option<String>,
     /// The date and time Chaos will continue to use this schedule until.
     #[serde(rename = "ExpiryDate", skip_serializing_if = "Option::is_none")]
-    pub expiry_date: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub expiry_date: Option<String>,
     /// A mapping of string names to Chaos Parameters to be referenced by Chaos Schedule Jobs.
     #[serde(
         rename = "ChaosParametersDictionary",

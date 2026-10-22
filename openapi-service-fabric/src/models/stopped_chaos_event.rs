@@ -17,17 +17,14 @@ pub struct StoppedChaosEvent {
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
-    pub time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp_utc: String,
     /// Describes why Chaos stopped. Chaos can stop because of StopChaos API call or the timeToRun provided in ChaosParameters is over.
     #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
 
 impl StoppedChaosEvent {
-    pub fn new(
-        kind: models::ChaosEventKind,
-        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
-    ) -> StoppedChaosEvent {
+    pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> StoppedChaosEvent {
         StoppedChaosEvent {
             kind,
             time_stamp_utc,

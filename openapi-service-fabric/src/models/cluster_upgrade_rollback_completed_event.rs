@@ -23,7 +23,7 @@ pub struct ClusterUpgradeRollbackCompletedEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp: String,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
@@ -45,7 +45,7 @@ impl ClusterUpgradeRollbackCompletedEvent {
     pub fn new(
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        time_stamp: String,
         target_cluster_version: String,
         failure_reason: String,
         overall_upgrade_elapsed_time_in_ms: f64,

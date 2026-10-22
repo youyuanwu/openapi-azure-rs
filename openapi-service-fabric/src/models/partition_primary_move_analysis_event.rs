@@ -23,7 +23,7 @@ pub struct PartitionPrimaryMoveAnalysisEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp: String,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
@@ -37,7 +37,7 @@ pub struct PartitionPrimaryMoveAnalysisEvent {
     pub metadata: Box<models::AnalysisEventMetadata>,
     /// Time when the move was completed.
     #[serde(rename = "WhenMoveCompleted")]
-    pub when_move_completed: chrono::DateTime<chrono::FixedOffset>,
+    pub when_move_completed: String,
     /// The name of a Service Fabric node.
     #[serde(rename = "PreviousNode")]
     pub previous_node: String,
@@ -56,10 +56,10 @@ impl PartitionPrimaryMoveAnalysisEvent {
     pub fn new(
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        time_stamp: String,
         partition_id: uuid::Uuid,
         metadata: models::AnalysisEventMetadata,
-        when_move_completed: chrono::DateTime<chrono::FixedOffset>,
+        when_move_completed: String,
         previous_node: String,
         current_node: String,
         move_reason: String,

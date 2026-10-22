@@ -17,17 +17,14 @@ pub struct ExecutingFaultsChaosEvent {
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
-    pub time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp_utc: String,
     /// List of string description of the faults that Chaos decided to execute in an iteration.
     #[serde(rename = "Faults", skip_serializing_if = "Option::is_none")]
     pub faults: Option<Vec<String>>,
 }
 
 impl ExecutingFaultsChaosEvent {
-    pub fn new(
-        kind: models::ChaosEventKind,
-        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
-    ) -> ExecutingFaultsChaosEvent {
+    pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> ExecutingFaultsChaosEvent {
         ExecutingFaultsChaosEvent {
             kind,
             time_stamp_utc,

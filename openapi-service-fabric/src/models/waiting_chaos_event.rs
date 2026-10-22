@@ -17,17 +17,14 @@ pub struct WaitingChaosEvent {
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
-    pub time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp_utc: String,
     /// Describes why the WaitingChaosEvent was generated, for example, due to a cluster upgrade.
     #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
 
 impl WaitingChaosEvent {
-    pub fn new(
-        kind: models::ChaosEventKind,
-        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
-    ) -> WaitingChaosEvent {
+    pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> WaitingChaosEvent {
         WaitingChaosEvent {
             kind,
             time_stamp_utc,

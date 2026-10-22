@@ -23,7 +23,7 @@ pub struct ApplicationContainerInstanceExitedEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp: String,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
@@ -68,14 +68,14 @@ pub struct ApplicationContainerInstanceExitedEvent {
     pub unexpected_termination: bool,
     /// Start time of process.
     #[serde(rename = "StartTime")]
-    pub start_time: chrono::DateTime<chrono::FixedOffset>,
+    pub start_time: String,
 }
 
 impl ApplicationContainerInstanceExitedEvent {
     pub fn new(
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        time_stamp: String,
         application_id: String,
         service_name: String,
         service_package_name: String,
@@ -88,7 +88,7 @@ impl ApplicationContainerInstanceExitedEvent {
         host_id: String,
         exit_code: i64,
         unexpected_termination: bool,
-        start_time: chrono::DateTime<chrono::FixedOffset>,
+        start_time: String,
     ) -> ApplicationContainerInstanceExitedEvent {
         ApplicationContainerInstanceExitedEvent {
             kind,

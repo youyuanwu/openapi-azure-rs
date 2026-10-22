@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 pub struct LoadMetricReport {
     /// Gets the UTC time when the load was reported.
     #[serde(rename = "LastReportedUtc", skip_serializing_if = "Option::is_none")]
-    pub last_reported_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub last_reported_utc: Option<String>,
     /// The name of the load metric.
     #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

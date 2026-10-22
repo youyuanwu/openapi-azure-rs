@@ -22,7 +22,7 @@ pub struct RemoteReplicatorStatus {
         rename = "LastAcknowledgementProcessedTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_acknowledgement_processed_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub last_acknowledgement_processed_time_utc: Option<String>,
     /// The highest replication operation sequence number that the secondary has received from the primary.
     #[serde(
         rename = "LastReceivedReplicationSequenceNumber",

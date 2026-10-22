@@ -20,7 +20,7 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v7.26.0 ge
     -g rust\
     -o /local/openapi-service-fabric/ \
     --global-property=apiDocs=false,modelDocs=false \
-    --additional-properties=packageName=openapi-service-fabric,packageVersion=0.1.0
+    --additional-properties=packageName=openapi-service-fabric,packageVersion=0.1.0,useChrono=false
 
 sudo chown -R $(whoami) .
 
@@ -44,7 +44,7 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v7.26.0 ge
     -g rust \
     -o /local/openapi-azure-storage-blob/ \
     --global-property=apiDocs=false,modelDocs=false \
-    --additional-properties=packageName=openapi-azure-storage-blob,packageVersion=0.1.1
+    --additional-properties=packageName=openapi-azure-storage-blob,packageVersion=0.1.1,useChrono=false
 
 
 sudo chown -R $(whoami) .
@@ -58,16 +58,19 @@ sed -i '/unused_imports)]/i\#![allow(clippy::needless_return,clippy::into_iter_o
 cargo fmt
 ```
 
-The generator now uses Reqwest 0.13 and Chrono date/time types. The `rustls-tls`
-feature alias preserves the previous feature name alongside the generated
-`rustls` feature. Blob file bodies are now used by the generated upload code, so
-the old unused-body rename must not be applied.
+The generator now uses Reqwest 0.13. Set `useChrono=false` to retain the existing
+string-based date/time API: callers supply ISO8601 backup query filters and
+RFC7231 conditional Blob headers. The default Chrono generation serializes
+these request values with `Display`, which does not match their wire formats.
+The `rustls-tls` feature alias preserves the previous feature name alongside the
+generated `rustls` feature. Blob file bodies are now used by the generated
+upload code, so the old unused-body rename must not be applied.
 
 Generation resets dependency requirements in the generated manifests. Reapply
 the current dependency minimums with Cargo before validating:
 ```bash
-cargo add -p openapi-service-fabric serde@1.0.229 serde_json@1.0.154 serde_repr@0.1.21 url@2.5.8 uuid@1.28.0 chrono@0.4.45 reqwest@0.13.5
-cargo add -p openapi-azure-storage-blob serde@1.0.229 serde_with@3.24.0 serde_json@1.0.154 serde_repr@0.1.21 url@2.5.8 uuid@1.28.0 chrono@0.4.45 tokio@1.54.1 tokio-util@0.7.20 reqwest@0.13.5
+cargo add -p openapi-service-fabric serde@1.0.229 serde_json@1.0.154 serde_repr@0.1.21 url@2.5.8 uuid@1.28.0 reqwest@0.13.5
+cargo add -p openapi-azure-storage-blob serde@1.0.229 serde_with@3.24.0 serde_json@1.0.154 serde_repr@0.1.21 url@2.5.8 uuid@1.28.0 tokio@1.54.1 tokio-util@0.7.20 reqwest@0.13.5
 cargo update
 ```
 These are the latest stable direct dependency versions at update time.
@@ -83,7 +86,7 @@ cargo clippy --workspace --all-targets -j 1
 cargo check -p openapi-service-fabric -p openapi-azure-storage-blob --no-default-features --features rustls-tls -j 1
 ```
 Clippy reports existing generated manual `Default` implementations as
-`derivable_impls` warnings.
+`derivable_impls` warnings and large error variants as `result_large_err` warnings.
 
 The `openapi-tests` integration test requires a local Service Fabric onebox
 cluster at `http://localhost:19080`; run it only when that cluster is available.

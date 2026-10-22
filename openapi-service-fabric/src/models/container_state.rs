@@ -19,13 +19,13 @@ pub struct ContainerState {
     pub state: Option<String>,
     /// Date/time when the container state started.
     #[serde(rename = "startTime", skip_serializing_if = "Option::is_none")]
-    pub start_time: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub start_time: Option<String>,
     /// The container exit code.
     #[serde(rename = "exitCode", skip_serializing_if = "Option::is_none")]
     pub exit_code: Option<String>,
     /// Date/time when the container state finished.
     #[serde(rename = "finishTime", skip_serializing_if = "Option::is_none")]
-    pub finish_time: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub finish_time: Option<String>,
     /// Human-readable status of this state.
     #[serde(rename = "detailStatus", skip_serializing_if = "Option::is_none")]
     pub detail_status: Option<String>,

@@ -19,13 +19,13 @@ pub struct ClusterLoadInfo {
         rename = "LastBalancingStartTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_balancing_start_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub last_balancing_start_time_utc: Option<String>,
     /// The end time of last resource balancing run.
     #[serde(
         rename = "LastBalancingEndTimeUtc",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_balancing_end_time_utc: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub last_balancing_end_time_utc: Option<String>,
     /// List that contains metrics and their load information in this cluster.
     #[serde(
         rename = "LoadMetricInformation",

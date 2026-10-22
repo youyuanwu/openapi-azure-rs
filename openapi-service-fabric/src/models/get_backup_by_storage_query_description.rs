@@ -19,10 +19,10 @@ pub struct GetBackupByStorageQueryDescription {
         rename = "StartDateTimeFilter",
         skip_serializing_if = "Option::is_none"
     )]
-    pub start_date_time_filter: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub start_date_time_filter: Option<String>,
     /// Specifies the end date time in ISO8601 till which to enumerate backups. If not specified, backups are enumerated till the end.
     #[serde(rename = "EndDateTimeFilter", skip_serializing_if = "Option::is_none")]
-    pub end_date_time_filter: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub end_date_time_filter: Option<String>,
     /// If specified as true, gets the most recent backup (within the specified time range) for every partition under the specified backup entity.
     #[serde(rename = "Latest", skip_serializing_if = "Option::is_none")]
     pub latest: Option<bool>,

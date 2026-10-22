@@ -843,8 +843,8 @@ pub async fn get_application_backup_list(
     api_version: &str,
     timeout: Option<i64>,
     latest: Option<bool>,
-    start_date_time_filter: Option<chrono::DateTime<chrono::FixedOffset>>,
-    end_date_time_filter: Option<chrono::DateTime<chrono::FixedOffset>>,
+    start_date_time_filter: Option<String>,
+    end_date_time_filter: Option<String>,
     continuation_token: Option<&str>,
     max_results: Option<i64>,
 ) -> Result<models::PagedBackupInfoList, Error<GetApplicationBackupListError>> {
@@ -1163,8 +1163,8 @@ pub async fn get_partition_backup_list(
     api_version: &str,
     timeout: Option<i64>,
     latest: Option<bool>,
-    start_date_time_filter: Option<chrono::DateTime<chrono::FixedOffset>>,
-    end_date_time_filter: Option<chrono::DateTime<chrono::FixedOffset>>,
+    start_date_time_filter: Option<String>,
+    end_date_time_filter: Option<String>,
 ) -> Result<models::PagedBackupInfoList, Error<GetPartitionBackupListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_partition_id = partition_id;
@@ -1414,8 +1414,8 @@ pub async fn get_service_backup_list(
     api_version: &str,
     timeout: Option<i64>,
     latest: Option<bool>,
-    start_date_time_filter: Option<chrono::DateTime<chrono::FixedOffset>>,
-    end_date_time_filter: Option<chrono::DateTime<chrono::FixedOffset>>,
+    start_date_time_filter: Option<String>,
+    end_date_time_filter: Option<String>,
     continuation_token: Option<&str>,
     max_results: Option<i64>,
 ) -> Result<models::PagedBackupInfoList, Error<GetServiceBackupListError>> {

@@ -127,10 +127,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1aa79e62e7697b8e29b513a68abacf485adcd1fe8284a4316c5ae868e6633327"
 dependencies = [
  "iana-time-zone",
- "js-sys",
  "num-traits",
  "serde",
- "wasm-bindgen",
  "windows-link",
 ]
 
@@ -949,7 +947,6 @@ checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
 name = "openapi-azure-storage-blob"
 version = "0.1.1"
 dependencies = [
- "chrono",
  "reqwest",
  "serde",
  "serde_json",
@@ -965,7 +962,6 @@ dependencies = [
 name = "openapi-service-fabric"
 version = "0.1.0"
 dependencies = [
- "chrono",
  "reqwest",
  "serde",
  "serde_json",

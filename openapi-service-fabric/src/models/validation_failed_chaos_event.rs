@@ -17,17 +17,14 @@ pub struct ValidationFailedChaosEvent {
     pub kind: models::ChaosEventKind,
     /// The UTC timestamp when this Chaos event was generated.
     #[serde(rename = "TimeStampUtc")]
-    pub time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp_utc: String,
     /// Describes why the ValidationFailedChaosEvent was generated. This may happen because more than MaxPercentUnhealthyNodes are unhealthy for more than MaxClusterStabilizationTimeout. This reason will be in the Reason property of the ValidationFailedChaosEvent as a string.
     #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
 
 impl ValidationFailedChaosEvent {
-    pub fn new(
-        kind: models::ChaosEventKind,
-        time_stamp_utc: chrono::DateTime<chrono::FixedOffset>,
-    ) -> ValidationFailedChaosEvent {
+    pub fn new(kind: models::ChaosEventKind, time_stamp_utc: String) -> ValidationFailedChaosEvent {
         ValidationFailedChaosEvent {
             kind,
             time_stamp_utc,

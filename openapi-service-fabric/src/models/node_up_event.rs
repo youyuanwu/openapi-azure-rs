@@ -23,7 +23,7 @@ pub struct NodeUpEvent {
     pub category: Option<String>,
     /// The time event was logged.
     #[serde(rename = "TimeStamp")]
-    pub time_stamp: chrono::DateTime<chrono::FixedOffset>,
+    pub time_stamp: String,
     /// Shows there is existing related events available.
     #[serde(
         rename = "HasCorrelatedEvents",
@@ -38,17 +38,17 @@ pub struct NodeUpEvent {
     pub node_instance: i64,
     /// Time when Node was last down.
     #[serde(rename = "LastNodeDownAt")]
-    pub last_node_down_at: chrono::DateTime<chrono::FixedOffset>,
+    pub last_node_down_at: String,
 }
 
 impl NodeUpEvent {
     pub fn new(
         kind: models::FabricEventKind,
         event_instance_id: uuid::Uuid,
-        time_stamp: chrono::DateTime<chrono::FixedOffset>,
+        time_stamp: String,
         node_name: String,
         node_instance: i64,
-        last_node_down_at: chrono::DateTime<chrono::FixedOffset>,
+        last_node_down_at: String,
     ) -> NodeUpEvent {
         NodeUpEvent {
             kind,

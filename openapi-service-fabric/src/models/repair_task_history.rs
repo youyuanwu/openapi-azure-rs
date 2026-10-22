@@ -19,67 +19,67 @@ pub struct RepairTaskHistory {
         rename = "CreatedUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub created_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub created_utc_timestamp: Option<String>,
     /// The time when the repair task entered the Claimed state.
     #[serde(
         rename = "ClaimedUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub claimed_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub claimed_utc_timestamp: Option<String>,
     /// The time when the repair task entered the Preparing state.
     #[serde(
         rename = "PreparingUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub preparing_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub preparing_utc_timestamp: Option<String>,
     /// The time when the repair task entered the Approved state
     #[serde(
         rename = "ApprovedUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub approved_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub approved_utc_timestamp: Option<String>,
     /// The time when the repair task entered the Executing state
     #[serde(
         rename = "ExecutingUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub executing_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub executing_utc_timestamp: Option<String>,
     /// The time when the repair task entered the Restoring state
     #[serde(
         rename = "RestoringUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub restoring_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub restoring_utc_timestamp: Option<String>,
     /// The time when the repair task entered the Completed state
     #[serde(
         rename = "CompletedUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub completed_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub completed_utc_timestamp: Option<String>,
     /// The time when the repair task started the health check in the Preparing state.
     #[serde(
         rename = "PreparingHealthCheckStartUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub preparing_health_check_start_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub preparing_health_check_start_utc_timestamp: Option<String>,
     /// The time when the repair task completed the health check in the Preparing state.
     #[serde(
         rename = "PreparingHealthCheckEndUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub preparing_health_check_end_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub preparing_health_check_end_utc_timestamp: Option<String>,
     /// The time when the repair task started the health check in the Restoring state.
     #[serde(
         rename = "RestoringHealthCheckStartUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub restoring_health_check_start_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub restoring_health_check_start_utc_timestamp: Option<String>,
     /// The time when the repair task completed the health check in the Restoring state.
     #[serde(
         rename = "RestoringHealthCheckEndUtcTimestamp",
         skip_serializing_if = "Option::is_none"
     )]
-    pub restoring_health_check_end_utc_timestamp: Option<chrono::DateTime<chrono::FixedOffset>>,
+    pub restoring_health_check_end_utc_timestamp: Option<String>,
 }
 
 impl RepairTaskHistory {
