@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "ServiceKind")]
 pub enum ServicePartitionInfo {
-    #[serde(rename = "StatefulServicePartitionInfo")]
+    #[serde(rename = "Stateful")]
     StatefulServicePartitionInfo {
         #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
         health_state: Option<models::HealthState>,
@@ -26,8 +26,31 @@ pub enum ServicePartitionInfo {
             skip_serializing_if = "Option::is_none"
         )]
         partition_information: Option<Box<models::PartitionInformation>>,
+        /// The target replica set size as a number.
+        #[serde(
+            rename = "TargetReplicaSetSize",
+            skip_serializing_if = "Option::is_none"
+        )]
+        target_replica_set_size: Option<i64>,
+        /// The minimum replica set size as a number.
+        #[serde(rename = "MinReplicaSetSize", skip_serializing_if = "Option::is_none")]
+        min_replica_set_size: Option<i64>,
+        /// The auxiliary replica count as a number. To use Auxiliary replicas the following must be true, AuxiliaryReplicaCount < (TargetReplicaSetSize+1)/2 and TargetReplicaSetSize >=3.
+        #[serde(
+            rename = "AuxiliaryReplicaCount",
+            skip_serializing_if = "Option::is_none"
+        )]
+        auxiliary_replica_count: Option<i64>,
+        /// The duration for which this partition was in quorum loss. If the partition is currently in quorum loss, it returns the duration since it has been in that state. This field is using ISO8601 format for specifying the duration.
+        #[serde(
+            rename = "LastQuorumLossDuration",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_quorum_loss_duration: Option<String>,
+        #[serde(rename = "PrimaryEpoch", skip_serializing_if = "Option::is_none")]
+        primary_epoch: Option<Box<models::Epoch>>,
     },
-    #[serde(rename = "StatelessServicePartitionInfo")]
+    #[serde(rename = "Stateless")]
     StatelessServicePartitionInfo {
         #[serde(rename = "HealthState", skip_serializing_if = "Option::is_none")]
         health_state: Option<models::HealthState>,
@@ -38,6 +61,18 @@ pub enum ServicePartitionInfo {
             skip_serializing_if = "Option::is_none"
         )]
         partition_information: Option<Box<models::PartitionInformation>>,
+        /// Number of instances of this partition.
+        #[serde(rename = "InstanceCount", skip_serializing_if = "Option::is_none")]
+        instance_count: Option<i64>,
+        /// MinInstanceCount is the minimum number of instances that must be up to meet the EnsureAvailability safety check during operations like upgrade or deactivate node. The actual number that is used is max( MinInstanceCount, ceil( MinInstancePercentage/100.0 * InstanceCount) ). Note, if InstanceCount is set to -1, during MinInstanceCount computation -1 is first converted into the number of nodes on which the instances are allowed to be placed according to the placement constraints on the service.
+        #[serde(rename = "MinInstanceCount", skip_serializing_if = "Option::is_none")]
+        min_instance_count: Option<i32>,
+        /// MinInstancePercentage is the minimum percentage of InstanceCount that must be up to meet the EnsureAvailability safety check during operations like upgrade or deactivate node. The actual number that is used is max( MinInstanceCount, ceil( MinInstancePercentage/100.0 * InstanceCount) ). Note, if InstanceCount is set to -1, during MinInstancePercentage computation, -1 is first converted into the number of nodes on which the instances are allowed to be placed according to the placement constraints on the service.
+        #[serde(
+            rename = "MinInstancePercentage",
+            skip_serializing_if = "Option::is_none"
+        )]
+        min_instance_percentage: Option<i32>,
     },
 }
 
@@ -47,6 +82,11 @@ impl Default for ServicePartitionInfo {
             health_state: Default::default(),
             partition_status: Default::default(),
             partition_information: Default::default(),
+            target_replica_set_size: Default::default(),
+            min_replica_set_size: Default::default(),
+            auxiliary_replica_count: Default::default(),
+            last_quorum_loss_duration: Default::default(),
+            primary_epoch: Default::default(),
         }
     }
 }

@@ -253,7 +253,7 @@ pub async fn backup_partition(
     backup_timeout: Option<i32>,
     timeout: Option<i64>,
     backup_partition_description: Option<models::BackupPartitionDescription>,
-) -> Result<(), Error<BackupPartitionError>> {
+) -> Result<reqwest::StatusCode, Error<BackupPartitionError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_partition_id = partition_id;
     let p_query_api_version = api_version;
@@ -287,8 +287,8 @@ pub async fn backup_partition(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<BackupPartitionError> = serde_json::from_str(&content).ok();
@@ -307,7 +307,7 @@ pub async fn create_backup_policy(
     backup_policy_description: models::BackupPolicyDescription,
     timeout: Option<i64>,
     validate_connection: Option<bool>,
-) -> Result<(), Error<CreateBackupPolicyError>> {
+) -> Result<reqwest::StatusCode, Error<CreateBackupPolicyError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_backup_policy_description = backup_policy_description;
@@ -339,8 +339,8 @@ pub async fn create_backup_policy(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<CreateBackupPolicyError> = serde_json::from_str(&content).ok();
@@ -358,7 +358,7 @@ pub async fn delete_backup_policy(
     backup_policy_name: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<DeleteBackupPolicyError>> {
+) -> Result<reqwest::StatusCode, Error<DeleteBackupPolicyError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_backup_policy_name = backup_policy_name;
     let p_query_api_version = api_version;
@@ -386,8 +386,8 @@ pub async fn delete_backup_policy(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteBackupPolicyError> = serde_json::from_str(&content).ok();
@@ -406,7 +406,7 @@ pub async fn disable_application_backup(
     api_version: &str,
     timeout: Option<i64>,
     disable_backup_description: Option<models::DisableBackupDescription>,
-) -> Result<(), Error<DisableApplicationBackupError>> {
+) -> Result<reqwest::StatusCode, Error<DisableApplicationBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_application_id = application_id;
     let p_query_api_version = api_version;
@@ -436,8 +436,8 @@ pub async fn disable_application_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<DisableApplicationBackupError> = serde_json::from_str(&content).ok();
@@ -456,7 +456,7 @@ pub async fn disable_partition_backup(
     api_version: &str,
     timeout: Option<i64>,
     disable_backup_description: Option<models::DisableBackupDescription>,
-) -> Result<(), Error<DisablePartitionBackupError>> {
+) -> Result<reqwest::StatusCode, Error<DisablePartitionBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_partition_id = partition_id;
     let p_query_api_version = api_version;
@@ -486,8 +486,8 @@ pub async fn disable_partition_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<DisablePartitionBackupError> = serde_json::from_str(&content).ok();
@@ -506,7 +506,7 @@ pub async fn disable_service_backup(
     api_version: &str,
     timeout: Option<i64>,
     disable_backup_description: Option<models::DisableBackupDescription>,
-) -> Result<(), Error<DisableServiceBackupError>> {
+) -> Result<reqwest::StatusCode, Error<DisableServiceBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_service_id = service_id;
     let p_query_api_version = api_version;
@@ -536,8 +536,8 @@ pub async fn disable_service_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<DisableServiceBackupError> = serde_json::from_str(&content).ok();
@@ -556,7 +556,7 @@ pub async fn enable_application_backup(
     api_version: &str,
     enable_backup_description: models::EnableBackupDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<EnableApplicationBackupError>> {
+) -> Result<reqwest::StatusCode, Error<EnableApplicationBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_application_id = application_id;
     let p_query_api_version = api_version;
@@ -586,8 +586,8 @@ pub async fn enable_application_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<EnableApplicationBackupError> = serde_json::from_str(&content).ok();
@@ -606,7 +606,7 @@ pub async fn enable_partition_backup(
     api_version: &str,
     enable_backup_description: models::EnableBackupDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<EnablePartitionBackupError>> {
+) -> Result<reqwest::StatusCode, Error<EnablePartitionBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_partition_id = partition_id;
     let p_query_api_version = api_version;
@@ -636,8 +636,8 @@ pub async fn enable_partition_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<EnablePartitionBackupError> = serde_json::from_str(&content).ok();
@@ -656,7 +656,7 @@ pub async fn enable_service_backup(
     api_version: &str,
     enable_backup_description: models::EnableBackupDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<EnableServiceBackupError>> {
+) -> Result<reqwest::StatusCode, Error<EnableServiceBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_service_id = service_id;
     let p_query_api_version = api_version;
@@ -686,8 +686,8 @@ pub async fn enable_service_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<EnableServiceBackupError> = serde_json::from_str(&content).ok();
@@ -747,7 +747,7 @@ pub async fn get_all_entities_backed_up_by_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -817,7 +817,7 @@ pub async fn get_application_backup_configuration_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -899,7 +899,7 @@ pub async fn get_application_backup_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -955,7 +955,7 @@ pub async fn get_backup_policy_by_name(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1015,7 +1015,7 @@ pub async fn get_backup_policy_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1080,7 +1080,7 @@ pub async fn get_backups_from_backup_location(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1137,7 +1137,7 @@ pub async fn get_partition_backup_configuration_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1209,7 +1209,7 @@ pub async fn get_partition_backup_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1265,7 +1265,7 @@ pub async fn get_partition_backup_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1321,7 +1321,7 @@ pub async fn get_partition_restore_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1388,7 +1388,7 @@ pub async fn get_service_backup_configuration_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1470,7 +1470,7 @@ pub async fn get_service_backup_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1496,7 +1496,7 @@ pub async fn restore_partition(
     restore_partition_description: models::RestorePartitionDescription,
     restore_timeout: Option<i32>,
     timeout: Option<i64>,
-) -> Result<(), Error<RestorePartitionError>> {
+) -> Result<reqwest::StatusCode, Error<RestorePartitionError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_partition_id = partition_id;
     let p_query_api_version = api_version;
@@ -1530,8 +1530,8 @@ pub async fn restore_partition(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<RestorePartitionError> = serde_json::from_str(&content).ok();
@@ -1549,7 +1549,7 @@ pub async fn resume_application_backup(
     application_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<ResumeApplicationBackupError>> {
+) -> Result<reqwest::StatusCode, Error<ResumeApplicationBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_application_id = application_id;
     let p_query_api_version = api_version;
@@ -1577,8 +1577,8 @@ pub async fn resume_application_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<ResumeApplicationBackupError> = serde_json::from_str(&content).ok();
@@ -1596,7 +1596,7 @@ pub async fn resume_partition_backup(
     partition_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<ResumePartitionBackupError>> {
+) -> Result<reqwest::StatusCode, Error<ResumePartitionBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_partition_id = partition_id;
     let p_query_api_version = api_version;
@@ -1624,8 +1624,8 @@ pub async fn resume_partition_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<ResumePartitionBackupError> = serde_json::from_str(&content).ok();
@@ -1643,7 +1643,7 @@ pub async fn resume_service_backup(
     service_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<ResumeServiceBackupError>> {
+) -> Result<reqwest::StatusCode, Error<ResumeServiceBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_service_id = service_id;
     let p_query_api_version = api_version;
@@ -1671,8 +1671,8 @@ pub async fn resume_service_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<ResumeServiceBackupError> = serde_json::from_str(&content).ok();
@@ -1690,7 +1690,7 @@ pub async fn suspend_application_backup(
     application_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<SuspendApplicationBackupError>> {
+) -> Result<reqwest::StatusCode, Error<SuspendApplicationBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_application_id = application_id;
     let p_query_api_version = api_version;
@@ -1718,8 +1718,8 @@ pub async fn suspend_application_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<SuspendApplicationBackupError> = serde_json::from_str(&content).ok();
@@ -1737,7 +1737,7 @@ pub async fn suspend_partition_backup(
     partition_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<SuspendPartitionBackupError>> {
+) -> Result<reqwest::StatusCode, Error<SuspendPartitionBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_partition_id = partition_id;
     let p_query_api_version = api_version;
@@ -1765,8 +1765,8 @@ pub async fn suspend_partition_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<SuspendPartitionBackupError> = serde_json::from_str(&content).ok();
@@ -1784,7 +1784,7 @@ pub async fn suspend_service_backup(
     service_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<SuspendServiceBackupError>> {
+) -> Result<reqwest::StatusCode, Error<SuspendServiceBackupError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_service_id = service_id;
     let p_query_api_version = api_version;
@@ -1812,8 +1812,8 @@ pub async fn suspend_service_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<SuspendServiceBackupError> = serde_json::from_str(&content).ok();
@@ -1833,7 +1833,7 @@ pub async fn update_backup_policy(
     backup_policy_description: models::BackupPolicyDescription,
     timeout: Option<i64>,
     validate_connection: Option<bool>,
-) -> Result<(), Error<UpdateBackupPolicyError>> {
+) -> Result<reqwest::StatusCode, Error<UpdateBackupPolicyError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_backup_policy_name = backup_policy_name;
     let p_query_api_version = api_version;
@@ -1867,8 +1867,8 @@ pub async fn update_backup_policy(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<UpdateBackupPolicyError> = serde_json::from_str(&content).ok();

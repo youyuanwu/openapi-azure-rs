@@ -15,26 +15,56 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum SafetyCheck {
-    #[serde(rename = "EnsureAvailabilitySafetyCheck")]
-    EnsureAvailabilitySafetyCheck {},
-    #[serde(rename = "EnsurePartitionQuorumSafetyCheck")]
-    EnsurePartitionQuorumSafetyCheck {},
+    #[serde(rename = "EnsureAvailability")]
+    EnsureAvailabilitySafetyCheck {
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+    },
+    #[serde(rename = "EnsurePartitionQuorum")]
+    EnsurePartitionQuorumSafetyCheck {
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+    },
     #[serde(rename = "PartitionSafetyCheck")]
-    PartitionSafetyCheck {},
-    #[serde(rename = "SeedNodeSafetyCheck")]
+    PartitionSafetyCheck {
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+    },
+    #[serde(rename = "EnsureSeedNodeQuorum")]
     SeedNodeSafetyCheck {},
-    #[serde(rename = "WaitForInbuildReplicaSafetyCheck")]
-    WaitForInbuildReplicaSafetyCheck {},
-    #[serde(rename = "WaitForPrimaryPlacementSafetyCheck")]
-    WaitForPrimaryPlacementSafetyCheck {},
-    #[serde(rename = "WaitForPrimarySwapSafetyCheck")]
-    WaitForPrimarySwapSafetyCheck {},
-    #[serde(rename = "WaitForReconfigurationSafetyCheck")]
-    WaitForReconfigurationSafetyCheck {},
+    #[serde(rename = "WaitForInbuildReplica")]
+    WaitForInbuildReplicaSafetyCheck {
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+    },
+    #[serde(rename = "WaitForPrimaryPlacement")]
+    WaitForPrimaryPlacementSafetyCheck {
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+    },
+    #[serde(rename = "WaitForPrimarySwap")]
+    WaitForPrimarySwapSafetyCheck {
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+    },
+    #[serde(rename = "WaitForReconfiguration")]
+    WaitForReconfigurationSafetyCheck {
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+    },
 }
 
 impl Default for SafetyCheck {
     fn default() -> Self {
-        Self::EnsureAvailabilitySafetyCheck {}
+        Self::EnsureAvailabilitySafetyCheck {
+            partition_id: Default::default(),
+        }
     }
 }

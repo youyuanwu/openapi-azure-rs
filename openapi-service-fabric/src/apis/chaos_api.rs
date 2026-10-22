@@ -93,7 +93,7 @@ pub async fn get_chaos(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -163,7 +163,7 @@ pub async fn get_chaos_events(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -213,7 +213,7 @@ pub async fn get_chaos_schedule(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -237,7 +237,7 @@ pub async fn post_chaos_schedule(
     api_version: &str,
     chaos_schedule: models::ChaosScheduleDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<PostChaosScheduleError>> {
+) -> Result<reqwest::StatusCode, Error<PostChaosScheduleError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_chaos_schedule = chaos_schedule;
@@ -262,8 +262,8 @@ pub async fn post_chaos_schedule(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<PostChaosScheduleError> = serde_json::from_str(&content).ok();
@@ -281,7 +281,7 @@ pub async fn start_chaos(
     api_version: &str,
     chaos_parameters: models::ChaosParameters,
     timeout: Option<i64>,
-) -> Result<(), Error<StartChaosError>> {
+) -> Result<reqwest::StatusCode, Error<StartChaosError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_chaos_parameters = chaos_parameters;
@@ -306,8 +306,8 @@ pub async fn start_chaos(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<StartChaosError> = serde_json::from_str(&content).ok();
@@ -324,7 +324,7 @@ pub async fn stop_chaos(
     configuration: &configuration::Configuration,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<StopChaosError>> {
+) -> Result<reqwest::StatusCode, Error<StopChaosError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_timeout = timeout;
@@ -347,8 +347,8 @@ pub async fn stop_chaos(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<StopChaosError> = serde_json::from_str(&content).ok();

@@ -124,7 +124,7 @@ pub async fn create_service(
     application_id: &str,
     service_description: models::ServiceDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<CreateServiceError>> {
+) -> Result<reqwest::StatusCode, Error<CreateServiceError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -154,8 +154,8 @@ pub async fn create_service(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<CreateServiceError> = serde_json::from_str(&content).ok();
@@ -174,7 +174,7 @@ pub async fn create_service_from_template(
     application_id: &str,
     service_from_template_description: models::ServiceFromTemplateDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<CreateServiceFromTemplateError>> {
+) -> Result<reqwest::StatusCode, Error<CreateServiceFromTemplateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -204,8 +204,8 @@ pub async fn create_service_from_template(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<CreateServiceFromTemplateError> = serde_json::from_str(&content).ok();
@@ -224,7 +224,7 @@ pub async fn delete_service(
     service_id: &str,
     force_remove: Option<bool>,
     timeout: Option<i64>,
-) -> Result<(), Error<DeleteServiceError>> {
+) -> Result<reqwest::StatusCode, Error<DeleteServiceError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -256,8 +256,8 @@ pub async fn delete_service(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteServiceError> = serde_json::from_str(&content).ok();
@@ -307,7 +307,7 @@ pub async fn get_application_name_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -363,7 +363,7 @@ pub async fn get_service_description(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -386,8 +386,8 @@ pub async fn get_service_health(
     configuration: &configuration::Configuration,
     api_version: &str,
     service_id: &str,
-    events_health_state_filter: Option<i32>,
-    partitions_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
+    partitions_health_state_filter: Option<u32>,
     exclude_health_statistics: Option<bool>,
     timeout: Option<i64>,
 ) -> Result<models::ServiceHealth, Error<GetServiceHealthError>> {
@@ -435,7 +435,7 @@ pub async fn get_service_health(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -458,8 +458,8 @@ pub async fn get_service_health_using_policy(
     configuration: &configuration::Configuration,
     api_version: &str,
     service_id: &str,
-    events_health_state_filter: Option<i32>,
-    partitions_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
+    partitions_health_state_filter: Option<u32>,
     exclude_health_statistics: Option<bool>,
     timeout: Option<i64>,
     application_health_policy: Option<models::ApplicationHealthPolicy>,
@@ -512,7 +512,7 @@ pub async fn get_service_health_using_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -537,7 +537,7 @@ pub async fn get_service_info(
     service_id: &str,
     api_version: &str,
     timeout: Option<i64>,
-) -> Result<models::ServiceInfo, Error<GetServiceInfoError>> {
+) -> Result<Option<models::ServiceInfo>, Error<GetServiceInfoError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_application_id = application_id;
     let p_path_service_id = service_id;
@@ -564,6 +564,9 @@ pub async fn get_service_info(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status == reqwest::StatusCode::NO_CONTENT {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -571,10 +574,10 @@ pub async fn get_service_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ServiceInfo`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ServiceInfo`")))),
         }
@@ -637,7 +640,7 @@ pub async fn get_service_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -703,7 +706,7 @@ pub async fn get_unplaced_replica_information(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -730,7 +733,7 @@ pub async fn report_service_health(
     health_information: models::HealthInformation,
     immediate: Option<bool>,
     timeout: Option<i64>,
-) -> Result<(), Error<ReportServiceHealthError>> {
+) -> Result<reqwest::StatusCode, Error<ReportServiceHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -764,8 +767,8 @@ pub async fn report_service_health(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<ReportServiceHealthError> = serde_json::from_str(&content).ok();
@@ -830,7 +833,7 @@ pub async fn resolve_service(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -855,7 +858,7 @@ pub async fn update_service(
     service_id: &str,
     service_update_description: models::ServiceUpdateDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<UpdateServiceError>> {
+) -> Result<reqwest::StatusCode, Error<UpdateServiceError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_service_id = service_id;
@@ -885,8 +888,8 @@ pub async fn update_service(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<UpdateServiceError> = serde_json::from_str(&content).ok();

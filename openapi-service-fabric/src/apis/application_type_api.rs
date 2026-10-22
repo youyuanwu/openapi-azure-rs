@@ -97,7 +97,7 @@ pub async fn get_application_manifest(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -171,7 +171,7 @@ pub async fn get_application_type_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -248,7 +248,7 @@ pub async fn get_application_type_info_list_by_name(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -273,7 +273,7 @@ pub async fn provision_application_type(
     api_version: &str,
     provision_application_type_description_base_required_body_param: models::ProvisionApplicationTypeDescriptionBase,
     timeout: Option<i64>,
-) -> Result<(), Error<ProvisionApplicationTypeError>> {
+) -> Result<reqwest::StatusCode, Error<ProvisionApplicationTypeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_provision_application_type_description_base_required_body_param =
@@ -300,8 +300,8 @@ pub async fn provision_application_type(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<ProvisionApplicationTypeError> = serde_json::from_str(&content).ok();
@@ -320,7 +320,7 @@ pub async fn unprovision_application_type(
     application_type_name: &str,
     unprovision_application_type_description_info: models::UnprovisionApplicationTypeDescriptionInfo,
     timeout: Option<i64>,
-) -> Result<(), Error<UnprovisionApplicationTypeError>> {
+) -> Result<reqwest::StatusCode, Error<UnprovisionApplicationTypeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_type_name = application_type_name;
@@ -351,8 +351,8 @@ pub async fn unprovision_application_type(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<UnprovisionApplicationTypeError> = serde_json::from_str(&content).ok();

@@ -105,7 +105,7 @@ pub async fn get_container_logs_deployed_on_node(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -175,7 +175,7 @@ pub async fn get_deployed_code_package_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -255,7 +255,7 @@ pub async fn invoke_container_api(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -281,7 +281,7 @@ pub async fn restart_deployed_code_package(
     application_id: &str,
     restart_deployed_code_package_description: models::RestartDeployedCodePackageDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<RestartDeployedCodePackageError>> {
+) -> Result<reqwest::StatusCode, Error<RestartDeployedCodePackageError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -314,8 +314,8 @@ pub async fn restart_deployed_code_package(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<RestartDeployedCodePackageError> = serde_json::from_str(&content).ok();

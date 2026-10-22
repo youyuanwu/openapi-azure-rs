@@ -62,7 +62,10 @@ pub async fn get_deployed_service_type_info_by_name(
     service_type_name: &str,
     service_manifest_name: Option<&str>,
     timeout: Option<i64>,
-) -> Result<Vec<models::DeployedServiceTypeInfo>, Error<GetDeployedServiceTypeInfoByNameError>> {
+) -> Result<
+    Option<Vec<models::DeployedServiceTypeInfo>>,
+    Error<GetDeployedServiceTypeInfoByNameError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -95,6 +98,9 @@ pub async fn get_deployed_service_type_info_by_name(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status == reqwest::StatusCode::NO_CONTENT {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -102,10 +108,10 @@ pub async fn get_deployed_service_type_info_by_name(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `Vec&lt;models::DeployedServiceTypeInfo&gt;`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `Vec&lt;models::DeployedServiceTypeInfo&gt;`")))),
         }
@@ -167,7 +173,7 @@ pub async fn get_deployed_service_type_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -236,7 +242,7 @@ pub async fn get_service_manifest(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -262,7 +268,7 @@ pub async fn get_service_type_info_by_name(
     application_type_version: &str,
     service_type_name: &str,
     timeout: Option<i64>,
-) -> Result<models::ServiceTypeInfo, Error<GetServiceTypeInfoByNameError>> {
+) -> Result<Option<models::ServiceTypeInfo>, Error<GetServiceTypeInfoByNameError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_type_name = application_type_name;
@@ -294,6 +300,9 @@ pub async fn get_service_type_info_by_name(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status == reqwest::StatusCode::NO_CONTENT {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -301,10 +310,10 @@ pub async fn get_service_type_info_by_name(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ServiceTypeInfo`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ServiceTypeInfo`")))),
         }
@@ -363,7 +372,7 @@ pub async fn get_service_type_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),

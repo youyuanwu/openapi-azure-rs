@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum ServiceTypeDescription {
-    #[serde(rename = "StatefulServiceTypeDescription")]
+    #[serde(rename = "Stateful")]
     StatefulServiceTypeDescription {
         /// Indicates whether the service type is a stateful service type or a stateless service type. This property is true if the service type is a stateful service type, false otherwise.
         #[serde(rename = "IsStateful", skip_serializing_if = "Option::is_none")]
@@ -41,8 +41,11 @@ pub enum ServiceTypeDescription {
         /// List of service type extensions.
         #[serde(rename = "Extensions", skip_serializing_if = "Option::is_none")]
         extensions: Option<Vec<models::ServiceTypeExtensionDescription>>,
+        /// A flag indicating whether this is a persistent service which stores states on the local disk. If it is then the value of this property is true, if not it is false.
+        #[serde(rename = "HasPersistedState", skip_serializing_if = "Option::is_none")]
+        has_persisted_state: Option<bool>,
     },
-    #[serde(rename = "StatelessServiceTypeDescription")]
+    #[serde(rename = "Stateless")]
     StatelessServiceTypeDescription {
         /// Indicates whether the service type is a stateful service type or a stateless service type. This property is true if the service type is a stateful service type, false otherwise.
         #[serde(rename = "IsStateful", skip_serializing_if = "Option::is_none")]
@@ -68,6 +71,9 @@ pub enum ServiceTypeDescription {
         /// List of service type extensions.
         #[serde(rename = "Extensions", skip_serializing_if = "Option::is_none")]
         extensions: Option<Vec<models::ServiceTypeExtensionDescription>>,
+        /// A flag indicating if this type is not implemented and hosted by a user service process, but is implicitly hosted by a system created process. This value is true for services using the guest executable services, false otherwise.
+        #[serde(rename = "UseImplicitHost", skip_serializing_if = "Option::is_none")]
+        use_implicit_host: Option<bool>,
     },
 }
 
@@ -80,6 +86,7 @@ impl Default for ServiceTypeDescription {
             load_metrics: Default::default(),
             service_placement_policies: Default::default(),
             extensions: Default::default(),
+            has_persisted_state: Default::default(),
         }
     }
 }

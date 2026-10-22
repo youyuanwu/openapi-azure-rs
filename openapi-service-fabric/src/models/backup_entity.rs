@@ -15,16 +15,33 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "EntityKind")]
 pub enum BackupEntity {
-    #[serde(rename = "ApplicationBackupEntity")]
-    ApplicationBackupEntity {},
-    #[serde(rename = "PartitionBackupEntity")]
-    PartitionBackupEntity {},
-    #[serde(rename = "ServiceBackupEntity")]
-    ServiceBackupEntity {},
+    #[serde(rename = "Application")]
+    ApplicationBackupEntity {
+        /// The name of the application, including the 'fabric:' URI scheme.
+        #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
+        application_name: Option<String>,
+    },
+    #[serde(rename = "Partition")]
+    PartitionBackupEntity {
+        /// The full name of the service with 'fabric:' URI scheme.
+        #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
+        service_name: Option<String>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+    },
+    #[serde(rename = "Service")]
+    ServiceBackupEntity {
+        /// The full name of the service with 'fabric:' URI scheme.
+        #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
+        service_name: Option<String>,
+    },
 }
 
 impl Default for BackupEntity {
     fn default() -> Self {
-        Self::ApplicationBackupEntity {}
+        Self::ApplicationBackupEntity {
+            application_name: Default::default(),
+        }
     }
 }

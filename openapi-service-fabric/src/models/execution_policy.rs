@@ -15,10 +15,13 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum ExecutionPolicy {
-    #[serde(rename = "DefaultExecutionPolicy")]
+    #[serde(rename = "Default")]
     DefaultExecutionPolicy {},
-    #[serde(rename = "RunToCompletionExecutionPolicy")]
-    RunToCompletionExecutionPolicy {},
+    #[serde(rename = "RunToCompletion")]
+    RunToCompletionExecutionPolicy {
+        #[serde(rename = "restart")]
+        restart: models::RestartPolicy,
+    },
 }
 
 impl Default for ExecutionPolicy {

@@ -92,7 +92,7 @@ pub async fn create_name(
     api_version: &str,
     name_description: models::NameDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<CreateNameError>> {
+) -> Result<reqwest::StatusCode, Error<CreateNameError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_name_description = name_description;
@@ -117,8 +117,8 @@ pub async fn create_name(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<CreateNameError> = serde_json::from_str(&content).ok();
@@ -136,7 +136,7 @@ pub async fn delete_name(
     api_version: &str,
     name_id: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<DeleteNameError>> {
+) -> Result<reqwest::StatusCode, Error<DeleteNameError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_name_id = name_id;
@@ -164,8 +164,8 @@ pub async fn delete_name(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteNameError> = serde_json::from_str(&content).ok();
@@ -184,7 +184,7 @@ pub async fn delete_property(
     name_id: &str,
     property_name: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<DeletePropertyError>> {
+) -> Result<reqwest::StatusCode, Error<DeletePropertyError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_name_id = name_id;
@@ -214,8 +214,8 @@ pub async fn delete_property(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<DeletePropertyError> = serde_json::from_str(&content).ok();
@@ -233,7 +233,7 @@ pub async fn get_name_exists_info(
     api_version: &str,
     name_id: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<GetNameExistsInfoError>> {
+) -> Result<reqwest::StatusCode, Error<GetNameExistsInfoError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_name_id = name_id;
@@ -259,8 +259,8 @@ pub async fn get_name_exists_info(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<GetNameExistsInfoError> = serde_json::from_str(&content).ok();
@@ -313,7 +313,7 @@ pub async fn get_property_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -379,7 +379,7 @@ pub async fn get_property_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -445,7 +445,7 @@ pub async fn get_sub_name_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -470,7 +470,7 @@ pub async fn put_property(
     name_id: &str,
     property_description: models::PropertyDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<PutPropertyError>> {
+) -> Result<reqwest::StatusCode, Error<PutPropertyError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_name_id = name_id;
@@ -498,8 +498,8 @@ pub async fn put_property(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<PutPropertyError> = serde_json::from_str(&content).ok();
@@ -554,7 +554,7 @@ pub async fn submit_property_batch(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),

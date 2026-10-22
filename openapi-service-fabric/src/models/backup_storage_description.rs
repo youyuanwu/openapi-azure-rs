@@ -15,29 +15,64 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "StorageKind")]
 pub enum BackupStorageDescription {
-    #[serde(rename = "AzureBlobBackupStorageDescription")]
+    #[serde(rename = "AzureBlobStore")]
     AzureBlobBackupStorageDescription {
         /// Friendly name for this backup storage.
         #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
         friendly_name: Option<String>,
+        /// The connection string to connect to the Azure blob store.
+        #[serde(rename = "ConnectionString")]
+        connection_string: String,
+        /// The name of the container in the blob store to store and enumerate backups from.
+        #[serde(rename = "ContainerName")]
+        container_name: String,
     },
-    #[serde(rename = "DsmsAzureBlobBackupStorageDescription")]
+    #[serde(rename = "DsmsAzureBlobStore")]
     DsmsAzureBlobBackupStorageDescription {
         /// Friendly name for this backup storage.
         #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
         friendly_name: Option<String>,
+        /// The source location of the storage credentials to connect to the Dsms Azure blob store.
+        #[serde(rename = "StorageCredentialsSourceLocation")]
+        storage_credentials_source_location: String,
+        /// The name of the container in the blob store to store and enumerate backups from.
+        #[serde(rename = "ContainerName")]
+        container_name: String,
     },
-    #[serde(rename = "FileShareBackupStorageDescription")]
+    #[serde(rename = "FileShare")]
     FileShareBackupStorageDescription {
         /// Friendly name for this backup storage.
         #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
         friendly_name: Option<String>,
+        /// UNC path of the file share where to store or enumerate backups from.
+        #[serde(rename = "Path")]
+        path: String,
+        /// Primary user name to access the file share.
+        #[serde(rename = "PrimaryUserName", skip_serializing_if = "Option::is_none")]
+        primary_user_name: Option<String>,
+        /// Primary password to access the share location.
+        #[serde(rename = "PrimaryPassword", skip_serializing_if = "Option::is_none")]
+        primary_password: Option<String>,
+        /// Secondary user name to access the file share.
+        #[serde(rename = "SecondaryUserName", skip_serializing_if = "Option::is_none")]
+        secondary_user_name: Option<String>,
+        /// Secondary password to access the share location
+        #[serde(rename = "SecondaryPassword", skip_serializing_if = "Option::is_none")]
+        secondary_password: Option<String>,
     },
-    #[serde(rename = "ManagedIdentityAzureBlobBackupStorageDescription")]
+    #[serde(rename = "ManagedIdentityAzureBlobStore")]
     ManagedIdentityAzureBlobBackupStorageDescription {
         /// Friendly name for this backup storage.
         #[serde(rename = "FriendlyName", skip_serializing_if = "Option::is_none")]
         friendly_name: Option<String>,
+        #[serde(rename = "ManagedIdentityType")]
+        managed_identity_type: models::ManagedIdentityType,
+        /// The Blob Service Uri to connect to the Azure blob store..
+        #[serde(rename = "BlobServiceUri")]
+        blob_service_uri: String,
+        /// The name of the container in the blob store to store and enumerate backups from.
+        #[serde(rename = "ContainerName")]
+        container_name: String,
     },
 }
 
@@ -45,6 +80,8 @@ impl Default for BackupStorageDescription {
     fn default() -> Self {
         Self::AzureBlobBackupStorageDescription {
             friendly_name: Default::default(),
+            connection_string: Default::default(),
+            container_name: Default::default(),
         }
     }
 }

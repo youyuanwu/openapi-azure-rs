@@ -92,7 +92,7 @@ pub async fn mesh_secret_value_add_value(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -116,7 +116,7 @@ pub async fn mesh_secret_value_delete(
     api_version: &str,
     secret_resource_name: &str,
     secret_value_resource_name: &str,
-) -> Result<(), Error<MeshSecretValueDeleteError>> {
+) -> Result<reqwest::StatusCode, Error<MeshSecretValueDeleteError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_secret_resource_name = secret_resource_name;
@@ -142,8 +142,8 @@ pub async fn mesh_secret_value_delete(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<MeshSecretValueDeleteError> = serde_json::from_str(&content).ok();
@@ -191,7 +191,7 @@ pub async fn mesh_secret_value_get(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -242,7 +242,7 @@ pub async fn mesh_secret_value_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -298,7 +298,7 @@ pub async fn mesh_secret_value_show(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),

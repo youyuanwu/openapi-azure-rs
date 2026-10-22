@@ -15,12 +15,29 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum AutoScalingTrigger {
-    #[serde(rename = "AverageLoadScalingTrigger")]
-    AverageLoadScalingTrigger {},
+    #[serde(rename = "AverageLoad")]
+    AverageLoadScalingTrigger {
+        #[serde(rename = "metric")]
+        metric: Box<models::AutoScalingMetric>,
+        /// Lower load threshold (if average load is below this threshold, service will scale down).
+        #[serde(rename = "lowerLoadThreshold")]
+        lower_load_threshold: f64,
+        /// Upper load threshold (if average load is above this threshold, service will scale up).
+        #[serde(rename = "upperLoadThreshold")]
+        upper_load_threshold: f64,
+        /// Scale interval that indicates how often will this trigger be checked.
+        #[serde(rename = "scaleIntervalInSeconds")]
+        scale_interval_in_seconds: i32,
+    },
 }
 
 impl Default for AutoScalingTrigger {
     fn default() -> Self {
-        Self::AverageLoadScalingTrigger {}
+        Self::AverageLoadScalingTrigger {
+            metric: Default::default(),
+            lower_load_threshold: Default::default(),
+            upper_load_threshold: Default::default(),
+            scale_interval_in_seconds: Default::default(),
+        }
     }
 }

@@ -15,14 +15,43 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum NetworkResourcePropertiesBase {
-    #[serde(rename = "LocalNetworkResourceProperties")]
-    LocalNetworkResourceProperties {},
+    #[serde(rename = "Local")]
+    LocalNetworkResourceProperties {
+        /// User readable description of the network.
+        #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
+        description: Option<String>,
+        #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
+        status: Option<models::ResourceStatus>,
+        /// Gives additional information about the current status of the network.
+        #[serde(rename = "statusDetails", skip_serializing_if = "Option::is_none")]
+        status_details: Option<String>,
+        /// Address space for a container network. This is expressed in CIDR notation.
+        #[serde(
+            rename = "networkAddressPrefix",
+            skip_serializing_if = "Option::is_none"
+        )]
+        network_address_prefix: Option<String>,
+    },
     #[serde(rename = "NetworkResourceProperties")]
-    NetworkResourceProperties {},
+    NetworkResourceProperties {
+        /// User readable description of the network.
+        #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
+        description: Option<String>,
+        #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
+        status: Option<models::ResourceStatus>,
+        /// Gives additional information about the current status of the network.
+        #[serde(rename = "statusDetails", skip_serializing_if = "Option::is_none")]
+        status_details: Option<String>,
+    },
 }
 
 impl Default for NetworkResourcePropertiesBase {
     fn default() -> Self {
-        Self::LocalNetworkResourceProperties {}
+        Self::LocalNetworkResourceProperties {
+            description: Default::default(),
+            status: Default::default(),
+            status_details: Default::default(),
+            network_address_prefix: Default::default(),
+        }
     }
 }

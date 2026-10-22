@@ -75,7 +75,7 @@ pub async fn create_compose_deployment(
     api_version: &str,
     create_compose_deployment_description: models::CreateComposeDeploymentDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<CreateComposeDeploymentError>> {
+) -> Result<reqwest::StatusCode, Error<CreateComposeDeploymentError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_create_compose_deployment_description = create_compose_deployment_description;
@@ -98,8 +98,8 @@ pub async fn create_compose_deployment(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<CreateComposeDeploymentError> = serde_json::from_str(&content).ok();
@@ -149,7 +149,7 @@ pub async fn get_compose_deployment_status(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -210,7 +210,7 @@ pub async fn get_compose_deployment_status_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -270,7 +270,7 @@ pub async fn get_compose_deployment_upgrade_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -295,7 +295,7 @@ pub async fn remove_compose_deployment(
     api_version: &str,
     deployment_name: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<RemoveComposeDeploymentError>> {
+) -> Result<reqwest::StatusCode, Error<RemoveComposeDeploymentError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_deployment_name = deployment_name;
@@ -323,8 +323,8 @@ pub async fn remove_compose_deployment(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<RemoveComposeDeploymentError> = serde_json::from_str(&content).ok();
@@ -343,7 +343,7 @@ pub async fn start_compose_deployment_upgrade(
     deployment_name: &str,
     compose_deployment_upgrade_description: models::ComposeDeploymentUpgradeDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<StartComposeDeploymentUpgradeError>> {
+) -> Result<reqwest::StatusCode, Error<StartComposeDeploymentUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_deployment_name = deployment_name;
@@ -373,8 +373,8 @@ pub async fn start_compose_deployment_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<StartComposeDeploymentUpgradeError> =
@@ -393,7 +393,7 @@ pub async fn start_rollback_compose_deployment_upgrade(
     api_version: &str,
     deployment_name: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<StartRollbackComposeDeploymentUpgradeError>> {
+) -> Result<reqwest::StatusCode, Error<StartRollbackComposeDeploymentUpgradeError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_deployment_name = deployment_name;
@@ -421,8 +421,8 @@ pub async fn start_rollback_compose_deployment_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<StartRollbackComposeDeploymentUpgradeError> =

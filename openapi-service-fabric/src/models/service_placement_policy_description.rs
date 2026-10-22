@@ -15,22 +15,44 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Type")]
 pub enum ServicePlacementPolicyDescription {
-    #[serde(rename = "ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription")]
-    ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription {},
-    #[serde(rename = "ServicePlacementInvalidDomainPolicyDescription")]
-    ServicePlacementInvalidDomainPolicyDescription {},
-    #[serde(rename = "ServicePlacementNonPartiallyPlaceServicePolicyDescription")]
+    #[serde(rename = "AllowMultipleStatelessInstancesOnNode")]
+    ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription {
+        /// Holdover from other policy descriptions, not used for this policy, values are ignored by runtime. Keeping it for any backwards-compatibility with clients.
+        #[serde(rename = "DomainName", skip_serializing_if = "Option::is_none")]
+        domain_name: Option<String>,
+    },
+    #[serde(rename = "InvalidDomain")]
+    ServicePlacementInvalidDomainPolicyDescription {
+        /// The name of the domain that should not be used for placement.
+        #[serde(rename = "DomainName", skip_serializing_if = "Option::is_none")]
+        domain_name: Option<String>,
+    },
+    #[serde(rename = "NonPartiallyPlaceService")]
     ServicePlacementNonPartiallyPlaceServicePolicyDescription {},
-    #[serde(rename = "ServicePlacementPreferPrimaryDomainPolicyDescription")]
-    ServicePlacementPreferPrimaryDomainPolicyDescription {},
-    #[serde(rename = "ServicePlacementRequireDomainDistributionPolicyDescription")]
-    ServicePlacementRequireDomainDistributionPolicyDescription {},
-    #[serde(rename = "ServicePlacementRequiredDomainPolicyDescription")]
-    ServicePlacementRequiredDomainPolicyDescription {},
+    #[serde(rename = "PreferPrimaryDomain")]
+    ServicePlacementPreferPrimaryDomainPolicyDescription {
+        /// The name of the domain that should used for placement as per this policy.
+        #[serde(rename = "DomainName", skip_serializing_if = "Option::is_none")]
+        domain_name: Option<String>,
+    },
+    #[serde(rename = "RequireDomainDistribution")]
+    ServicePlacementRequireDomainDistributionPolicyDescription {
+        /// The name of the domain that should used for placement as per this policy.
+        #[serde(rename = "DomainName", skip_serializing_if = "Option::is_none")]
+        domain_name: Option<String>,
+    },
+    #[serde(rename = "RequireDomain")]
+    ServicePlacementRequiredDomainPolicyDescription {
+        /// The name of the domain that should used for placement as per this policy.
+        #[serde(rename = "DomainName", skip_serializing_if = "Option::is_none")]
+        domain_name: Option<String>,
+    },
 }
 
 impl Default for ServicePlacementPolicyDescription {
     fn default() -> Self {
-        Self::ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription {}
+        Self::ServicePlacementAllowMultipleStatelessInstancesOnNodePolicyDescription {
+            domain_name: Default::default(),
+        }
     }
 }

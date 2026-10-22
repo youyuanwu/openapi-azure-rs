@@ -123,7 +123,7 @@ pub async fn commit_image_store_upload_session(
     api_version: &str,
     session_id: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<CommitImageStoreUploadSessionError>> {
+) -> Result<reqwest::StatusCode, Error<CommitImageStoreUploadSessionError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_session_id = session_id;
@@ -151,8 +151,8 @@ pub async fn commit_image_store_upload_session(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<CommitImageStoreUploadSessionError> =
@@ -171,7 +171,7 @@ pub async fn copy_image_store_content(
     api_version: &str,
     image_store_copy_description: models::ImageStoreCopyDescription,
     timeout: Option<i64>,
-) -> Result<(), Error<CopyImageStoreContentError>> {
+) -> Result<reqwest::StatusCode, Error<CopyImageStoreContentError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_body_image_store_copy_description = image_store_copy_description;
@@ -196,8 +196,8 @@ pub async fn copy_image_store_content(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<CopyImageStoreContentError> = serde_json::from_str(&content).ok();
@@ -215,7 +215,7 @@ pub async fn delete_image_store_content(
     api_version: &str,
     content_path: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<DeleteImageStoreContentError>> {
+) -> Result<reqwest::StatusCode, Error<DeleteImageStoreContentError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_content_path = content_path;
@@ -243,8 +243,8 @@ pub async fn delete_image_store_content(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteImageStoreContentError> = serde_json::from_str(&content).ok();
@@ -262,7 +262,7 @@ pub async fn delete_image_store_upload_session(
     api_version: &str,
     session_id: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<DeleteImageStoreUploadSessionError>> {
+) -> Result<reqwest::StatusCode, Error<DeleteImageStoreUploadSessionError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_query_session_id = session_id;
@@ -290,8 +290,8 @@ pub async fn delete_image_store_upload_session(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<DeleteImageStoreUploadSessionError> =
@@ -342,7 +342,7 @@ pub async fn get_image_store_content(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -398,7 +398,7 @@ pub async fn get_image_store_folder_size(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -448,7 +448,7 @@ pub async fn get_image_store_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -498,7 +498,7 @@ pub async fn get_image_store_root_content(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -548,7 +548,7 @@ pub async fn get_image_store_root_folder_size(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -601,7 +601,7 @@ pub async fn get_image_store_upload_session_by_id(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -658,7 +658,7 @@ pub async fn get_image_store_upload_session_by_path(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -683,11 +683,13 @@ pub async fn upload_file(
     api_version: &str,
     content_path: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<UploadFileError>> {
+    body: Vec<u8>,
+) -> Result<reqwest::StatusCode, Error<UploadFileError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_content_path = content_path;
     let p_query_timeout = timeout;
+    let p_body_body = body;
 
     let uri_str = format!(
         "{}/ImageStore/{contentPath}",
@@ -704,13 +706,17 @@ pub async fn upload_file(
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
 
+    req_builder = req_builder
+        .header(reqwest::header::CONTENT_TYPE, "application/octet-stream")
+        .body(p_body_body);
+
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<UploadFileError> = serde_json::from_str(&content).ok();
@@ -730,13 +736,15 @@ pub async fn upload_file_chunk(
     session_id: &str,
     content_range: &str,
     timeout: Option<i64>,
-) -> Result<(), Error<UploadFileChunkError>> {
+    body: Vec<u8>,
+) -> Result<reqwest::StatusCode, Error<UploadFileChunkError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_content_path = content_path;
     let p_query_session_id = session_id;
     let p_header_content_range = content_range;
     let p_query_timeout = timeout;
+    let p_body_body = body;
 
     let uri_str = format!(
         "{}/ImageStore/{contentPath}/$/UploadChunk",
@@ -755,13 +763,17 @@ pub async fn upload_file_chunk(
     }
     req_builder = req_builder.header("Content-Range", p_header_content_range.to_string());
 
+    req_builder = req_builder
+        .header(reqwest::header::CONTENT_TYPE, "application/octet-stream")
+        .body(p_body_body);
+
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<UploadFileChunkError> = serde_json::from_str(&content).ok();

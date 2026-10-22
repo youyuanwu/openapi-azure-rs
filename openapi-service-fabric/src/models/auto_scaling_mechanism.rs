@@ -15,12 +15,26 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum AutoScalingMechanism {
-    #[serde(rename = "AddRemoveReplicaScalingMechanism")]
-    AddRemoveReplicaScalingMechanism {},
+    #[serde(rename = "AddRemoveReplica")]
+    AddRemoveReplicaScalingMechanism {
+        /// Minimum number of containers (scale down won't be performed below this number).
+        #[serde(rename = "minCount")]
+        min_count: i32,
+        /// Maximum number of containers (scale up won't be performed above this number).
+        #[serde(rename = "maxCount")]
+        max_count: i32,
+        /// Each time auto scaling is performed, this number of containers will be added or removed.
+        #[serde(rename = "scaleIncrement")]
+        scale_increment: i32,
+    },
 }
 
 impl Default for AutoScalingMechanism {
     fn default() -> Self {
-        Self::AddRemoveReplicaScalingMechanism {}
+        Self::AddRemoveReplicaScalingMechanism {
+            min_count: Default::default(),
+            max_count: Default::default(),
+            scale_increment: Default::default(),
+        }
     }
 }

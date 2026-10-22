@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "ServiceKind")]
 pub enum DeployedServiceReplicaInfo {
-    #[serde(rename = "DeployedStatefulServiceReplicaInfo")]
+    #[serde(rename = "Stateful")]
     DeployedStatefulServiceReplicaInfo {
         /// The full name of the service with 'fabric:' URI scheme.
         #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
@@ -49,8 +49,18 @@ pub enum DeployedServiceReplicaInfo {
         /// Host process ID of the process that is hosting the replica. This will be zero if the replica is down. In hyper-v containers this host process ID will be from different kernel.
         #[serde(rename = "HostProcessId", skip_serializing_if = "Option::is_none")]
         host_process_id: Option<String>,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId", skip_serializing_if = "Option::is_none")]
+        replica_id: Option<String>,
+        #[serde(rename = "ReplicaRole", skip_serializing_if = "Option::is_none")]
+        replica_role: Option<models::ReplicaRole>,
+        #[serde(
+            rename = "ReconfigurationInformation",
+            skip_serializing_if = "Option::is_none"
+        )]
+        reconfiguration_information: Option<Box<models::ReconfigurationInformation>>,
     },
-    #[serde(rename = "DeployedStatelessServiceInstanceInfo")]
+    #[serde(rename = "Stateless")]
     DeployedStatelessServiceInstanceInfo {
         /// The full name of the service with 'fabric:' URI scheme.
         #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
@@ -84,6 +94,9 @@ pub enum DeployedServiceReplicaInfo {
         /// Host process ID of the process that is hosting the replica. This will be zero if the replica is down. In hyper-v containers this host process ID will be from different kernel.
         #[serde(rename = "HostProcessId", skip_serializing_if = "Option::is_none")]
         host_process_id: Option<String>,
+        /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
+        #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
+        instance_id: Option<String>,
     },
 }
 
@@ -99,6 +112,9 @@ impl Default for DeployedServiceReplicaInfo {
             address: Default::default(),
             service_package_activation_id: Default::default(),
             host_process_id: Default::default(),
+            replica_id: Default::default(),
+            replica_role: Default::default(),
+            reconfiguration_information: Default::default(),
         }
     }
 }

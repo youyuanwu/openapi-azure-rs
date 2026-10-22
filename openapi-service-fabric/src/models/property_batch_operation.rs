@@ -15,41 +15,57 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum PropertyBatchOperation {
-    #[serde(rename = "CheckExistsPropertyBatchOperation")]
+    #[serde(rename = "CheckExists")]
     CheckExistsPropertyBatchOperation {
         /// The name of the Service Fabric property.
         #[serde(rename = "PropertyName")]
         property_name: String,
+        /// Whether or not the property should exist for the operation to pass.
+        #[serde(rename = "Exists")]
+        exists: bool,
     },
-    #[serde(rename = "CheckSequencePropertyBatchOperation")]
+    #[serde(rename = "CheckSequence")]
     CheckSequencePropertyBatchOperation {
         /// The name of the Service Fabric property.
         #[serde(rename = "PropertyName")]
         property_name: String,
+        /// The expected sequence number.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: String,
     },
-    #[serde(rename = "CheckValuePropertyBatchOperation")]
+    #[serde(rename = "CheckValue")]
     CheckValuePropertyBatchOperation {
         /// The name of the Service Fabric property.
         #[serde(rename = "PropertyName")]
         property_name: String,
+        #[serde(rename = "Value")]
+        value: Box<models::PropertyValue>,
     },
-    #[serde(rename = "DeletePropertyBatchOperation")]
+    #[serde(rename = "Delete")]
     DeletePropertyBatchOperation {
         /// The name of the Service Fabric property.
         #[serde(rename = "PropertyName")]
         property_name: String,
     },
-    #[serde(rename = "GetPropertyBatchOperation")]
+    #[serde(rename = "Get")]
     GetPropertyBatchOperation {
         /// The name of the Service Fabric property.
         #[serde(rename = "PropertyName")]
         property_name: String,
+        /// Whether or not to return the property value with the metadata. True if values should be returned with the metadata; False to return only property metadata.
+        #[serde(rename = "IncludeValue", skip_serializing_if = "Option::is_none")]
+        include_value: Option<bool>,
     },
-    #[serde(rename = "PutPropertyBatchOperation")]
+    #[serde(rename = "Put")]
     PutPropertyBatchOperation {
         /// The name of the Service Fabric property.
         #[serde(rename = "PropertyName")]
         property_name: String,
+        #[serde(rename = "Value")]
+        value: Box<models::PropertyValue>,
+        /// The property's custom type ID. Using this property, the user is able to tag the type of the value of the property.
+        #[serde(rename = "CustomTypeId", skip_serializing_if = "Option::is_none")]
+        custom_type_id: Option<String>,
     },
 }
 
@@ -57,6 +73,7 @@ impl Default for PropertyBatchOperation {
     fn default() -> Self {
         Self::CheckExistsPropertyBatchOperation {
             property_name: Default::default(),
+            exists: Default::default(),
         }
     }
 }

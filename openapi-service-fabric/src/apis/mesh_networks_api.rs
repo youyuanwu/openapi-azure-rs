@@ -81,7 +81,7 @@ pub async fn mesh_network_create_or_update(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -104,7 +104,7 @@ pub async fn mesh_network_delete(
     configuration: &configuration::Configuration,
     api_version: &str,
     network_resource_name: &str,
-) -> Result<(), Error<MeshNetworkDeleteError>> {
+) -> Result<reqwest::StatusCode, Error<MeshNetworkDeleteError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_network_resource_name = network_resource_name;
@@ -128,8 +128,8 @@ pub async fn mesh_network_delete(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        Ok(status)
     } else {
         let content = resp.text().await?;
         let entity: Option<MeshNetworkDeleteError> = serde_json::from_str(&content).ok();
@@ -174,7 +174,7 @@ pub async fn mesh_network_get(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -219,7 +219,7 @@ pub async fn mesh_network_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),

@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "ServiceKind")]
 pub enum DeployedServiceReplicaDetailInfo {
-    #[serde(rename = "DeployedStatefulServiceReplicaDetailInfo")]
+    #[serde(rename = "Stateful")]
     DeployedStatefulServiceReplicaDetailInfo {
         /// The full name of the service with 'fabric:' URI scheme.
         #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
@@ -37,8 +37,30 @@ pub enum DeployedServiceReplicaDetailInfo {
         /// List of load reported by replica.
         #[serde(rename = "ReportedLoad", skip_serializing_if = "Option::is_none")]
         reported_load: Option<Vec<models::LoadMetricReportInfo>>,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId", skip_serializing_if = "Option::is_none")]
+        replica_id: Option<String>,
+        #[serde(
+            rename = "CurrentReplicatorOperation",
+            skip_serializing_if = "Option::is_none"
+        )]
+        current_replicator_operation: Option<models::ReplicatorOperationName>,
+        #[serde(rename = "ReadStatus", skip_serializing_if = "Option::is_none")]
+        read_status: Option<models::PartitionAccessStatus>,
+        #[serde(rename = "WriteStatus", skip_serializing_if = "Option::is_none")]
+        write_status: Option<models::PartitionAccessStatus>,
+        #[serde(rename = "ReplicatorStatus", skip_serializing_if = "Option::is_none")]
+        replicator_status: Option<Box<models::ReplicatorStatus>>,
+        #[serde(rename = "ReplicaStatus", skip_serializing_if = "Option::is_none")]
+        replica_status: Option<Box<models::KeyValueStoreReplicaStatus>>,
+        #[serde(
+            rename = "DeployedServiceReplicaQueryResult",
+            skip_serializing_if = "Option::is_none"
+        )]
+        deployed_service_replica_query_result:
+            Option<Box<models::DeployedStatefulServiceReplicaInfo>>,
     },
-    #[serde(rename = "DeployedStatelessServiceInstanceDetailInfo")]
+    #[serde(rename = "Stateless")]
     DeployedStatelessServiceInstanceDetailInfo {
         /// The full name of the service with 'fabric:' URI scheme.
         #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
@@ -60,6 +82,15 @@ pub enum DeployedServiceReplicaDetailInfo {
         /// List of load reported by replica.
         #[serde(rename = "ReportedLoad", skip_serializing_if = "Option::is_none")]
         reported_load: Option<Vec<models::LoadMetricReportInfo>>,
+        /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
+        #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
+        instance_id: Option<String>,
+        #[serde(
+            rename = "DeployedServiceReplicaQueryResult",
+            skip_serializing_if = "Option::is_none"
+        )]
+        deployed_service_replica_query_result:
+            Option<Box<models::DeployedStatelessServiceInstanceInfo>>,
     },
 }
 
@@ -71,6 +102,13 @@ impl Default for DeployedServiceReplicaDetailInfo {
             current_service_operation: Default::default(),
             current_service_operation_start_time_utc: Default::default(),
             reported_load: Default::default(),
+            replica_id: Default::default(),
+            current_replicator_operation: Default::default(),
+            read_status: Default::default(),
+            write_status: Default::default(),
+            replicator_status: Default::default(),
+            replica_status: Default::default(),
+            deployed_service_replica_query_result: Default::default(),
         }
     }
 }

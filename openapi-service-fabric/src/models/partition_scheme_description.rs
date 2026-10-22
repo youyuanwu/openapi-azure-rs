@@ -15,16 +15,36 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "PartitionScheme")]
 pub enum PartitionSchemeDescription {
-    #[serde(rename = "NamedPartitionSchemeDescription")]
-    NamedPartitionSchemeDescription {},
-    #[serde(rename = "SingletonPartitionSchemeDescription")]
+    #[serde(rename = "Named")]
+    NamedPartitionSchemeDescription {
+        /// The number of partitions.
+        #[serde(rename = "Count")]
+        count: i32,
+        /// Array of size specified by the ‘Count’ parameter, for the names of the partitions.
+        #[serde(rename = "Names")]
+        names: Vec<String>,
+    },
+    #[serde(rename = "Singleton")]
     SingletonPartitionSchemeDescription {},
-    #[serde(rename = "UniformInt64RangePartitionSchemeDescription")]
-    UniformInt64RangePartitionSchemeDescription {},
+    #[serde(rename = "UniformInt64Range")]
+    UniformInt64RangePartitionSchemeDescription {
+        /// The number of partitions.
+        #[serde(rename = "Count")]
+        count: i32,
+        /// String indicating the lower bound of the partition key range that should be split between the partitions.
+        #[serde(rename = "LowKey")]
+        low_key: String,
+        /// String indicating the upper bound of the partition key range that should be split between the partitions.
+        #[serde(rename = "HighKey")]
+        high_key: String,
+    },
 }
 
 impl Default for PartitionSchemeDescription {
     fn default() -> Self {
-        Self::NamedPartitionSchemeDescription {}
+        Self::NamedPartitionSchemeDescription {
+            count: Default::default(),
+            names: Default::default(),
+        }
     }
 }
