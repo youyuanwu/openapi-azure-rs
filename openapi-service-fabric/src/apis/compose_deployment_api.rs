@@ -98,7 +98,7 @@ pub async fn create_compose_deployment(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -149,7 +149,7 @@ pub async fn get_compose_deployment_status(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -210,7 +210,7 @@ pub async fn get_compose_deployment_status_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -270,7 +270,7 @@ pub async fn get_compose_deployment_upgrade_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -323,7 +323,7 @@ pub async fn remove_compose_deployment(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -373,7 +373,7 @@ pub async fn start_compose_deployment_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -421,7 +421,7 @@ pub async fn start_rollback_compose_deployment_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;

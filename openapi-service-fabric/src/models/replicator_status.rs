@@ -15,18 +15,117 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum ReplicatorStatus {
-    #[serde(rename = "PrimaryReplicatorStatus")]
-    PrimaryReplicatorStatus {},
-    #[serde(rename = "SecondaryActiveReplicatorStatus")]
-    SecondaryActiveReplicatorStatus {},
-    #[serde(rename = "SecondaryIdleReplicatorStatus")]
-    SecondaryIdleReplicatorStatus {},
+    #[serde(rename = "Primary")]
+    PrimaryReplicatorStatus {
+        #[serde(
+            rename = "ReplicationQueueStatus",
+            skip_serializing_if = "Option::is_none"
+        )]
+        replication_queue_status: Option<Box<models::ReplicatorQueueStatus>>,
+        /// List of remote replicator status
+        #[serde(rename = "RemoteReplicators", skip_serializing_if = "Option::is_none")]
+        remote_replicators: Option<Vec<models::RemoteReplicatorStatus>>,
+    },
+    #[serde(rename = "ActiveSecondary")]
+    SecondaryActiveReplicatorStatus {
+        #[serde(
+            rename = "ReplicationQueueStatus",
+            skip_serializing_if = "Option::is_none"
+        )]
+        replication_queue_status: Option<Box<models::ReplicatorQueueStatus>>,
+        /// The last time-stamp (UTC) at which a replication operation was received from the primary. UTC 0 represents an invalid value, indicating that a replication operation message was never received.
+        #[serde(
+            rename = "LastReplicationOperationReceivedTimeUtc",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_replication_operation_received_time_utc: Option<String>,
+        /// Value that indicates whether the replica is currently being built.
+        #[serde(rename = "IsInBuild", skip_serializing_if = "Option::is_none")]
+        is_in_build: Option<bool>,
+        #[serde(rename = "CopyQueueStatus", skip_serializing_if = "Option::is_none")]
+        copy_queue_status: Option<Box<models::ReplicatorQueueStatus>>,
+        /// The last time-stamp (UTC) at which a copy operation was received from the primary. UTC 0 represents an invalid value, indicating that a copy operation message was never received.
+        #[serde(
+            rename = "LastCopyOperationReceivedTimeUtc",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_copy_operation_received_time_utc: Option<String>,
+        /// The last time-stamp (UTC) at which an acknowledgment was sent to the primary replicator. UTC 0 represents an invalid value, indicating that an acknowledgment message was never sent.
+        #[serde(
+            rename = "LastAcknowledgementSentTimeUtc",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_acknowledgement_sent_time_utc: Option<String>,
+    },
+    #[serde(rename = "IdleSecondary")]
+    SecondaryIdleReplicatorStatus {
+        #[serde(
+            rename = "ReplicationQueueStatus",
+            skip_serializing_if = "Option::is_none"
+        )]
+        replication_queue_status: Option<Box<models::ReplicatorQueueStatus>>,
+        /// The last time-stamp (UTC) at which a replication operation was received from the primary. UTC 0 represents an invalid value, indicating that a replication operation message was never received.
+        #[serde(
+            rename = "LastReplicationOperationReceivedTimeUtc",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_replication_operation_received_time_utc: Option<String>,
+        /// Value that indicates whether the replica is currently being built.
+        #[serde(rename = "IsInBuild", skip_serializing_if = "Option::is_none")]
+        is_in_build: Option<bool>,
+        #[serde(rename = "CopyQueueStatus", skip_serializing_if = "Option::is_none")]
+        copy_queue_status: Option<Box<models::ReplicatorQueueStatus>>,
+        /// The last time-stamp (UTC) at which a copy operation was received from the primary. UTC 0 represents an invalid value, indicating that a copy operation message was never received.
+        #[serde(
+            rename = "LastCopyOperationReceivedTimeUtc",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_copy_operation_received_time_utc: Option<String>,
+        /// The last time-stamp (UTC) at which an acknowledgment was sent to the primary replicator. UTC 0 represents an invalid value, indicating that an acknowledgment message was never sent.
+        #[serde(
+            rename = "LastAcknowledgementSentTimeUtc",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_acknowledgement_sent_time_utc: Option<String>,
+    },
     #[serde(rename = "SecondaryReplicatorStatus")]
-    SecondaryReplicatorStatus {},
+    SecondaryReplicatorStatus {
+        #[serde(
+            rename = "ReplicationQueueStatus",
+            skip_serializing_if = "Option::is_none"
+        )]
+        replication_queue_status: Option<Box<models::ReplicatorQueueStatus>>,
+        /// The last time-stamp (UTC) at which a replication operation was received from the primary. UTC 0 represents an invalid value, indicating that a replication operation message was never received.
+        #[serde(
+            rename = "LastReplicationOperationReceivedTimeUtc",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_replication_operation_received_time_utc: Option<String>,
+        /// Value that indicates whether the replica is currently being built.
+        #[serde(rename = "IsInBuild", skip_serializing_if = "Option::is_none")]
+        is_in_build: Option<bool>,
+        #[serde(rename = "CopyQueueStatus", skip_serializing_if = "Option::is_none")]
+        copy_queue_status: Option<Box<models::ReplicatorQueueStatus>>,
+        /// The last time-stamp (UTC) at which a copy operation was received from the primary. UTC 0 represents an invalid value, indicating that a copy operation message was never received.
+        #[serde(
+            rename = "LastCopyOperationReceivedTimeUtc",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_copy_operation_received_time_utc: Option<String>,
+        /// The last time-stamp (UTC) at which an acknowledgment was sent to the primary replicator. UTC 0 represents an invalid value, indicating that an acknowledgment message was never sent.
+        #[serde(
+            rename = "LastAcknowledgementSentTimeUtc",
+            skip_serializing_if = "Option::is_none"
+        )]
+        last_acknowledgement_sent_time_utc: Option<String>,
+    },
 }
 
 impl Default for ReplicatorStatus {
     fn default() -> Self {
-        Self::PrimaryReplicatorStatus {}
+        Self::PrimaryReplicatorStatus {
+            replication_queue_status: Default::default(),
+            remote_replicators: Default::default(),
+        }
     }
 }

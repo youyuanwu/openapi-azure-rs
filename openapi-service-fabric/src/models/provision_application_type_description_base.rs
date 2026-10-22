@@ -15,17 +15,34 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum ProvisionApplicationTypeDescriptionBase {
-    #[serde(rename = "ExternalStoreProvisionApplicationTypeDescription")]
+    #[serde(rename = "ExternalStore")]
     ExternalStoreProvisionApplicationTypeDescription {
         /// Indicates whether or not provisioning should occur asynchronously. When set to true, the provision operation returns when the request is accepted by the system, and the provision operation continues without any timeout limit. The default value is false. For large application packages, we recommend setting the value to true.
         #[serde(rename = "Async")]
         r#async: bool,
+        /// The path to the '.sfpkg' application package from where the application package can be downloaded using HTTP or HTTPS protocols. The application package can be stored in an external store that provides GET operation to download the file. Supported protocols are HTTP and HTTPS, and the path must allow READ access.
+        #[serde(rename = "ApplicationPackageDownloadUri")]
+        application_package_download_uri: String,
+        /// The application type name represents the name of the application type found in the application manifest.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// The application type version represents the version of the application type found in the application manifest.
+        #[serde(rename = "ApplicationTypeVersion")]
+        application_type_version: String,
     },
-    #[serde(rename = "ProvisionApplicationTypeDescription")]
+    #[serde(rename = "ImageStorePath")]
     ProvisionApplicationTypeDescription {
         /// Indicates whether or not provisioning should occur asynchronously. When set to true, the provision operation returns when the request is accepted by the system, and the provision operation continues without any timeout limit. The default value is false. For large application packages, we recommend setting the value to true.
         #[serde(rename = "Async")]
         r#async: bool,
+        /// The relative path for the application package in the image store specified during the prior upload operation.
+        #[serde(rename = "ApplicationTypeBuildPath")]
+        application_type_build_path: String,
+        #[serde(
+            rename = "ApplicationPackageCleanupPolicy",
+            skip_serializing_if = "Option::is_none"
+        )]
+        application_package_cleanup_policy: Option<models::ApplicationPackageCleanupPolicy>,
     },
 }
 
@@ -33,6 +50,9 @@ impl Default for ProvisionApplicationTypeDescriptionBase {
     fn default() -> Self {
         Self::ExternalStoreProvisionApplicationTypeDescription {
             r#async: Default::default(),
+            application_package_download_uri: Default::default(),
+            application_type_name: Default::default(),
+            application_type_version: Default::default(),
         }
     }
 }

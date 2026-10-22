@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum FabricEvent {
-    #[serde(rename = "ApplicationContainerInstanceExitedEvent")]
+    #[serde(rename = "ApplicationContainerInstanceExited")]
     ApplicationContainerInstanceExitedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -32,8 +32,47 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Name of Service.
+        #[serde(rename = "ServiceName")]
+        service_name: String,
+        /// Name of Service package.
+        #[serde(rename = "ServicePackageName")]
+        service_package_name: String,
+        /// Activation Id of Service package.
+        #[serde(rename = "ServicePackageActivationId")]
+        service_package_activation_id: String,
+        /// Indicates IsExclusive flag.
+        #[serde(rename = "IsExclusive")]
+        is_exclusive: bool,
+        /// Name of Code package.
+        #[serde(rename = "CodePackageName")]
+        code_package_name: String,
+        /// Type of EntryPoint.
+        #[serde(rename = "EntryPointType")]
+        entry_point_type: String,
+        /// Name of Container image.
+        #[serde(rename = "ImageName")]
+        image_name: String,
+        /// Name of Container.
+        #[serde(rename = "ContainerName")]
+        container_name: String,
+        /// Host Id.
+        #[serde(rename = "HostId")]
+        host_id: String,
+        /// Exit code of process.
+        #[serde(rename = "ExitCode")]
+        exit_code: i64,
+        /// Indicates if termination is unexpected.
+        #[serde(rename = "UnexpectedTermination")]
+        unexpected_termination: bool,
+        /// Start time of process.
+        #[serde(rename = "StartTime")]
+        start_time: String,
     },
-    #[serde(rename = "ApplicationCreatedEvent")]
+    #[serde(rename = "ApplicationCreated")]
     ApplicationCreatedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -50,8 +89,20 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Application type name.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// Application type version.
+        #[serde(rename = "ApplicationTypeVersion")]
+        application_type_version: String,
+        /// Application definition kind.
+        #[serde(rename = "ApplicationDefinitionKind")]
+        application_definition_kind: String,
     },
-    #[serde(rename = "ApplicationDeletedEvent")]
+    #[serde(rename = "ApplicationDeleted")]
     ApplicationDeletedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -68,6 +119,15 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Application type name.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// Application type version.
+        #[serde(rename = "ApplicationTypeVersion")]
+        application_type_version: String,
     },
     #[serde(rename = "ApplicationEvent")]
     ApplicationEvent {
@@ -86,8 +146,11 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
     },
-    #[serde(rename = "ApplicationHealthReportExpiredEvent")]
+    #[serde(rename = "ApplicationHealthReportExpired")]
     ApplicationHealthReportExpiredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -104,8 +167,38 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Id of Application instance.
+        #[serde(rename = "ApplicationInstanceId")]
+        application_instance_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "ApplicationNewHealthReportEvent")]
+    #[serde(rename = "ApplicationNewHealthReport")]
     ApplicationNewHealthReportEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -122,8 +215,38 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Id of Application instance.
+        #[serde(rename = "ApplicationInstanceId")]
+        application_instance_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "ApplicationProcessExitedEvent")]
+    #[serde(rename = "ApplicationProcessExited")]
     ApplicationProcessExitedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -140,8 +263,47 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Name of Service.
+        #[serde(rename = "ServiceName")]
+        service_name: String,
+        /// Name of Service package.
+        #[serde(rename = "ServicePackageName")]
+        service_package_name: String,
+        /// Activation Id of Service package.
+        #[serde(rename = "ServicePackageActivationId")]
+        service_package_activation_id: String,
+        /// Indicates IsExclusive flag.
+        #[serde(rename = "IsExclusive")]
+        is_exclusive: bool,
+        /// Name of Code package.
+        #[serde(rename = "CodePackageName")]
+        code_package_name: String,
+        /// Type of EntryPoint.
+        #[serde(rename = "EntryPointType")]
+        entry_point_type: String,
+        /// Name of executable.
+        #[serde(rename = "ExeName")]
+        exe_name: String,
+        /// Process Id.
+        #[serde(rename = "ProcessId")]
+        process_id: i64,
+        /// Host Id.
+        #[serde(rename = "HostId")]
+        host_id: String,
+        /// Exit code of process.
+        #[serde(rename = "ExitCode")]
+        exit_code: i64,
+        /// Indicates if termination is unexpected.
+        #[serde(rename = "UnexpectedTermination")]
+        unexpected_termination: bool,
+        /// Start time of process.
+        #[serde(rename = "StartTime")]
+        start_time: String,
     },
-    #[serde(rename = "ApplicationUpgradeCompletedEvent")]
+    #[serde(rename = "ApplicationUpgradeCompleted")]
     ApplicationUpgradeCompletedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -158,8 +320,20 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Application type name.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// Application type version.
+        #[serde(rename = "ApplicationTypeVersion")]
+        application_type_version: String,
+        /// Overall upgrade time in milli-seconds.
+        #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
+        overall_upgrade_elapsed_time_in_ms: f64,
     },
-    #[serde(rename = "ApplicationUpgradeDomainCompletedEvent")]
+    #[serde(rename = "ApplicationUpgradeDomainCompleted")]
     ApplicationUpgradeDomainCompletedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -176,8 +350,29 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Application type name.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// Current Application type version.
+        #[serde(rename = "CurrentApplicationTypeVersion")]
+        current_application_type_version: String,
+        /// Target Application type version.
+        #[serde(rename = "ApplicationTypeVersion")]
+        application_type_version: String,
+        /// State of upgrade.
+        #[serde(rename = "UpgradeState")]
+        upgrade_state: String,
+        /// Upgrade domains.
+        #[serde(rename = "UpgradeDomains")]
+        upgrade_domains: String,
+        /// Upgrade time of domain in milli-seconds.
+        #[serde(rename = "UpgradeDomainElapsedTimeInMs")]
+        upgrade_domain_elapsed_time_in_ms: f64,
     },
-    #[serde(rename = "ApplicationUpgradeRollbackCompletedEvent")]
+    #[serde(rename = "ApplicationUpgradeRollbackCompleted")]
     ApplicationUpgradeRollbackCompletedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -194,8 +389,23 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Application type name.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// Application type version.
+        #[serde(rename = "ApplicationTypeVersion")]
+        application_type_version: String,
+        /// Describes reason of failure.
+        #[serde(rename = "FailureReason")]
+        failure_reason: String,
+        /// Overall upgrade time in milli-seconds.
+        #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
+        overall_upgrade_elapsed_time_in_ms: f64,
     },
-    #[serde(rename = "ApplicationUpgradeRollbackStartedEvent")]
+    #[serde(rename = "ApplicationUpgradeRollbackStarted")]
     ApplicationUpgradeRollbackStartedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -212,8 +422,26 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Application type name.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// Current Application type version.
+        #[serde(rename = "CurrentApplicationTypeVersion")]
+        current_application_type_version: String,
+        /// Target Application type version.
+        #[serde(rename = "ApplicationTypeVersion")]
+        application_type_version: String,
+        /// Describes reason of failure.
+        #[serde(rename = "FailureReason")]
+        failure_reason: String,
+        /// Overall upgrade time in milli-seconds.
+        #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
+        overall_upgrade_elapsed_time_in_ms: f64,
     },
-    #[serde(rename = "ApplicationUpgradeStartedEvent")]
+    #[serde(rename = "ApplicationUpgradeStarted")]
     ApplicationUpgradeStartedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -230,8 +458,29 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Application type name.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// Current Application type version.
+        #[serde(rename = "CurrentApplicationTypeVersion")]
+        current_application_type_version: String,
+        /// Target Application type version.
+        #[serde(rename = "ApplicationTypeVersion")]
+        application_type_version: String,
+        /// Type of upgrade.
+        #[serde(rename = "UpgradeType")]
+        upgrade_type: String,
+        /// Mode of upgrade.
+        #[serde(rename = "RollingUpgradeMode")]
+        rolling_upgrade_mode: String,
+        /// Action if failed.
+        #[serde(rename = "FailureAction")]
+        failure_action: String,
     },
-    #[serde(rename = "ChaosCodePackageRestartScheduledEvent")]
+    #[serde(rename = "ChaosCodePackageRestartScheduled")]
     ChaosCodePackageRestartScheduledEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -248,8 +497,29 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Id of fault group.
+        #[serde(rename = "FaultGroupId")]
+        fault_group_id: uuid::Uuid,
+        /// Id of fault.
+        #[serde(rename = "FaultId")]
+        fault_id: uuid::Uuid,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Service manifest name.
+        #[serde(rename = "ServiceManifestName")]
+        service_manifest_name: String,
+        /// Code package name.
+        #[serde(rename = "CodePackageName")]
+        code_package_name: String,
+        /// Id of Service package activation.
+        #[serde(rename = "ServicePackageActivationId")]
+        service_package_activation_id: String,
     },
-    #[serde(rename = "ChaosNodeRestartScheduledEvent")]
+    #[serde(rename = "ChaosNodeRestartScheduled")]
     ChaosNodeRestartScheduledEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -266,8 +536,20 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstanceId")]
+        node_instance_id: i64,
+        /// Id of fault group.
+        #[serde(rename = "FaultGroupId")]
+        fault_group_id: uuid::Uuid,
+        /// Id of fault.
+        #[serde(rename = "FaultId")]
+        fault_id: uuid::Uuid,
     },
-    #[serde(rename = "ChaosPartitionPrimaryMoveScheduledEvent")]
+    #[serde(rename = "ChaosPartitionPrimaryMoveScheduled")]
     ChaosPartitionPrimaryMoveScheduledEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -284,8 +566,26 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of fault group.
+        #[serde(rename = "FaultGroupId")]
+        fault_group_id: uuid::Uuid,
+        /// Id of fault.
+        #[serde(rename = "FaultId")]
+        fault_id: uuid::Uuid,
+        /// Service name.
+        #[serde(rename = "ServiceName")]
+        service_name: String,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeTo")]
+        node_to: String,
+        /// Indicates a forced move.
+        #[serde(rename = "ForcedMove")]
+        forced_move: bool,
     },
-    #[serde(rename = "ChaosPartitionSecondaryMoveScheduledEvent")]
+    #[serde(rename = "ChaosPartitionSecondaryMoveScheduled")]
     ChaosPartitionSecondaryMoveScheduledEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -302,8 +602,29 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of fault group.
+        #[serde(rename = "FaultGroupId")]
+        fault_group_id: uuid::Uuid,
+        /// Id of fault.
+        #[serde(rename = "FaultId")]
+        fault_id: uuid::Uuid,
+        /// Service name.
+        #[serde(rename = "ServiceName")]
+        service_name: String,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "SourceNode")]
+        source_node: String,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "DestinationNode")]
+        destination_node: String,
+        /// Indicates a forced move.
+        #[serde(rename = "ForcedMove")]
+        forced_move: bool,
     },
-    #[serde(rename = "ChaosReplicaRemovalScheduledEvent")]
+    #[serde(rename = "ChaosReplicaRemovalScheduled")]
     ChaosReplicaRemovalScheduledEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -320,8 +641,23 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId")]
+        replica_id: i64,
+        /// Id of fault group.
+        #[serde(rename = "FaultGroupId")]
+        fault_group_id: uuid::Uuid,
+        /// Id of fault.
+        #[serde(rename = "FaultId")]
+        fault_id: uuid::Uuid,
+        /// Service name.
+        #[serde(rename = "ServiceUri")]
+        service_uri: String,
     },
-    #[serde(rename = "ChaosReplicaRestartScheduledEvent")]
+    #[serde(rename = "ChaosReplicaRestartScheduled")]
     ChaosReplicaRestartScheduledEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -338,8 +674,23 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId")]
+        replica_id: i64,
+        /// Id of fault group.
+        #[serde(rename = "FaultGroupId")]
+        fault_group_id: uuid::Uuid,
+        /// Id of fault.
+        #[serde(rename = "FaultId")]
+        fault_id: uuid::Uuid,
+        /// Service name.
+        #[serde(rename = "ServiceUri")]
+        service_uri: String,
     },
-    #[serde(rename = "ChaosStartedEvent")]
+    #[serde(rename = "ChaosStarted")]
     ChaosStartedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -356,8 +707,38 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// Maximum number of concurrent faults.
+        #[serde(rename = "MaxConcurrentFaults")]
+        max_concurrent_faults: i64,
+        /// Time to run in seconds.
+        #[serde(rename = "TimeToRunInSeconds")]
+        time_to_run_in_seconds: f64,
+        /// Maximum timeout for cluster stabilization in seconds.
+        #[serde(rename = "MaxClusterStabilizationTimeoutInSeconds")]
+        max_cluster_stabilization_timeout_in_seconds: f64,
+        /// Wait time between iterations in seconds.
+        #[serde(rename = "WaitTimeBetweenIterationsInSeconds")]
+        wait_time_between_iterations_in_seconds: f64,
+        /// Wait time between faults in seconds.
+        #[serde(rename = "WaitTimeBetweenFaultsInSeconds")]
+        wait_time_between_faults_in_seconds: f64,
+        /// Indicates MoveReplica fault is enabled.
+        #[serde(rename = "MoveReplicaFaultEnabled")]
+        move_replica_fault_enabled: bool,
+        /// List of included Node types.
+        #[serde(rename = "IncludedNodeTypeList")]
+        included_node_type_list: String,
+        /// List of included Applications.
+        #[serde(rename = "IncludedApplicationList")]
+        included_application_list: String,
+        /// Health policy.
+        #[serde(rename = "ClusterHealthPolicy")]
+        cluster_health_policy: String,
+        /// Chaos Context.
+        #[serde(rename = "ChaosContext")]
+        chaos_context: String,
     },
-    #[serde(rename = "ChaosStoppedEvent")]
+    #[serde(rename = "ChaosStopped")]
     ChaosStoppedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -374,6 +755,9 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// Describes reason.
+        #[serde(rename = "Reason")]
+        reason: String,
     },
     #[serde(rename = "ClusterEvent")]
     ClusterEvent {
@@ -393,7 +777,7 @@ pub enum FabricEvent {
         )]
         has_correlated_events: Option<bool>,
     },
-    #[serde(rename = "ClusterHealthReportExpiredEvent")]
+    #[serde(rename = "ClusterHealthReportExpired")]
     ClusterHealthReportExpiredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -410,8 +794,32 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "ClusterNewHealthReportEvent")]
+    #[serde(rename = "ClusterNewHealthReport")]
     ClusterNewHealthReportEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -428,8 +836,32 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "ClusterUpgradeCompletedEvent")]
+    #[serde(rename = "ClusterUpgradeCompleted")]
     ClusterUpgradeCompletedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -446,8 +878,14 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// Target Cluster version.
+        #[serde(rename = "TargetClusterVersion")]
+        target_cluster_version: String,
+        /// Overall duration of upgrade in milli-seconds.
+        #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
+        overall_upgrade_elapsed_time_in_ms: f64,
     },
-    #[serde(rename = "ClusterUpgradeDomainCompletedEvent")]
+    #[serde(rename = "ClusterUpgradeDomainCompleted")]
     ClusterUpgradeDomainCompletedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -464,8 +902,20 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// Target Cluster version.
+        #[serde(rename = "TargetClusterVersion")]
+        target_cluster_version: String,
+        /// State of upgrade.
+        #[serde(rename = "UpgradeState")]
+        upgrade_state: String,
+        /// Upgrade domains.
+        #[serde(rename = "UpgradeDomains")]
+        upgrade_domains: String,
+        /// Duration of domain upgrade in milli-seconds.
+        #[serde(rename = "UpgradeDomainElapsedTimeInMs")]
+        upgrade_domain_elapsed_time_in_ms: f64,
     },
-    #[serde(rename = "ClusterUpgradeRollbackCompletedEvent")]
+    #[serde(rename = "ClusterUpgradeRollbackCompleted")]
     ClusterUpgradeRollbackCompletedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -482,8 +932,17 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// Target Cluster version.
+        #[serde(rename = "TargetClusterVersion")]
+        target_cluster_version: String,
+        /// Describes failure.
+        #[serde(rename = "FailureReason")]
+        failure_reason: String,
+        /// Overall duration of upgrade in milli-seconds.
+        #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
+        overall_upgrade_elapsed_time_in_ms: f64,
     },
-    #[serde(rename = "ClusterUpgradeRollbackStartedEvent")]
+    #[serde(rename = "ClusterUpgradeRollbackStarted")]
     ClusterUpgradeRollbackStartedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -500,8 +959,17 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// Target Cluster version.
+        #[serde(rename = "TargetClusterVersion")]
+        target_cluster_version: String,
+        /// Describes failure.
+        #[serde(rename = "FailureReason")]
+        failure_reason: String,
+        /// Overall duration of upgrade in milli-seconds.
+        #[serde(rename = "OverallUpgradeElapsedTimeInMs")]
+        overall_upgrade_elapsed_time_in_ms: f64,
     },
-    #[serde(rename = "ClusterUpgradeStartedEvent")]
+    #[serde(rename = "ClusterUpgradeStarted")]
     ClusterUpgradeStartedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -518,6 +986,21 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// Current Cluster version.
+        #[serde(rename = "CurrentClusterVersion")]
+        current_cluster_version: String,
+        /// Target Cluster version.
+        #[serde(rename = "TargetClusterVersion")]
+        target_cluster_version: String,
+        /// Type of upgrade.
+        #[serde(rename = "UpgradeType")]
+        upgrade_type: String,
+        /// Mode of upgrade.
+        #[serde(rename = "RollingUpgradeMode")]
+        rolling_upgrade_mode: String,
+        /// Action if failed.
+        #[serde(rename = "FailureAction")]
+        failure_action: String,
     },
     #[serde(rename = "ContainerInstanceEvent")]
     ContainerInstanceEvent {
@@ -537,7 +1020,7 @@ pub enum FabricEvent {
         )]
         has_correlated_events: Option<bool>,
     },
-    #[serde(rename = "DeployedApplicationHealthReportExpiredEvent")]
+    #[serde(rename = "DeployedApplicationHealthReportExpired")]
     DeployedApplicationHealthReportExpiredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -554,8 +1037,41 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Id of Application instance.
+        #[serde(rename = "ApplicationInstanceId")]
+        application_instance_id: i64,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "DeployedApplicationNewHealthReportEvent")]
+    #[serde(rename = "DeployedApplicationNewHealthReport")]
     DeployedApplicationNewHealthReportEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -572,8 +1088,41 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Id of Application instance.
+        #[serde(rename = "ApplicationInstanceId")]
+        application_instance_id: i64,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "DeployedServicePackageHealthReportExpiredEvent")]
+    #[serde(rename = "DeployedServicePackageHealthReportExpired")]
     DeployedServicePackageHealthReportExpiredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -590,8 +1139,47 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Service manifest name.
+        #[serde(rename = "ServiceManifest")]
+        service_manifest: String,
+        /// Id of Service package instance.
+        #[serde(rename = "ServicePackageInstanceId")]
+        service_package_instance_id: i64,
+        /// Id of Service package activation.
+        #[serde(rename = "ServicePackageActivationId")]
+        service_package_activation_id: String,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "DeployedServicePackageNewHealthReportEvent")]
+    #[serde(rename = "DeployedServicePackageNewHealthReport")]
     DeployedServicePackageNewHealthReportEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -608,8 +1196,47 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the application. This is an encoded representation of the application name. This is used in the REST APIs to identify the application resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the application name is \"fabric:/myapp/app1\", the application identity would be \"myapp\\~app1\" in 6.0+ and \"myapp/app1\" in previous versions.
+        #[serde(rename = "ApplicationId")]
+        application_id: String,
+        /// Service manifest name.
+        #[serde(rename = "ServiceManifestName")]
+        service_manifest_name: String,
+        /// Id of Service package instance.
+        #[serde(rename = "ServicePackageInstanceId")]
+        service_package_instance_id: i64,
+        /// Id of Service package activation.
+        #[serde(rename = "ServicePackageActivationId")]
+        service_package_activation_id: String,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "NodeAbortedEvent")]
+    #[serde(rename = "NodeAborted")]
     NodeAbortedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -626,8 +1253,35 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Id of Node.
+        #[serde(rename = "NodeId")]
+        node_id: String,
+        /// Upgrade domain of Node.
+        #[serde(rename = "UpgradeDomain")]
+        upgrade_domain: String,
+        /// Fault domain of Node.
+        #[serde(rename = "FaultDomain")]
+        fault_domain: String,
+        /// IP address or FQDN.
+        #[serde(rename = "IpAddressOrFQDN")]
+        ip_address_or_fqdn: String,
+        /// Name of Host.
+        #[serde(rename = "Hostname")]
+        hostname: String,
+        /// Indicates if it is seed node.
+        #[serde(rename = "IsSeedNode")]
+        is_seed_node: bool,
+        /// Version of Node.
+        #[serde(rename = "NodeVersion")]
+        node_version: String,
     },
-    #[serde(rename = "NodeAddedToClusterEvent")]
+    #[serde(rename = "NodeAddedToCluster")]
     NodeAddedToClusterEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -644,8 +1298,29 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node.
+        #[serde(rename = "NodeId")]
+        node_id: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Type of Node.
+        #[serde(rename = "NodeType")]
+        node_type: String,
+        /// Fabric version.
+        #[serde(rename = "FabricVersion")]
+        fabric_version: String,
+        /// IP address or FQDN.
+        #[serde(rename = "IpAddressOrFQDN")]
+        ip_address_or_fqdn: String,
+        /// Capacities.
+        #[serde(rename = "NodeCapacities")]
+        node_capacities: String,
     },
-    #[serde(rename = "NodeClosedEvent")]
+    #[serde(rename = "NodeClosed")]
     NodeClosedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -662,8 +1337,20 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node.
+        #[serde(rename = "NodeId")]
+        node_id: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Describes error.
+        #[serde(rename = "Error")]
+        error: String,
     },
-    #[serde(rename = "NodeDeactivateCompletedEvent")]
+    #[serde(rename = "NodeDeactivateCompleted")]
     NodeDeactivateCompletedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -680,8 +1367,23 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Describes deactivate intent.
+        #[serde(rename = "EffectiveDeactivateIntent")]
+        effective_deactivate_intent: String,
+        /// Batch Ids.
+        #[serde(rename = "BatchIdsWithDeactivateIntent")]
+        batch_ids_with_deactivate_intent: String,
+        /// Start time.
+        #[serde(rename = "StartTime")]
+        start_time: String,
     },
-    #[serde(rename = "NodeDeactivateStartedEvent")]
+    #[serde(rename = "NodeDeactivateStarted")]
     NodeDeactivateStartedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -698,8 +1400,20 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Batch Id.
+        #[serde(rename = "BatchId")]
+        batch_id: String,
+        /// Describes deactivate intent.
+        #[serde(rename = "DeactivateIntent")]
+        deactivate_intent: String,
     },
-    #[serde(rename = "NodeDownEvent")]
+    #[serde(rename = "NodeDown")]
     NodeDownEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -716,6 +1430,15 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Time when Node was last up.
+        #[serde(rename = "LastNodeUpAt")]
+        last_node_up_at: String,
     },
     #[serde(rename = "NodeEvent")]
     NodeEvent {
@@ -734,8 +1457,11 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
     },
-    #[serde(rename = "NodeHealthReportExpiredEvent")]
+    #[serde(rename = "NodeHealthReportExpired")]
     NodeHealthReportExpiredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -752,8 +1478,38 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstanceId")]
+        node_instance_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "NodeNewHealthReportEvent")]
+    #[serde(rename = "NodeNewHealthReport")]
     NodeNewHealthReportEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -770,8 +1526,38 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstanceId")]
+        node_instance_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "NodeOpenFailedEvent")]
+    #[serde(rename = "NodeOpenFailed")]
     NodeOpenFailedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -788,8 +1574,38 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Id of Node.
+        #[serde(rename = "NodeId")]
+        node_id: String,
+        /// Upgrade domain of Node.
+        #[serde(rename = "UpgradeDomain")]
+        upgrade_domain: String,
+        /// Fault domain of Node.
+        #[serde(rename = "FaultDomain")]
+        fault_domain: String,
+        /// IP address or FQDN.
+        #[serde(rename = "IpAddressOrFQDN")]
+        ip_address_or_fqdn: String,
+        /// Name of Host.
+        #[serde(rename = "Hostname")]
+        hostname: String,
+        /// Indicates if it is seed node.
+        #[serde(rename = "IsSeedNode")]
+        is_seed_node: bool,
+        /// Version of Node.
+        #[serde(rename = "NodeVersion")]
+        node_version: String,
+        /// Describes the error.
+        #[serde(rename = "Error")]
+        error: String,
     },
-    #[serde(rename = "NodeOpenSucceededEvent")]
+    #[serde(rename = "NodeOpenSucceeded")]
     NodeOpenSucceededEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -806,8 +1622,35 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Id of Node.
+        #[serde(rename = "NodeId")]
+        node_id: String,
+        /// Upgrade domain of Node.
+        #[serde(rename = "UpgradeDomain")]
+        upgrade_domain: String,
+        /// Fault domain of Node.
+        #[serde(rename = "FaultDomain")]
+        fault_domain: String,
+        /// IP address or FQDN.
+        #[serde(rename = "IpAddressOrFQDN")]
+        ip_address_or_fqdn: String,
+        /// Name of Host.
+        #[serde(rename = "Hostname")]
+        hostname: String,
+        /// Indicates if it is seed node.
+        #[serde(rename = "IsSeedNode")]
+        is_seed_node: bool,
+        /// Version of Node.
+        #[serde(rename = "NodeVersion")]
+        node_version: String,
     },
-    #[serde(rename = "NodeRemovedFromClusterEvent")]
+    #[serde(rename = "NodeRemovedFromCluster")]
     NodeRemovedFromClusterEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -824,8 +1667,29 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node.
+        #[serde(rename = "NodeId")]
+        node_id: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Type of Node.
+        #[serde(rename = "NodeType")]
+        node_type: String,
+        /// Fabric version.
+        #[serde(rename = "FabricVersion")]
+        fabric_version: String,
+        /// IP address or FQDN.
+        #[serde(rename = "IpAddressOrFQDN")]
+        ip_address_or_fqdn: String,
+        /// Capacities.
+        #[serde(rename = "NodeCapacities")]
+        node_capacities: String,
     },
-    #[serde(rename = "NodeUpEvent")]
+    #[serde(rename = "NodeUp")]
     NodeUpEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -842,6 +1706,15 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstance")]
+        node_instance: i64,
+        /// Time when Node was last down.
+        #[serde(rename = "LastNodeDownAt")]
+        last_node_down_at: String,
     },
     #[serde(rename = "PartitionAnalysisEvent")]
     PartitionAnalysisEvent {
@@ -860,6 +1733,11 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        #[serde(rename = "Metadata")]
+        metadata: Box<models::AnalysisEventMetadata>,
     },
     #[serde(rename = "PartitionEvent")]
     PartitionEvent {
@@ -878,8 +1756,11 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
     },
-    #[serde(rename = "PartitionHealthReportExpiredEvent")]
+    #[serde(rename = "PartitionHealthReportExpired")]
     PartitionHealthReportExpiredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -896,8 +1777,35 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "PartitionNewHealthReportEvent")]
+    #[serde(rename = "PartitionNewHealthReport")]
     PartitionNewHealthReportEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -914,8 +1822,35 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "PartitionPrimaryMoveAnalysisEvent")]
+    #[serde(rename = "PartitionPrimaryMoveAnalysis")]
     PartitionPrimaryMoveAnalysisEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -932,8 +1867,28 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        #[serde(rename = "Metadata")]
+        metadata: Box<models::AnalysisEventMetadata>,
+        /// Time when the move was completed.
+        #[serde(rename = "WhenMoveCompleted")]
+        when_move_completed: String,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "PreviousNode")]
+        previous_node: String,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "CurrentNode")]
+        current_node: String,
+        /// Move reason.
+        #[serde(rename = "MoveReason")]
+        move_reason: String,
+        /// Relevant traces.
+        #[serde(rename = "RelevantTraces")]
+        relevant_traces: String,
     },
-    #[serde(rename = "PartitionReconfiguredEvent")]
+    #[serde(rename = "PartitionReconfigured")]
     PartitionReconfiguredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -950,6 +1905,48 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName")]
+        node_name: String,
+        /// Id of Node instance.
+        #[serde(rename = "NodeInstanceId")]
+        node_instance_id: String,
+        /// Type of Service.
+        #[serde(rename = "ServiceType")]
+        service_type: String,
+        /// CcEpochDataLoss version.
+        #[serde(rename = "CcEpochDataLossVersion")]
+        cc_epoch_data_loss_version: i64,
+        /// CcEpochConfig version.
+        #[serde(rename = "CcEpochConfigVersion")]
+        cc_epoch_config_version: i64,
+        /// Type of reconfiguration.
+        #[serde(rename = "ReconfigType")]
+        reconfig_type: String,
+        /// Describes reconfiguration result.
+        #[serde(rename = "Result")]
+        result: String,
+        /// Duration of Phase0 in milli-seconds.
+        #[serde(rename = "Phase0DurationMs")]
+        phase0_duration_ms: f64,
+        /// Duration of Phase1 in milli-seconds.
+        #[serde(rename = "Phase1DurationMs")]
+        phase1_duration_ms: f64,
+        /// Duration of Phase2 in milli-seconds.
+        #[serde(rename = "Phase2DurationMs")]
+        phase2_duration_ms: f64,
+        /// Duration of Phase3 in milli-seconds.
+        #[serde(rename = "Phase3DurationMs")]
+        phase3_duration_ms: f64,
+        /// Duration of Phase4 in milli-seconds.
+        #[serde(rename = "Phase4DurationMs")]
+        phase4_duration_ms: f64,
+        /// Total duration in milli-seconds.
+        #[serde(rename = "TotalDurationMs")]
+        total_duration_ms: f64,
     },
     #[serde(rename = "ReplicaEvent")]
     ReplicaEvent {
@@ -968,8 +1965,14 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId")]
+        replica_id: i64,
     },
-    #[serde(rename = "ServiceCreatedEvent")]
+    #[serde(rename = "ServiceCreated")]
     ServiceCreatedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -986,8 +1989,41 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
+        #[serde(rename = "ServiceId")]
+        service_id: String,
+        /// Service type name.
+        #[serde(rename = "ServiceTypeName")]
+        service_type_name: String,
+        /// Application name.
+        #[serde(rename = "ApplicationName")]
+        application_name: String,
+        /// Application type name.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// Id of Service instance.
+        #[serde(rename = "ServiceInstance")]
+        service_instance: i64,
+        /// Indicates if Service is stateful.
+        #[serde(rename = "IsStateful")]
+        is_stateful: bool,
+        /// Number of partitions.
+        #[serde(rename = "PartitionCount")]
+        partition_count: i32,
+        /// Size of target replicas set.
+        #[serde(rename = "TargetReplicaSetSize")]
+        target_replica_set_size: i32,
+        /// Minimum size of replicas set.
+        #[serde(rename = "MinReplicaSetSize")]
+        min_replica_set_size: i32,
+        /// Version of Service package.
+        #[serde(rename = "ServicePackageVersion")]
+        service_package_version: String,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
     },
-    #[serde(rename = "ServiceDeletedEvent")]
+    #[serde(rename = "ServiceDeleted")]
     ServiceDeletedEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -1004,6 +2040,36 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
+        #[serde(rename = "ServiceId")]
+        service_id: String,
+        /// Service type name.
+        #[serde(rename = "ServiceTypeName")]
+        service_type_name: String,
+        /// Application name.
+        #[serde(rename = "ApplicationName")]
+        application_name: String,
+        /// Application type name.
+        #[serde(rename = "ApplicationTypeName")]
+        application_type_name: String,
+        /// Id of Service instance.
+        #[serde(rename = "ServiceInstance")]
+        service_instance: i64,
+        /// Indicates if Service is stateful.
+        #[serde(rename = "IsStateful")]
+        is_stateful: bool,
+        /// Number of partitions.
+        #[serde(rename = "PartitionCount")]
+        partition_count: i32,
+        /// Size of target replicas set.
+        #[serde(rename = "TargetReplicaSetSize")]
+        target_replica_set_size: i32,
+        /// Minimum size of replicas set.
+        #[serde(rename = "MinReplicaSetSize")]
+        min_replica_set_size: i32,
+        /// Version of Service package.
+        #[serde(rename = "ServicePackageVersion")]
+        service_package_version: String,
     },
     #[serde(rename = "ServiceEvent")]
     ServiceEvent {
@@ -1022,8 +2088,11 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
+        #[serde(rename = "ServiceId")]
+        service_id: String,
     },
-    #[serde(rename = "ServiceHealthReportExpiredEvent")]
+    #[serde(rename = "ServiceHealthReportExpired")]
     ServiceHealthReportExpiredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -1040,8 +2109,38 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
+        #[serde(rename = "ServiceId")]
+        service_id: String,
+        /// Id of Service instance.
+        #[serde(rename = "InstanceId")]
+        instance_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "ServiceNewHealthReportEvent")]
+    #[serde(rename = "ServiceNewHealthReport")]
     ServiceNewHealthReportEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -1058,8 +2157,38 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
+        #[serde(rename = "ServiceId")]
+        service_id: String,
+        /// Id of Service instance.
+        #[serde(rename = "InstanceId")]
+        instance_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "StatefulReplicaHealthReportExpiredEvent")]
+    #[serde(rename = "StatefulReplicaHealthReportExpired")]
     StatefulReplicaHealthReportExpiredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -1076,8 +2205,41 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId")]
+        replica_id: i64,
+        /// Id of Replica instance.
+        #[serde(rename = "ReplicaInstanceId")]
+        replica_instance_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "StatefulReplicaNewHealthReportEvent")]
+    #[serde(rename = "StatefulReplicaNewHealthReport")]
     StatefulReplicaNewHealthReportEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -1094,8 +2256,41 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId")]
+        replica_id: i64,
+        /// Id of Replica instance.
+        #[serde(rename = "ReplicaInstanceId")]
+        replica_instance_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "StatelessReplicaHealthReportExpiredEvent")]
+    #[serde(rename = "StatelessReplicaHealthReportExpired")]
     StatelessReplicaHealthReportExpiredEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -1112,8 +2307,38 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId")]
+        replica_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
-    #[serde(rename = "StatelessReplicaNewHealthReportEvent")]
+    #[serde(rename = "StatelessReplicaNewHealthReport")]
     StatelessReplicaNewHealthReportEvent {
         /// The identifier for the FabricEvent instance.
         #[serde(rename = "EventInstanceId")]
@@ -1130,6 +2355,36 @@ pub enum FabricEvent {
             skip_serializing_if = "Option::is_none"
         )]
         has_correlated_events: Option<bool>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId")]
+        partition_id: uuid::Uuid,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId")]
+        replica_id: i64,
+        /// Id of report source.
+        #[serde(rename = "SourceId")]
+        source_id: String,
+        /// Describes the property.
+        #[serde(rename = "Property")]
+        property: String,
+        /// Describes the property health state.
+        #[serde(rename = "HealthState")]
+        health_state: String,
+        /// Time to live in milli-seconds.
+        #[serde(rename = "TimeToLiveMs")]
+        time_to_live_ms: i64,
+        /// Sequence number of report.
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+        /// Description of report.
+        #[serde(rename = "Description")]
+        description: String,
+        /// Indicates the removal when it expires.
+        #[serde(rename = "RemoveWhenExpired")]
+        remove_when_expired: bool,
+        /// Source time.
+        #[serde(rename = "SourceUtcTimestamp")]
+        source_utc_timestamp: String,
     },
 }
 
@@ -1140,6 +2395,19 @@ impl Default for FabricEvent {
             category: Default::default(),
             time_stamp: Default::default(),
             has_correlated_events: Default::default(),
+            application_id: Default::default(),
+            service_name: Default::default(),
+            service_package_name: Default::default(),
+            service_package_activation_id: Default::default(),
+            is_exclusive: Default::default(),
+            code_package_name: Default::default(),
+            entry_point_type: Default::default(),
+            image_name: Default::default(),
+            container_name: Default::default(),
+            host_id: Default::default(),
+            exit_code: Default::default(),
+            unexpected_termination: Default::default(),
+            start_time: Default::default(),
         }
     }
 }

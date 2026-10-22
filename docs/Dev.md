@@ -1,6 +1,6 @@
-Run these commands from the repository root. Both crates were regenerated with
-OpenAPI Generator **7.26.0**, the latest stable release at regeneration time.
-The Docker image is pinned so regeneration is reproducible.
+Run these commands from the repository root. Both crates use OpenAPI Generator
+**7.26.0**. The Service Fabric script pins the generator JAR and its SHA-256;
+the Blob Docker image is also pinned so regeneration is reproducible.
 
 Rust and Cargo are pinned to **1.99.1**, the latest stable toolchain at update
 time, in `rust-toolchain.toml`. Rustup installs it with the Rustfmt and Clippy
@@ -15,23 +15,43 @@ Service Fabric:
 wget https://raw.githubusercontent.com/Azure/azure-rest-api-specs/refs/heads/main/specification/servicefabric/data-plane/ServiceFabric/stable/8.2/servicefabric.json \
     -O ./specs/servicefabric.json
 
-docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v7.26.0 generate \
-    -i /local/specs/servicefabric.json \
-    -g rust\
-    -o /local/openapi-service-fabric/ \
-    --global-property=apiDocs=false,modelDocs=false \
-    --additional-properties=packageName=openapi-service-fabric,packageVersion=0.1.1,useChrono=false
-
-sudo chown -R $(whoami) .
-
-sed -i 's/license = "Unlicense"/license = "MIT"/' openapi-service-fabric/Cargo.toml
-sed -i '/edition = "2021"/a\documentation = "https://learn.microsoft.com/en-us/azure/service-fabric/service-fabric-overview"' openapi-service-fabric/Cargo.toml
-sed -i '/edition = "2021"/a\readme = "README.md"' openapi-service-fabric/Cargo.toml
-sed -i '/edition = "2021"/a\repository.workspace = true' openapi-service-fabric/Cargo.toml
-sed -i '/^rustls = /a\rustls-tls = ["rustls"]' openapi-service-fabric/Cargo.toml
-sed -i '/unused_imports)]/i\#![allow(clippy::needless_return)]' openapi-service-fabric/src/lib.rs
-cargo fmt
+bash generation/service-fabric/generate.sh
 ```
+
+Service Fabric regeneration requires a JDK (Java 11 or later), `curl`,
+`sha256sum`, and Cargo/Rustfmt. The script caches the JAR outside the repository,
+compiles `ServiceFabricCodegen.java` in a temporary directory, and generates only
+models/APIs, preserving the checked-in manifest, module indexes, and README.
+It reads `specs/servicefabric.json` without modifying it.
+
+The subclass customizes generator metadata rather than editing the specification:
+
+- Use each subtype's `x-ms-discriminator-value` and all inherited/derived fields
+  in tagged enums, excluding the discriminator field emitted by Serde.
+- Model the omitted `upload_file` and `upload_file_chunk` bodies as required raw
+  `Vec<u8>` arguments, including intentionally empty directory markers.
+- Represent query parameters ending in `HealthStateFilter` as `u32` masks
+  (`0..=4294967295`), serialized as positive decimal values.
+- Keep a single documented bodyless success as `()`, including
+  `remove_node_state`. Single model responses retain their model return type.
+- Use `Option<T>` when the only success alternatives are a model and an empty
+  204. Only 204 becomes `None`, not decoding failures.
+- Generate an operation-specific `...Success` enum for other multiple-success
+  operations, with a `Status200`, `Status201`, etc. variant for each documented
+  success. Variants carry the response model where applicable. Selection uses
+  HTTP status, not untagged body deserialization: provisioning distinguishes
+  completed 200 from accepted 202, and Mesh create/update distinguishes model
+  responses on 200/201 from bodyless acceptance on 202. Undocumented success
+  statuses are HTTP response errors for these enum-returning operations.
+
+`generation/service-fabric/templates/reqwest/api.mustache` was scaffolded from
+the pinned generator's `rust/reqwest/api.mustache`. Its focused overrides and
+`templates/typed_success.mustache` consume the above metadata and require 2xx
+success without exposing status codes as the normal return value. Keep these
+overrides when updating the generator.
+The stock `supportMultipleResponses` option was tested but is not enabled:
+its untagged success decoding suppresses malformed-body errors and does not
+select response variants by HTTP status.
 
 Azure storage
 ```bash
@@ -66,10 +86,10 @@ The `rustls-tls` feature alias preserves the previous feature name alongside the
 generated `rustls` feature. Blob file bodies are now used by the generated
 upload code, so the old unused-body rename must not be applied.
 
-Generation resets dependency requirements in the generated manifests. Reapply
-the current dependency minimums with Cargo before validating:
+Blob generation resets dependency requirements in its generated manifest.
+Reapply the current dependency minimums with Cargo before validating
+(the Service Fabric script preserves its manifest):
 ```bash
-cargo add -p openapi-service-fabric serde@1.0.229 serde_json@1.0.154 serde_repr@0.1.21 url@2.5.8 uuid@1.28.0 reqwest@0.13.5
 cargo add -p openapi-azure-storage-blob serde@1.0.229 serde_with@3.24.0 serde_json@1.0.154 serde_repr@0.1.21 url@2.5.8 uuid@1.28.0 tokio@1.54.1 tokio-util@0.7.20 reqwest@0.13.5
 cargo update
 ```
@@ -81,6 +101,7 @@ Validate after regenerating and applying the post-processing:
 ```bash
 cargo fmt --all -- --check
 cargo check --workspace --all-targets -j 1
+cargo test -p openapi-service-fabric --no-default-features --test interoperability -j 1
 cargo test -p openapi-service-fabric -p openapi-azure-storage-blob -j 1
 cargo clippy --workspace --all-targets -j 1
 cargo check -p openapi-service-fabric -p openapi-azure-storage-blob --no-default-features --features rustls-tls -j 1

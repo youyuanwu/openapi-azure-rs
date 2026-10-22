@@ -1,0 +1,33 @@
+let content = resp.text(){{#supportAsync}}.await{{/supportAsync}}?;
+match status.as_u16() {
+    {{#vendorExtensions.x-sf-success-responses}}
+    {{code}} => {
+        {{#dataType}}
+        match content_type {
+            {{^useSerdePathToError}}
+            ContentType::Json => serde_json::from_str(&content)
+            {{/useSerdePathToError}}
+            {{#useSerdePathToError}}
+            ContentType::Json => serde_path_to_error::deserialize(&mut serde_json::Deserializer::from_str(&content))
+            {{/useSerdePathToError}}
+                .map({{{operationIdCamelCase}}}Success::Status{{code}})
+                .map_err(Error::from),
+            ContentType::Text => Err(Error::from(serde_json::Error::custom(
+                "Received text/plain where a JSON success body was expected",
+            ))),
+            ContentType::Unsupported(unknown_type) => Err(Error::from(serde_json::Error::custom(format!(
+                "Unsupported success body content type: {unknown_type}",
+            )))),
+        }
+        {{/dataType}}
+        {{^dataType}}
+        Ok({{{operationIdCamelCase}}}Success::Status{{code}})
+        {{/dataType}}
+    },
+    {{/vendorExtensions.x-sf-success-responses}}
+    _ => Err(Error::ResponseError(ResponseContent {
+        status,
+        entity: serde_json::from_str(&content).ok(),
+        content,
+    })),
+}

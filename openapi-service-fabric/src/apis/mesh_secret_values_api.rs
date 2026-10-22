@@ -13,6 +13,28 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
+/// Documented success outcomes of [`mesh_secret_value_add_value`], selected by HTTP status.
+#[derive(Clone, Debug, PartialEq)]
+pub enum MeshSecretValueAddValueSuccess {
+    /// OK
+    Status200(models::SecretValueResourceDescription),
+    /// Created
+    Status201(models::SecretValueResourceDescription),
+    /// Accepted
+    Status202,
+}
+
+/// Documented success outcomes of [`mesh_secret_value_delete`], selected by HTTP status.
+#[derive(Clone, Debug, PartialEq)]
+pub enum MeshSecretValueDeleteSuccess {
+    /// OK
+    Status200,
+    /// Accepted
+    Status202,
+    /// No Content - the specified secret value was not found.
+    Status204,
+}
+
 /// struct for typed errors of method [`mesh_secret_value_add_value`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -60,7 +82,7 @@ pub async fn mesh_secret_value_add_value(
     secret_resource_name: &str,
     secret_value_resource_name: &str,
     secret_value_resource_description: models::SecretValueResourceDescription,
-) -> Result<models::SecretValueResourceDescription, Error<MeshSecretValueAddValueError>> {
+) -> Result<MeshSecretValueAddValueSuccess, Error<MeshSecretValueAddValueError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_secret_resource_name = secret_resource_name;
@@ -92,12 +114,41 @@ pub async fn mesh_secret_value_add_value(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
-        match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::SecretValueResourceDescription`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::SecretValueResourceDescription`")))),
+        match status.as_u16() {
+            200 => match content_type {
+                ContentType::Json => serde_json::from_str(&content)
+                    .map(MeshSecretValueAddValueSuccess::Status200)
+                    .map_err(Error::from),
+                ContentType::Text => Err(Error::from(serde_json::Error::custom(
+                    "Received text/plain where a JSON success body was expected",
+                ))),
+                ContentType::Unsupported(unknown_type) => {
+                    Err(Error::from(serde_json::Error::custom(format!(
+                        "Unsupported success body content type: {unknown_type}",
+                    ))))
+                }
+            },
+            201 => match content_type {
+                ContentType::Json => serde_json::from_str(&content)
+                    .map(MeshSecretValueAddValueSuccess::Status201)
+                    .map_err(Error::from),
+                ContentType::Text => Err(Error::from(serde_json::Error::custom(
+                    "Received text/plain where a JSON success body was expected",
+                ))),
+                ContentType::Unsupported(unknown_type) => {
+                    Err(Error::from(serde_json::Error::custom(format!(
+                        "Unsupported success body content type: {unknown_type}",
+                    ))))
+                }
+            },
+            202 => Ok(MeshSecretValueAddValueSuccess::Status202),
+            _ => Err(Error::ResponseError(ResponseContent {
+                status,
+                entity: serde_json::from_str(&content).ok(),
+                content,
+            })),
         }
     } else {
         let content = resp.text().await?;
@@ -116,7 +167,7 @@ pub async fn mesh_secret_value_delete(
     api_version: &str,
     secret_resource_name: &str,
     secret_value_resource_name: &str,
-) -> Result<(), Error<MeshSecretValueDeleteError>> {
+) -> Result<MeshSecretValueDeleteSuccess, Error<MeshSecretValueDeleteError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_secret_resource_name = secret_resource_name;
@@ -142,8 +193,18 @@ pub async fn mesh_secret_value_delete(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
-        Ok(())
+    if status.is_success() {
+        let content = resp.text().await?;
+        match status.as_u16() {
+            200 => Ok(MeshSecretValueDeleteSuccess::Status200),
+            202 => Ok(MeshSecretValueDeleteSuccess::Status202),
+            204 => Ok(MeshSecretValueDeleteSuccess::Status204),
+            _ => Err(Error::ResponseError(ResponseContent {
+                status,
+                entity: serde_json::from_str(&content).ok(),
+                content,
+            })),
+        }
     } else {
         let content = resp.text().await?;
         let entity: Option<MeshSecretValueDeleteError> = serde_json::from_str(&content).ok();
@@ -191,7 +252,7 @@ pub async fn mesh_secret_value_get(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -242,7 +303,7 @@ pub async fn mesh_secret_value_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -298,7 +359,7 @@ pub async fn mesh_secret_value_show(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),

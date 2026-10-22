@@ -15,12 +15,18 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum RepairTargetDescriptionBase {
-    #[serde(rename = "NodeRepairTargetDescription")]
-    NodeRepairTargetDescription {},
+    #[serde(rename = "Node")]
+    NodeRepairTargetDescription {
+        /// The list of nodes targeted by a repair action.
+        #[serde(rename = "NodeNames", skip_serializing_if = "Option::is_none")]
+        node_names: Option<Vec<String>>,
+    },
 }
 
 impl Default for RepairTargetDescriptionBase {
     fn default() -> Self {
-        Self::NodeRepairTargetDescription {}
+        Self::NodeRepairTargetDescription {
+            node_names: Default::default(),
+        }
     }
 }

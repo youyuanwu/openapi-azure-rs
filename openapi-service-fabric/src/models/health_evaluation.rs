@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum HealthEvaluation {
-    #[serde(rename = "ApplicationHealthEvaluation")]
+    #[serde(rename = "Application")]
     ApplicationHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -25,8 +25,17 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// The name of the application, including the 'fabric:' URI scheme.
+        #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
+        application_name: Option<String>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "ApplicationTypeApplicationsHealthEvaluation")]
+    #[serde(rename = "ApplicationTypeApplications")]
     ApplicationTypeApplicationsHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -36,8 +45,29 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// The application type name as defined in the application manifest.
+        #[serde(
+            rename = "ApplicationTypeName",
+            skip_serializing_if = "Option::is_none"
+        )]
+        application_type_name: Option<String>,
+        /// Maximum allowed percentage of unhealthy applications for the application type, specified as an entry in ApplicationTypeHealthPolicyMap.
+        #[serde(
+            rename = "MaxPercentUnhealthyApplications",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_applications: Option<i32>,
+        /// Total number of applications of the application type found in the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "ApplicationsHealthEvaluation")]
+    #[serde(rename = "Applications")]
     ApplicationsHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -47,8 +77,23 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Maximum allowed percentage of unhealthy applications from the ClusterHealthPolicy.
+        #[serde(
+            rename = "MaxPercentUnhealthyApplications",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_applications: Option<i32>,
+        /// Total number of applications from the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "DeltaNodesCheckHealthEvaluation")]
+    #[serde(rename = "DeltaNodesCheck")]
     DeltaNodesCheckHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -58,8 +103,29 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Number of nodes with aggregated heath state Error in the health store at the beginning of the cluster upgrade.
+        #[serde(rename = "BaselineErrorCount", skip_serializing_if = "Option::is_none")]
+        baseline_error_count: Option<i64>,
+        /// Total number of nodes in the health store at the beginning of the cluster upgrade.
+        #[serde(rename = "BaselineTotalCount", skip_serializing_if = "Option::is_none")]
+        baseline_total_count: Option<i64>,
+        /// Maximum allowed percentage of delta unhealthy nodes from the ClusterUpgradeHealthPolicy.
+        #[serde(
+            rename = "MaxPercentDeltaUnhealthyNodes",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_delta_unhealthy_nodes: Option<i32>,
+        /// Total number of nodes in the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "DeployedApplicationHealthEvaluation")]
+    #[serde(rename = "DeployedApplication")]
     DeployedApplicationHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -69,8 +135,20 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
+        node_name: Option<String>,
+        /// The name of the application, including the 'fabric:' URI scheme.
+        #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
+        application_name: Option<String>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "DeployedApplicationsHealthEvaluation")]
+    #[serde(rename = "DeployedApplications")]
     DeployedApplicationsHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -80,8 +158,23 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Maximum allowed percentage of unhealthy deployed applications from the ApplicationHealthPolicy.
+        #[serde(
+            rename = "MaxPercentUnhealthyDeployedApplications",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_deployed_applications: Option<i32>,
+        /// Total number of deployed applications of the application in the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "DeployedServicePackageHealthEvaluation")]
+    #[serde(rename = "DeployedServicePackage")]
     DeployedServicePackageHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -91,8 +184,26 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
+        node_name: Option<String>,
+        /// The name of the application, including the 'fabric:' URI scheme.
+        #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
+        application_name: Option<String>,
+        /// The name of the service manifest.
+        #[serde(
+            rename = "ServiceManifestName",
+            skip_serializing_if = "Option::is_none"
+        )]
+        service_manifest_name: Option<String>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "DeployedServicePackagesHealthEvaluation")]
+    #[serde(rename = "DeployedServicePackages")]
     DeployedServicePackagesHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -102,8 +213,17 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Total number of deployed service packages of the deployed application in the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "EventHealthEvaluation")]
+    #[serde(rename = "Event")]
     EventHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -113,8 +233,16 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Indicates whether warnings are treated with the same severity as errors. The field is specified in the health policy used to evaluate the entity.
+        #[serde(
+            rename = "ConsiderWarningAsError",
+            skip_serializing_if = "Option::is_none"
+        )]
+        consider_warning_as_error: Option<bool>,
+        #[serde(rename = "UnhealthyEvent", skip_serializing_if = "Option::is_none")]
+        unhealthy_event: Option<Box<models::HealthEvent>>,
     },
-    #[serde(rename = "NodeHealthEvaluation")]
+    #[serde(rename = "Node")]
     NodeHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -124,8 +252,17 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// The name of a Service Fabric node.
+        #[serde(rename = "NodeName", skip_serializing_if = "Option::is_none")]
+        node_name: Option<String>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "NodeTypeNodesHealthEvaluation")]
+    #[serde(rename = "NodeTypeNodes")]
     NodeTypeNodesHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -135,8 +272,26 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// The node type name as defined in the cluster manifest.
+        #[serde(rename = "NodeTypeName", skip_serializing_if = "Option::is_none")]
+        node_type_name: Option<String>,
+        /// Maximum allowed percentage of unhealthy nodes for the node type, specified as an entry in NodeTypeHealthPolicyMap.
+        #[serde(
+            rename = "MaxPercentUnhealthyNodes",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_nodes: Option<i32>,
+        /// Total number of nodes of the node type found in the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "NodesHealthEvaluation")]
+    #[serde(rename = "Nodes")]
     NodesHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -146,8 +301,23 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Maximum allowed percentage of unhealthy nodes from the ClusterHealthPolicy.
+        #[serde(
+            rename = "MaxPercentUnhealthyNodes",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_nodes: Option<i32>,
+        /// Total number of nodes found in the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "PartitionHealthEvaluation")]
+    #[serde(rename = "Partition")]
     PartitionHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -157,8 +327,17 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "PartitionsHealthEvaluation")]
+    #[serde(rename = "Partitions")]
     PartitionsHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -168,8 +347,23 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Maximum allowed percentage of unhealthy partitions per service from the ServiceTypeHealthPolicy.
+        #[serde(
+            rename = "MaxPercentUnhealthyPartitionsPerService",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_partitions_per_service: Option<i32>,
+        /// Total number of partitions of the service from the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "ReplicaHealthEvaluation")]
+    #[serde(rename = "Replica")]
     ReplicaHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -179,8 +373,23 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
+        #[serde(rename = "PartitionId", skip_serializing_if = "Option::is_none")]
+        partition_id: Option<uuid::Uuid>,
+        /// Id of a stateful service replica or a stateless service instance. This ID is used in the queries that apply to both stateful and stateless services. It is used by Service Fabric to uniquely identify a replica of a partition of a stateful service or an instance of a stateless service partition. It is unique within a partition and does not change for the lifetime of the replica or the instance. If a stateful replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the ID. If a stateless instance is failed over on the same or different node it will get a different value for the ID.
+        #[serde(
+            rename = "ReplicaOrInstanceId",
+            skip_serializing_if = "Option::is_none"
+        )]
+        replica_or_instance_id: Option<String>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "ReplicasHealthEvaluation")]
+    #[serde(rename = "Replicas")]
     ReplicasHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -190,8 +399,23 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Maximum allowed percentage of unhealthy replicas per partition from the ApplicationHealthPolicy.
+        #[serde(
+            rename = "MaxPercentUnhealthyReplicasPerPartition",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_replicas_per_partition: Option<i32>,
+        /// Total number of replicas in the partition from the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "ServiceHealthEvaluation")]
+    #[serde(rename = "Service")]
     ServiceHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -201,8 +425,17 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// The full name of the service with 'fabric:' URI scheme.
+        #[serde(rename = "ServiceName", skip_serializing_if = "Option::is_none")]
+        service_name: Option<String>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "ServicesHealthEvaluation")]
+    #[serde(rename = "Services")]
     ServicesHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -212,8 +445,26 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Name of the service type of the services.
+        #[serde(rename = "ServiceTypeName", skip_serializing_if = "Option::is_none")]
+        service_type_name: Option<String>,
+        /// Maximum allowed percentage of unhealthy services from the ServiceTypeHealthPolicy.
+        #[serde(
+            rename = "MaxPercentUnhealthyServices",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_services: Option<i32>,
+        /// Total number of services of the current service type in the application from the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "SystemApplicationHealthEvaluation")]
+    #[serde(rename = "SystemApplication")]
     SystemApplicationHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -223,8 +474,14 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "UpgradeDomainDeltaNodesCheckHealthEvaluation")]
+    #[serde(rename = "UpgradeDomainDeltaNodesCheck")]
     UpgradeDomainDeltaNodesCheckHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -234,8 +491,32 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Name of the upgrade domain where nodes health is currently evaluated.
+        #[serde(rename = "UpgradeDomainName", skip_serializing_if = "Option::is_none")]
+        upgrade_domain_name: Option<String>,
+        /// Number of upgrade domain nodes with aggregated heath state Error in the health store at the beginning of the cluster upgrade.
+        #[serde(rename = "BaselineErrorCount", skip_serializing_if = "Option::is_none")]
+        baseline_error_count: Option<i64>,
+        /// Total number of upgrade domain nodes in the health store at the beginning of the cluster upgrade.
+        #[serde(rename = "BaselineTotalCount", skip_serializing_if = "Option::is_none")]
+        baseline_total_count: Option<i64>,
+        /// Maximum allowed percentage of upgrade domain delta unhealthy nodes from the ClusterUpgradeHealthPolicy.
+        #[serde(
+            rename = "MaxPercentDeltaUnhealthyNodes",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_delta_unhealthy_nodes: Option<i32>,
+        /// Total number of upgrade domain nodes in the health store.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "UpgradeDomainDeployedApplicationsHealthEvaluation")]
+    #[serde(rename = "UpgradeDomainDeployedApplications")]
     UpgradeDomainDeployedApplicationsHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -245,8 +526,26 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Name of the upgrade domain where deployed applications health is currently evaluated.
+        #[serde(rename = "UpgradeDomainName", skip_serializing_if = "Option::is_none")]
+        upgrade_domain_name: Option<String>,
+        /// Maximum allowed percentage of unhealthy deployed applications from the ClusterHealthPolicy.
+        #[serde(
+            rename = "MaxPercentUnhealthyDeployedApplications",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_deployed_applications: Option<i32>,
+        /// Total number of deployed applications in the current upgrade domain.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
-    #[serde(rename = "UpgradeDomainNodesHealthEvaluation")]
+    #[serde(rename = "UpgradeDomainNodes")]
     UpgradeDomainNodesHealthEvaluation {
         #[serde(
             rename = "AggregatedHealthState",
@@ -256,6 +555,24 @@ pub enum HealthEvaluation {
         /// Description of the health evaluation, which represents a summary of the evaluation process.
         #[serde(rename = "Description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Name of the upgrade domain where nodes health is currently evaluated.
+        #[serde(rename = "UpgradeDomainName", skip_serializing_if = "Option::is_none")]
+        upgrade_domain_name: Option<String>,
+        /// Maximum allowed percentage of unhealthy nodes from the ClusterHealthPolicy.
+        #[serde(
+            rename = "MaxPercentUnhealthyNodes",
+            skip_serializing_if = "Option::is_none"
+        )]
+        max_percent_unhealthy_nodes: Option<i32>,
+        /// Total number of nodes in the current upgrade domain.
+        #[serde(rename = "TotalCount", skip_serializing_if = "Option::is_none")]
+        total_count: Option<i64>,
+        /// List of health evaluations that resulted in the current aggregated health state.
+        #[serde(
+            rename = "UnhealthyEvaluations",
+            skip_serializing_if = "Option::is_none"
+        )]
+        unhealthy_evaluations: Option<Vec<models::HealthEvaluationWrapper>>,
     },
 }
 
@@ -264,6 +581,8 @@ impl Default for HealthEvaluation {
         Self::ApplicationHealthEvaluation {
             aggregated_health_state: Default::default(),
             description: Default::default(),
+            application_name: Default::default(),
+            unhealthy_evaluations: Default::default(),
         }
     }
 }

@@ -15,41 +15,58 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum ChaosEvent {
-    #[serde(rename = "ExecutingFaultsChaosEvent")]
+    #[serde(rename = "ExecutingFaults")]
     ExecutingFaultsChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
         time_stamp_utc: String,
+        /// List of string description of the faults that Chaos decided to execute in an iteration.
+        #[serde(rename = "Faults", skip_serializing_if = "Option::is_none")]
+        faults: Option<Vec<String>>,
     },
-    #[serde(rename = "StartedChaosEvent")]
+    #[serde(rename = "Started")]
     StartedChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
         time_stamp_utc: String,
+        #[serde(rename = "ChaosParameters", skip_serializing_if = "Option::is_none")]
+        chaos_parameters: Option<Box<models::ChaosParameters>>,
     },
-    #[serde(rename = "StoppedChaosEvent")]
+    #[serde(rename = "Stopped")]
     StoppedChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
         time_stamp_utc: String,
+        /// Describes why Chaos stopped. Chaos can stop because of StopChaos API call or the timeToRun provided in ChaosParameters is over.
+        #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
+        reason: Option<String>,
     },
-    #[serde(rename = "TestErrorChaosEvent")]
+    #[serde(rename = "TestError")]
     TestErrorChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
         time_stamp_utc: String,
+        /// Describes why TestErrorChaosEvent was generated. For example, Chaos tries to fault a partition but finds that the partition is no longer fault tolerant, then a TestErrorEvent gets generated with the reason stating that the partition is not fault tolerant.
+        #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
+        reason: Option<String>,
     },
-    #[serde(rename = "ValidationFailedChaosEvent")]
+    #[serde(rename = "ValidationFailed")]
     ValidationFailedChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
         time_stamp_utc: String,
+        /// Describes why the ValidationFailedChaosEvent was generated. This may happen because more than MaxPercentUnhealthyNodes are unhealthy for more than MaxClusterStabilizationTimeout. This reason will be in the Reason property of the ValidationFailedChaosEvent as a string.
+        #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
+        reason: Option<String>,
     },
-    #[serde(rename = "WaitingChaosEvent")]
+    #[serde(rename = "Waiting")]
     WaitingChaosEvent {
         /// The UTC timestamp when this Chaos event was generated.
         #[serde(rename = "TimeStampUtc")]
         time_stamp_utc: String,
+        /// Describes why the WaitingChaosEvent was generated, for example, due to a cluster upgrade.
+        #[serde(rename = "Reason", skip_serializing_if = "Option::is_none")]
+        reason: Option<String>,
     },
 }
 
@@ -57,6 +74,7 @@ impl Default for ChaosEvent {
     fn default() -> Self {
         Self::ExecutingFaultsChaosEvent {
             time_stamp_utc: Default::default(),
+            faults: Default::default(),
         }
     }
 }

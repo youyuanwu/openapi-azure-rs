@@ -101,7 +101,7 @@ pub async fn cancel_repair_task(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -151,7 +151,7 @@ pub async fn create_repair_task(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -195,7 +195,7 @@ pub async fn delete_repair_task(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -240,7 +240,7 @@ pub async fn force_approve_repair_task(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -300,7 +300,7 @@ pub async fn get_repair_task_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -350,7 +350,7 @@ pub async fn update_repair_execution_state(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -401,7 +401,7 @@ pub async fn update_repair_task_health_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),

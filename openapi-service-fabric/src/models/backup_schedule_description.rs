@@ -15,14 +15,29 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "ScheduleKind")]
 pub enum BackupScheduleDescription {
-    #[serde(rename = "FrequencyBasedBackupScheduleDescription")]
-    FrequencyBasedBackupScheduleDescription {},
-    #[serde(rename = "TimeBasedBackupScheduleDescription")]
-    TimeBasedBackupScheduleDescription {},
+    #[serde(rename = "FrequencyBased")]
+    FrequencyBasedBackupScheduleDescription {
+        /// Defines the interval with which backups are periodically taken. It should be specified in ISO8601 format. Timespan in seconds is not supported and will be ignored while creating the policy.
+        #[serde(rename = "Interval")]
+        interval: String,
+    },
+    #[serde(rename = "TimeBased")]
+    TimeBasedBackupScheduleDescription {
+        #[serde(rename = "ScheduleFrequencyType")]
+        schedule_frequency_type: models::BackupScheduleFrequencyType,
+        /// List of days of a week when to trigger the periodic backup. This is valid only when the backup schedule frequency type is weekly.
+        #[serde(rename = "RunDays", skip_serializing_if = "Option::is_none")]
+        run_days: Option<Vec<models::DayOfWeek>>,
+        /// Represents the list of exact time during the day in ISO8601 format. Like '19:00:00' will represent '7PM' during the day. Date specified along with time will be ignored.
+        #[serde(rename = "RunTimes")]
+        run_times: Vec<String>,
+    },
 }
 
 impl Default for BackupScheduleDescription {
     fn default() -> Self {
-        Self::FrequencyBasedBackupScheduleDescription {}
+        Self::FrequencyBasedBackupScheduleDescription {
+            interval: Default::default(),
+        }
     }
 }

@@ -127,7 +127,7 @@ pub async fn cancel_operation(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -184,7 +184,7 @@ pub async fn get_data_loss_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -240,7 +240,7 @@ pub async fn get_fault_operation_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -299,7 +299,7 @@ pub async fn get_node_transition_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -361,7 +361,7 @@ pub async fn get_partition_restart_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -423,7 +423,7 @@ pub async fn get_quorum_loss_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -484,7 +484,7 @@ pub async fn start_data_loss(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -549,7 +549,7 @@ pub async fn start_node_transition(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -608,7 +608,7 @@ pub async fn start_partition_restart(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -670,7 +670,7 @@ pub async fn start_quorum_loss(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;

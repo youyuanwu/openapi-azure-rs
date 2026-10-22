@@ -287,7 +287,7 @@ pub async fn backup_partition(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -339,7 +339,7 @@ pub async fn create_backup_policy(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -386,7 +386,7 @@ pub async fn delete_backup_policy(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -436,7 +436,7 @@ pub async fn disable_application_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -486,7 +486,7 @@ pub async fn disable_partition_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -536,7 +536,7 @@ pub async fn disable_service_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -586,7 +586,7 @@ pub async fn enable_application_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -636,7 +636,7 @@ pub async fn enable_partition_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -686,7 +686,7 @@ pub async fn enable_service_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -747,7 +747,7 @@ pub async fn get_all_entities_backed_up_by_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -817,7 +817,7 @@ pub async fn get_application_backup_configuration_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -899,7 +899,7 @@ pub async fn get_application_backup_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -955,7 +955,7 @@ pub async fn get_backup_policy_by_name(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1015,7 +1015,7 @@ pub async fn get_backup_policy_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1080,7 +1080,7 @@ pub async fn get_backups_from_backup_location(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1137,7 +1137,7 @@ pub async fn get_partition_backup_configuration_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1209,7 +1209,7 @@ pub async fn get_partition_backup_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1265,7 +1265,7 @@ pub async fn get_partition_backup_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1321,7 +1321,7 @@ pub async fn get_partition_restore_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1388,7 +1388,7 @@ pub async fn get_service_backup_configuration_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1470,7 +1470,7 @@ pub async fn get_service_backup_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1530,7 +1530,7 @@ pub async fn restore_partition(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1577,7 +1577,7 @@ pub async fn resume_application_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1624,7 +1624,7 @@ pub async fn resume_partition_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1671,7 +1671,7 @@ pub async fn resume_service_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1718,7 +1718,7 @@ pub async fn suspend_application_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1765,7 +1765,7 @@ pub async fn suspend_partition_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1812,7 +1812,7 @@ pub async fn suspend_service_backup(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1867,7 +1867,7 @@ pub async fn update_backup_policy(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;

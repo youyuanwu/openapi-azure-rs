@@ -117,7 +117,7 @@ pub async fn create_name(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -164,7 +164,7 @@ pub async fn delete_name(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -214,7 +214,7 @@ pub async fn delete_property(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -259,7 +259,7 @@ pub async fn get_name_exists_info(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -313,7 +313,7 @@ pub async fn get_property_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -379,7 +379,7 @@ pub async fn get_property_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -445,7 +445,7 @@ pub async fn get_sub_name_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -498,7 +498,7 @@ pub async fn put_property(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -554,7 +554,7 @@ pub async fn submit_property_batch(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),

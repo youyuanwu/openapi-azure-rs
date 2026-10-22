@@ -15,12 +15,46 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum ReplicaStatusBase {
-    #[serde(rename = "KeyValueStoreReplicaStatus")]
-    KeyValueStoreReplicaStatus {},
+    #[serde(rename = "KeyValueStore")]
+    KeyValueStoreReplicaStatus {
+        /// Value indicating the estimated number of rows in the underlying database.
+        #[serde(
+            rename = "DatabaseRowCountEstimate",
+            skip_serializing_if = "Option::is_none"
+        )]
+        database_row_count_estimate: Option<String>,
+        /// Value indicating the estimated size of the underlying database.
+        #[serde(
+            rename = "DatabaseLogicalSizeEstimate",
+            skip_serializing_if = "Option::is_none"
+        )]
+        database_logical_size_estimate: Option<String>,
+        /// Value indicating the latest key-prefix filter applied to enumeration during the callback. Null if there is no pending callback.
+        #[serde(
+            rename = "CopyNotificationCurrentKeyFilter",
+            skip_serializing_if = "Option::is_none"
+        )]
+        copy_notification_current_key_filter: Option<String>,
+        /// Value indicating the latest number of keys enumerated during the callback. 0 if there is no pending callback.
+        #[serde(
+            rename = "CopyNotificationCurrentProgress",
+            skip_serializing_if = "Option::is_none"
+        )]
+        copy_notification_current_progress: Option<String>,
+        /// Value indicating the current status details of the replica.
+        #[serde(rename = "StatusDetails", skip_serializing_if = "Option::is_none")]
+        status_details: Option<String>,
+    },
 }
 
 impl Default for ReplicaStatusBase {
     fn default() -> Self {
-        Self::KeyValueStoreReplicaStatus {}
+        Self::KeyValueStoreReplicaStatus {
+            database_row_count_estimate: Default::default(),
+            database_logical_size_estimate: Default::default(),
+            copy_notification_current_key_filter: Default::default(),
+            copy_notification_current_progress: Default::default(),
+            status_details: Default::default(),
+        }
     }
 }

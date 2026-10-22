@@ -16,3 +16,4 @@ jobs:
         with:
           persist-credentials: false
       - run: cargo check --workspace --all-targets --locked -j 1
+      - run: cargo test -p openapi-service-fabric --test interoperability --locked -j 1

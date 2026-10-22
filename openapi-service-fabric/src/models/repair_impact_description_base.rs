@@ -15,12 +15,18 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum RepairImpactDescriptionBase {
-    #[serde(rename = "NodeRepairImpactDescription")]
-    NodeRepairImpactDescription {},
+    #[serde(rename = "Node")]
+    NodeRepairImpactDescription {
+        /// The list of nodes impacted by a repair action and their respective expected impact.
+        #[serde(rename = "NodeImpactList", skip_serializing_if = "Option::is_none")]
+        node_impact_list: Option<Vec<models::NodeImpact>>,
+    },
 }
 
 impl Default for RepairImpactDescriptionBase {
     fn default() -> Self {
-        Self::NodeRepairImpactDescription {}
+        Self::NodeRepairImpactDescription {
+            node_impact_list: Default::default(),
+        }
     }
 }

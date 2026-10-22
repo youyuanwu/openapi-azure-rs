@@ -15,20 +15,42 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum PropertyValue {
-    #[serde(rename = "BinaryPropertyValue")]
-    BinaryPropertyValue {},
-    #[serde(rename = "DoublePropertyValue")]
-    DoublePropertyValue {},
-    #[serde(rename = "GuidPropertyValue")]
-    GuidPropertyValue {},
-    #[serde(rename = "Int64PropertyValue")]
-    Int64PropertyValue {},
-    #[serde(rename = "StringPropertyValue")]
-    StringPropertyValue {},
+    #[serde(rename = "Binary")]
+    BinaryPropertyValue {
+        /// Array of bytes to be sent as an integer array. Each element of array is a number between 0 and 255.
+        #[serde(rename = "Data")]
+        data: Vec<i32>,
+    },
+    #[serde(rename = "Double")]
+    DoublePropertyValue {
+        /// The data of the property value.
+        #[serde(rename = "Data")]
+        data: f64,
+    },
+    #[serde(rename = "Guid")]
+    GuidPropertyValue {
+        /// The data of the property value.
+        #[serde(rename = "Data")]
+        data: uuid::Uuid,
+    },
+    #[serde(rename = "Int64")]
+    Int64PropertyValue {
+        /// The data of the property value.
+        #[serde(rename = "Data")]
+        data: String,
+    },
+    #[serde(rename = "String")]
+    StringPropertyValue {
+        /// The data of the property value.
+        #[serde(rename = "Data")]
+        data: String,
+    },
 }
 
 impl Default for PropertyValue {
     fn default() -> Self {
-        Self::BinaryPropertyValue {}
+        Self::BinaryPropertyValue {
+            data: Default::default(),
+        }
     }
 }

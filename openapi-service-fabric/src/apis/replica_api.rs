@@ -138,7 +138,7 @@ pub async fn get_deployed_service_replica_detail_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -201,7 +201,7 @@ pub async fn get_deployed_service_replica_detail_info_by_partition_id(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -229,8 +229,10 @@ pub async fn get_deployed_service_replica_info_list(
     partition_id: Option<&str>,
     service_manifest_name: Option<&str>,
     timeout: Option<i64>,
-) -> Result<Vec<models::DeployedServiceReplicaInfo>, Error<GetDeployedServiceReplicaInfoListError>>
-{
+) -> Result<
+    Option<Vec<models::DeployedServiceReplicaInfo>>,
+    Error<GetDeployedServiceReplicaInfoListError>,
+> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -265,6 +267,9 @@ pub async fn get_deployed_service_replica_info_list(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status.as_u16() == 204 {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -272,10 +277,10 @@ pub async fn get_deployed_service_replica_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `Vec&lt;models::DeployedServiceReplicaInfo&gt;`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `Vec&lt;models::DeployedServiceReplicaInfo&gt;`")))),
         }
@@ -297,7 +302,7 @@ pub async fn get_replica_health(
     api_version: &str,
     partition_id: &str,
     replica_id: &str,
-    events_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
     timeout: Option<i64>,
 ) -> Result<models::ReplicaHealth, Error<GetReplicaHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -337,7 +342,7 @@ pub async fn get_replica_health(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -361,7 +366,7 @@ pub async fn get_replica_health_using_policy(
     api_version: &str,
     partition_id: &str,
     replica_id: &str,
-    events_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
     timeout: Option<i64>,
     application_health_policy: Option<models::ApplicationHealthPolicy>,
 ) -> Result<models::ReplicaHealth, Error<GetReplicaHealthUsingPolicyError>> {
@@ -406,7 +411,7 @@ pub async fn get_replica_health_using_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -431,7 +436,7 @@ pub async fn get_replica_info(
     partition_id: &str,
     replica_id: &str,
     timeout: Option<i64>,
-) -> Result<models::ReplicaInfo, Error<GetReplicaInfoError>> {
+) -> Result<Option<models::ReplicaInfo>, Error<GetReplicaInfoError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_partition_id = partition_id;
@@ -458,6 +463,9 @@ pub async fn get_replica_info(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status.as_u16() == 204 {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -465,10 +473,10 @@ pub async fn get_replica_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ReplicaInfo`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ReplicaInfo`")))),
         }
@@ -526,7 +534,7 @@ pub async fn get_replica_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -589,7 +597,7 @@ pub async fn remove_replica(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -650,7 +658,7 @@ pub async fn report_replica_health(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -703,7 +711,7 @@ pub async fn restart_replica(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;

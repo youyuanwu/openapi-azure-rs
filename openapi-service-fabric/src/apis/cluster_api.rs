@@ -245,7 +245,7 @@ pub async fn get_aad_metadata(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -301,7 +301,7 @@ pub async fn get_cluster_configuration(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -357,7 +357,7 @@ pub async fn get_cluster_configuration_upgrade_status(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -380,9 +380,9 @@ pub async fn get_cluster_configuration_upgrade_status(
 pub async fn get_cluster_health(
     configuration: &configuration::Configuration,
     api_version: &str,
-    nodes_health_state_filter: Option<i32>,
-    applications_health_state_filter: Option<i32>,
-    events_health_state_filter: Option<i32>,
+    nodes_health_state_filter: Option<u32>,
+    applications_health_state_filter: Option<u32>,
+    events_health_state_filter: Option<u32>,
     exclude_health_statistics: Option<bool>,
     include_system_application_health_statistics: Option<bool>,
     timeout: Option<i64>,
@@ -438,7 +438,7 @@ pub async fn get_cluster_health(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -488,7 +488,7 @@ pub async fn get_cluster_health_chunk(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -546,7 +546,7 @@ pub async fn get_cluster_health_chunk_using_policy_and_advanced_filters(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -569,9 +569,9 @@ pub async fn get_cluster_health_chunk_using_policy_and_advanced_filters(
 pub async fn get_cluster_health_using_policy(
     configuration: &configuration::Configuration,
     api_version: &str,
-    nodes_health_state_filter: Option<i32>,
-    applications_health_state_filter: Option<i32>,
-    events_health_state_filter: Option<i32>,
+    nodes_health_state_filter: Option<u32>,
+    applications_health_state_filter: Option<u32>,
+    events_health_state_filter: Option<u32>,
     exclude_health_statistics: Option<bool>,
     include_system_application_health_statistics: Option<bool>,
     timeout: Option<i64>,
@@ -632,7 +632,7 @@ pub async fn get_cluster_health_using_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -682,7 +682,7 @@ pub async fn get_cluster_load(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -732,7 +732,7 @@ pub async fn get_cluster_manifest(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -782,7 +782,7 @@ pub async fn get_cluster_upgrade_progress(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -832,7 +832,7 @@ pub async fn get_cluster_version(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -888,7 +888,7 @@ pub async fn get_provisioned_fabric_code_version_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -947,7 +947,7 @@ pub async fn get_provisioned_fabric_config_version_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1002,7 +1002,7 @@ pub async fn get_upgrade_orchestration_service_state(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1052,7 +1052,7 @@ pub async fn provision_cluster(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1101,7 +1101,7 @@ pub async fn report_cluster_health(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1145,7 +1145,7 @@ pub async fn resume_cluster_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1186,7 +1186,7 @@ pub async fn rollback_cluster_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1242,7 +1242,7 @@ pub async fn set_upgrade_orchestration_service_state(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1296,7 +1296,7 @@ pub async fn start_cluster_configuration_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1341,7 +1341,7 @@ pub async fn start_cluster_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1388,7 +1388,7 @@ pub async fn toggle_verbose_service_placement_health_reporting(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1433,7 +1433,7 @@ pub async fn unprovision_cluster(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1477,7 +1477,7 @@ pub async fn update_cluster_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1527,7 +1527,7 @@ pub async fn validate_cluster_upgrade(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),

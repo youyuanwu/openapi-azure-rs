@@ -15,11 +15,14 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum ApplicationScopedVolumeCreationParameters {
-    #[serde(rename = "ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk")]
+    #[serde(rename="ServiceFabricVolumeDisk")]
     ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk {
         /// User readable description of the volume.
         #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Volume size
+        #[serde(rename = "sizeDisk")]
+        size_disk: models::application_scoped_volume_creation_parameters_service_fabric_volume_disk::SizeDisk,
     },
 }
 
@@ -27,6 +30,7 @@ impl Default for ApplicationScopedVolumeCreationParameters {
     fn default() -> Self {
         Self::ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk {
             description: Default::default(),
+            size_disk: Default::default(),
         }
     }
 }

@@ -15,19 +15,28 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "ServicePartitionKind")]
 pub enum PartitionInformation {
-    #[serde(rename = "Int64RangePartitionInformation")]
+    #[serde(rename = "Int64Range")]
     Int64RangePartitionInformation {
         /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
         #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
         id: Option<uuid::Uuid>,
+        /// Specifies the minimum key value handled by this partition.
+        #[serde(rename = "LowKey", skip_serializing_if = "Option::is_none")]
+        low_key: Option<String>,
+        /// Specifies the maximum key value handled by this partition.
+        #[serde(rename = "HighKey", skip_serializing_if = "Option::is_none")]
+        high_key: Option<String>,
     },
-    #[serde(rename = "NamedPartitionInformation")]
+    #[serde(rename = "Named")]
     NamedPartitionInformation {
         /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
         #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
         id: Option<uuid::Uuid>,
+        /// Name of the partition.
+        #[serde(rename = "Name", skip_serializing_if = "Option::is_none")]
+        name: Option<String>,
     },
-    #[serde(rename = "SingletonPartitionInformation")]
+    #[serde(rename = "Singleton")]
     SingletonPartitionInformation {
         /// An internal ID used by Service Fabric to uniquely identify a partition. This is a randomly generated GUID when the service was created. The partition ID is unique and does not change for the lifetime of the service. If the same service was deleted and recreated the IDs of its partitions would be different.
         #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
@@ -39,6 +48,8 @@ impl Default for PartitionInformation {
     fn default() -> Self {
         Self::Int64RangePartitionInformation {
             id: Default::default(),
+            low_key: Default::default(),
+            high_key: Default::default(),
         }
     }
 }

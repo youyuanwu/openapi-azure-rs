@@ -15,14 +15,38 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum ScalingMechanismDescription {
-    #[serde(rename = "AddRemoveIncrementalNamedPartitionScalingMechanism")]
-    AddRemoveIncrementalNamedPartitionScalingMechanism {},
-    #[serde(rename = "PartitionInstanceCountScaleMechanism")]
-    PartitionInstanceCountScaleMechanism {},
+    #[serde(rename = "AddRemoveIncrementalNamedPartition")]
+    AddRemoveIncrementalNamedPartitionScalingMechanism {
+        /// Minimum number of named partitions of the service.
+        #[serde(rename = "MinPartitionCount")]
+        min_partition_count: i32,
+        /// Maximum number of named partitions of the service.
+        #[serde(rename = "MaxPartitionCount")]
+        max_partition_count: i32,
+        /// The number of instances to add or remove during a scaling operation.
+        #[serde(rename = "ScaleIncrement")]
+        scale_increment: i32,
+    },
+    #[serde(rename = "PartitionInstanceCount")]
+    PartitionInstanceCountScaleMechanism {
+        /// Minimum number of instances of the partition.
+        #[serde(rename = "MinInstanceCount")]
+        min_instance_count: i32,
+        /// Maximum number of instances of the partition.
+        #[serde(rename = "MaxInstanceCount")]
+        max_instance_count: i32,
+        /// The number of instances to add or remove during a scaling operation.
+        #[serde(rename = "ScaleIncrement")]
+        scale_increment: i32,
+    },
 }
 
 impl Default for ScalingMechanismDescription {
     fn default() -> Self {
-        Self::AddRemoveIncrementalNamedPartitionScalingMechanism {}
+        Self::AddRemoveIncrementalNamedPartitionScalingMechanism {
+            min_partition_count: Default::default(),
+            max_partition_count: Default::default(),
+            scale_increment: Default::default(),
+        }
     }
 }

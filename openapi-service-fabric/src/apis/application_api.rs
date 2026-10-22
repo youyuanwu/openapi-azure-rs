@@ -196,7 +196,7 @@ pub async fn create_application(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -248,7 +248,7 @@ pub async fn delete_application(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -266,9 +266,9 @@ pub async fn get_application_health(
     configuration: &configuration::Configuration,
     application_id: &str,
     api_version: &str,
-    events_health_state_filter: Option<i32>,
-    deployed_applications_health_state_filter: Option<i32>,
-    services_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
+    deployed_applications_health_state_filter: Option<u32>,
+    services_health_state_filter: Option<u32>,
     exclude_health_statistics: Option<bool>,
     timeout: Option<i64>,
 ) -> Result<models::ApplicationHealth, Error<GetApplicationHealthError>> {
@@ -323,7 +323,7 @@ pub async fn get_application_health(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -346,9 +346,9 @@ pub async fn get_application_health_using_policy(
     configuration: &configuration::Configuration,
     application_id: &str,
     api_version: &str,
-    events_health_state_filter: Option<i32>,
-    deployed_applications_health_state_filter: Option<i32>,
-    services_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
+    deployed_applications_health_state_filter: Option<u32>,
+    services_health_state_filter: Option<u32>,
     exclude_health_statistics: Option<bool>,
     timeout: Option<i64>,
     application_health_policy: Option<models::ApplicationHealthPolicy>,
@@ -408,7 +408,7 @@ pub async fn get_application_health_using_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -434,7 +434,7 @@ pub async fn get_application_info(
     application_id: &str,
     exclude_application_parameters: Option<bool>,
     timeout: Option<i64>,
-) -> Result<models::ApplicationInfo, Error<GetApplicationInfoError>> {
+) -> Result<Option<models::ApplicationInfo>, Error<GetApplicationInfoError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -464,6 +464,9 @@ pub async fn get_application_info(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status.as_u16() == 204 {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -471,10 +474,10 @@ pub async fn get_application_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ApplicationInfo`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ApplicationInfo`")))),
         }
@@ -548,7 +551,7 @@ pub async fn get_application_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -572,7 +575,7 @@ pub async fn get_application_load_info(
     api_version: &str,
     application_id: &str,
     timeout: Option<i64>,
-) -> Result<models::ApplicationLoadInfo, Error<GetApplicationLoadInfoError>> {
+) -> Result<Option<models::ApplicationLoadInfo>, Error<GetApplicationLoadInfoError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_application_id = application_id;
@@ -597,6 +600,9 @@ pub async fn get_application_load_info(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status.as_u16() == 204 {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -604,10 +610,10 @@ pub async fn get_application_load_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ApplicationLoadInfo`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ApplicationLoadInfo`")))),
         }
@@ -660,7 +666,7 @@ pub async fn get_application_upgrade(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -684,8 +690,8 @@ pub async fn get_deployed_application_health(
     api_version: &str,
     node_name: &str,
     application_id: &str,
-    events_health_state_filter: Option<i32>,
-    deployed_service_packages_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
+    deployed_service_packages_health_state_filter: Option<u32>,
     exclude_health_statistics: Option<bool>,
     timeout: Option<i64>,
 ) -> Result<models::DeployedApplicationHealth, Error<GetDeployedApplicationHealthError>> {
@@ -738,7 +744,7 @@ pub async fn get_deployed_application_health(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -762,8 +768,8 @@ pub async fn get_deployed_application_health_using_policy(
     api_version: &str,
     node_name: &str,
     application_id: &str,
-    events_health_state_filter: Option<i32>,
-    deployed_service_packages_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
+    deployed_service_packages_health_state_filter: Option<u32>,
     exclude_health_statistics: Option<bool>,
     timeout: Option<i64>,
     application_health_policy: Option<models::ApplicationHealthPolicy>,
@@ -822,7 +828,7 @@ pub async fn get_deployed_application_health_using_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -849,7 +855,7 @@ pub async fn get_deployed_application_info(
     application_id: &str,
     timeout: Option<i64>,
     include_health_state: Option<bool>,
-) -> Result<models::DeployedApplicationInfo, Error<GetDeployedApplicationInfoError>> {
+) -> Result<Option<models::DeployedApplicationInfo>, Error<GetDeployedApplicationInfoError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -880,6 +886,9 @@ pub async fn get_deployed_application_info(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status.as_u16() == 204 {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -887,10 +896,10 @@ pub async fn get_deployed_application_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::DeployedApplicationInfo`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::DeployedApplicationInfo`")))),
         }
@@ -958,7 +967,7 @@ pub async fn get_deployed_application_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -1019,7 +1028,7 @@ pub async fn report_application_health(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1077,7 +1086,7 @@ pub async fn report_deployed_application_health(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1128,7 +1137,7 @@ pub async fn resume_application_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1175,7 +1184,7 @@ pub async fn rollback_application_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1225,7 +1234,7 @@ pub async fn start_application_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1275,7 +1284,7 @@ pub async fn update_application(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -1325,7 +1334,7 @@ pub async fn update_application_upgrade(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;

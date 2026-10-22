@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "ServiceKind")]
 pub enum ServiceInfo {
-    #[serde(rename = "StatefulServiceInfo")]
+    #[serde(rename = "Stateful")]
     StatefulServiceInfo {
         /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
         #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
@@ -36,8 +36,11 @@ pub enum ServiceInfo {
         /// Whether the service is in a service group.
         #[serde(rename = "IsServiceGroup", skip_serializing_if = "Option::is_none")]
         is_service_group: Option<bool>,
+        /// Whether the service has persisted state.
+        #[serde(rename = "HasPersistedState", skip_serializing_if = "Option::is_none")]
+        has_persisted_state: Option<bool>,
     },
-    #[serde(rename = "StatelessServiceInfo")]
+    #[serde(rename = "Stateless")]
     StatelessServiceInfo {
         /// The identity of the service. This ID is an encoded representation of the service name. This is used in the REST APIs to identify the service resource. Starting in version 6.0, hierarchical names are delimited with the \"\\~\" character. For example, if the service name is \"fabric:/myapp/app1/svc1\", the service identity would be \"myapp~app1\\~svc1\" in 6.0+ and \"myapp/app1/svc1\" in previous versions.
         #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
@@ -71,6 +74,7 @@ impl Default for ServiceInfo {
             health_state: Default::default(),
             service_status: Default::default(),
             is_service_group: Default::default(),
+            has_persisted_state: Default::default(),
         }
     }
 }

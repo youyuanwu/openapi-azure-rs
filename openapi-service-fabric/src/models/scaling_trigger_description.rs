@@ -15,14 +15,48 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum ScalingTriggerDescription {
-    #[serde(rename = "AveragePartitionLoadScalingTrigger")]
-    AveragePartitionLoadScalingTrigger {},
-    #[serde(rename = "AverageServiceLoadScalingTrigger")]
-    AverageServiceLoadScalingTrigger {},
+    #[serde(rename = "AveragePartitionLoad")]
+    AveragePartitionLoadScalingTrigger {
+        /// The name of the metric for which usage should be tracked.
+        #[serde(rename = "MetricName")]
+        metric_name: String,
+        /// The lower limit of the load below which a scale in operation should be performed.
+        #[serde(rename = "LowerLoadThreshold")]
+        lower_load_threshold: f64,
+        /// The upper limit of the load beyond which a scale out operation should be performed.
+        #[serde(rename = "UpperLoadThreshold")]
+        upper_load_threshold: f64,
+        /// The period in seconds on which a decision is made whether to scale or not.
+        #[serde(rename = "ScaleIntervalInSeconds")]
+        scale_interval_in_seconds: i64,
+    },
+    #[serde(rename = "AverageServiceLoad")]
+    AverageServiceLoadScalingTrigger {
+        /// The name of the metric for which usage should be tracked.
+        #[serde(rename = "MetricName")]
+        metric_name: String,
+        /// The lower limit of the load below which a scale in operation should be performed.
+        #[serde(rename = "LowerLoadThreshold")]
+        lower_load_threshold: f64,
+        /// The upper limit of the load beyond which a scale out operation should be performed.
+        #[serde(rename = "UpperLoadThreshold")]
+        upper_load_threshold: f64,
+        /// The period in seconds on which a decision is made whether to scale or not.
+        #[serde(rename = "ScaleIntervalInSeconds")]
+        scale_interval_in_seconds: i64,
+        /// Flag determines whether only the load of primary replica should be considered for scaling. If set to true, then trigger will only consider the load of primary replicas of stateful service.  If set to false, trigger will consider load of all replicas.  This parameter cannot be set to true for stateless service.
+        #[serde(rename = "UseOnlyPrimaryLoad")]
+        use_only_primary_load: bool,
+    },
 }
 
 impl Default for ScalingTriggerDescription {
     fn default() -> Self {
-        Self::AveragePartitionLoadScalingTrigger {}
+        Self::AveragePartitionLoadScalingTrigger {
+            metric_name: Default::default(),
+            lower_load_threshold: Default::default(),
+            upper_load_threshold: Default::default(),
+            scale_interval_in_seconds: Default::default(),
+        }
     }
 }

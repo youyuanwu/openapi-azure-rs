@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "ServiceKind")]
 pub enum ReplicaInfo {
-    #[serde(rename = "StatefulServiceReplicaInfo")]
+    #[serde(rename = "Stateful")]
     StatefulServiceReplicaInfo {
         #[serde(rename = "ReplicaStatus", skip_serializing_if = "Option::is_none")]
         replica_status: Option<models::ReplicaStatus>,
@@ -33,8 +33,13 @@ pub enum ReplicaInfo {
             skip_serializing_if = "Option::is_none"
         )]
         last_in_build_duration_in_seconds: Option<String>,
+        #[serde(rename = "ReplicaRole", skip_serializing_if = "Option::is_none")]
+        replica_role: Option<models::ReplicaRole>,
+        /// Id of a stateful service replica. ReplicaId is used by Service Fabric to uniquely identify a replica of a partition. It is unique within a partition and does not change for the lifetime of the replica. If a replica gets dropped and another replica gets created on the same node for the same partition, it will get a different value for the id. Sometimes the id of a stateless service instance is also referred as a replica id.
+        #[serde(rename = "ReplicaId", skip_serializing_if = "Option::is_none")]
+        replica_id: Option<String>,
     },
-    #[serde(rename = "StatelessServiceInstanceInfo")]
+    #[serde(rename = "Stateless")]
     StatelessServiceInstanceInfo {
         #[serde(rename = "ReplicaStatus", skip_serializing_if = "Option::is_none")]
         replica_status: Option<models::ReplicaStatus>,
@@ -52,6 +57,9 @@ pub enum ReplicaInfo {
             skip_serializing_if = "Option::is_none"
         )]
         last_in_build_duration_in_seconds: Option<String>,
+        /// Id of a stateless service instance. InstanceId is used by Service Fabric to uniquely identify an instance of a partition of a stateless service. It is unique within a partition and does not change for the lifetime of the instance. If the instance has failed over on the same or different node, it will get a different value for the InstanceId.
+        #[serde(rename = "InstanceId", skip_serializing_if = "Option::is_none")]
+        instance_id: Option<String>,
     },
 }
 
@@ -63,6 +71,8 @@ impl Default for ReplicaInfo {
             node_name: Default::default(),
             address: Default::default(),
             last_in_build_duration_in_seconds: Default::default(),
+            replica_role: Default::default(),
+            replica_id: Default::default(),
         }
     }
 }

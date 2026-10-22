@@ -15,14 +15,43 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum SecretResourcePropertiesBase {
-    #[serde(rename = "InlinedValueSecretResourceProperties")]
-    InlinedValueSecretResourceProperties {},
+    #[serde(rename = "inlinedValue")]
+    InlinedValueSecretResourceProperties {
+        /// User readable description of the secret.
+        #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
+        description: Option<String>,
+        #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
+        status: Option<models::ResourceStatus>,
+        /// Gives additional information about the current status of the secret.
+        #[serde(rename = "statusDetails", skip_serializing_if = "Option::is_none")]
+        status_details: Option<String>,
+        /// The type of the content stored in the secret value. The value of this property is opaque to Service Fabric. Once set, the value of this property cannot be changed.
+        #[serde(rename = "contentType", skip_serializing_if = "Option::is_none")]
+        content_type: Option<String>,
+    },
     #[serde(rename = "SecretResourceProperties")]
-    SecretResourceProperties {},
+    SecretResourceProperties {
+        /// User readable description of the secret.
+        #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
+        description: Option<String>,
+        #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
+        status: Option<models::ResourceStatus>,
+        /// Gives additional information about the current status of the secret.
+        #[serde(rename = "statusDetails", skip_serializing_if = "Option::is_none")]
+        status_details: Option<String>,
+        /// The type of the content stored in the secret value. The value of this property is opaque to Service Fabric. Once set, the value of this property cannot be changed.
+        #[serde(rename = "contentType", skip_serializing_if = "Option::is_none")]
+        content_type: Option<String>,
+    },
 }
 
 impl Default for SecretResourcePropertiesBase {
     fn default() -> Self {
-        Self::InlinedValueSecretResourceProperties {}
+        Self::InlinedValueSecretResourceProperties {
+            description: Default::default(),
+            status: Default::default(),
+            status_details: Default::default(),
+            content_type: Default::default(),
+        }
     }
 }

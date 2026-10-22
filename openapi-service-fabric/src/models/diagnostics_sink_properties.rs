@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum DiagnosticsSinkProperties {
-    #[serde(rename = "AzureInternalMonitoringPipelineSinkDescription")]
+    #[serde(rename = "AzureInternalMonitoringPipeline")]
     AzureInternalMonitoringPipelineSinkDescription {
         /// Name of the sink. This value is referenced by DiagnosticsReferenceDescription
         #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
@@ -23,6 +23,21 @@ pub enum DiagnosticsSinkProperties {
         /// A description of the sink.
         #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
         description: Option<String>,
+        /// Azure Internal monitoring pipeline account.
+        #[serde(rename = "accountName", skip_serializing_if = "Option::is_none")]
+        account_name: Option<String>,
+        /// Azure Internal monitoring pipeline account namespace.
+        #[serde(rename = "namespace", skip_serializing_if = "Option::is_none")]
+        namespace: Option<String>,
+        /// Azure Internal monitoring agent configuration.
+        #[serde(rename = "maConfigUrl", skip_serializing_if = "Option::is_none")]
+        ma_config_url: Option<String>,
+        /// Azure Internal monitoring agent fluentd configuration.
+        #[serde(rename = "fluentdConfigUrl", skip_serializing_if = "Option::is_none")]
+        fluentd_config_url: Option<String>,
+        /// Azure Internal monitoring pipeline autokey associated with the certificate.
+        #[serde(rename = "autoKeyConfigUrl", skip_serializing_if = "Option::is_none")]
+        auto_key_config_url: Option<String>,
     },
 }
 
@@ -31,6 +46,11 @@ impl Default for DiagnosticsSinkProperties {
         Self::AzureInternalMonitoringPipelineSinkDescription {
             name: Default::default(),
             description: Default::default(),
+            account_name: Default::default(),
+            namespace: Default::default(),
+            ma_config_url: Default::default(),
+            fluentd_config_url: Default::default(),
+            auto_key_config_url: Default::default(),
         }
     }
 }

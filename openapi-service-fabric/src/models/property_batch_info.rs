@@ -15,14 +15,28 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Kind")]
 pub enum PropertyBatchInfo {
-    #[serde(rename = "FailedPropertyBatchInfo")]
-    FailedPropertyBatchInfo {},
-    #[serde(rename = "SuccessfulPropertyBatchInfo")]
-    SuccessfulPropertyBatchInfo {},
+    #[serde(rename = "Failed")]
+    FailedPropertyBatchInfo {
+        /// The error message of the failed operation. Describes the exception thrown due to the first unsuccessful operation in the property batch.
+        #[serde(rename = "ErrorMessage", skip_serializing_if = "Option::is_none")]
+        error_message: Option<String>,
+        /// The index of the unsuccessful operation in the property batch.
+        #[serde(rename = "OperationIndex", skip_serializing_if = "Option::is_none")]
+        operation_index: Option<i32>,
+    },
+    #[serde(rename = "Successful")]
+    SuccessfulPropertyBatchInfo {
+        /// A map containing the properties that were requested through any \"Get\" property batch operations. The key represents the index of the \"Get\" operation in the original request, in string form. The value is the property. If a property is not found, it will not be in the map.
+        #[serde(rename = "Properties", skip_serializing_if = "Option::is_none")]
+        properties: Option<serde_json::Value>,
+    },
 }
 
 impl Default for PropertyBatchInfo {
     fn default() -> Self {
-        Self::FailedPropertyBatchInfo {}
+        Self::FailedPropertyBatchInfo {
+            error_message: Default::default(),
+            operation_index: Default::default(),
+        }
     }
 }

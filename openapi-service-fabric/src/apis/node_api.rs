@@ -175,7 +175,7 @@ pub async fn add_configuration_parameter_overrides(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -221,7 +221,7 @@ pub async fn add_node_tags(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -271,7 +271,7 @@ pub async fn disable_node(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -318,7 +318,7 @@ pub async fn enable_node(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -369,7 +369,7 @@ pub async fn get_configuration_overrides(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -392,7 +392,7 @@ pub async fn get_node_health(
     configuration: &configuration::Configuration,
     api_version: &str,
     node_name: &str,
-    events_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
     timeout: Option<i64>,
 ) -> Result<models::NodeHealth, Error<GetNodeHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -430,7 +430,7 @@ pub async fn get_node_health(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -453,7 +453,7 @@ pub async fn get_node_health_using_policy(
     configuration: &configuration::Configuration,
     api_version: &str,
     node_name: &str,
-    events_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
     timeout: Option<i64>,
     cluster_health_policy: Option<models::ClusterHealthPolicy>,
 ) -> Result<models::NodeHealth, Error<GetNodeHealthUsingPolicyError>> {
@@ -496,7 +496,7 @@ pub async fn get_node_health_using_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -520,7 +520,7 @@ pub async fn get_node_info(
     api_version: &str,
     node_name: &str,
     timeout: Option<i64>,
-) -> Result<models::NodeInfo, Error<GetNodeInfoError>> {
+) -> Result<Option<models::NodeInfo>, Error<GetNodeInfoError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_api_version = api_version;
     let p_path_node_name = node_name;
@@ -545,6 +545,9 @@ pub async fn get_node_info(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status.as_u16() == 204 {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -552,10 +555,10 @@ pub async fn get_node_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::NodeInfo`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::NodeInfo`")))),
         }
@@ -617,7 +620,7 @@ pub async fn get_node_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -673,7 +676,7 @@ pub async fn get_node_load_info(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -725,7 +728,7 @@ pub async fn remove_configuration_overrides(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -772,7 +775,7 @@ pub async fn remove_node_state(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -817,7 +820,7 @@ pub async fn remove_node_tags(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -872,7 +875,7 @@ pub async fn report_node_health(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -922,7 +925,7 @@ pub async fn restart_node(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;

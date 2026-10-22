@@ -15,12 +15,17 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum AutoScalingMetric {
-    #[serde(rename = "AutoScalingResourceMetric")]
-    AutoScalingResourceMetric {},
+    #[serde(rename = "Resource")]
+    AutoScalingResourceMetric {
+        #[serde(rename = "name")]
+        name: models::AutoScalingResourceMetricName,
+    },
 }
 
 impl Default for AutoScalingMetric {
     fn default() -> Self {
-        Self::AutoScalingResourceMetric {}
+        Self::AutoScalingResourceMetric {
+            name: Default::default(),
+        }
     }
 }

@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "ServiceKind")]
 pub enum ServiceDescription {
-    #[serde(rename = "StatefulServiceDescription")]
+    #[serde(rename = "Stateful")]
     StatefulServiceDescription {
         /// The name of the application, including the 'fabric:' URI scheme.
         #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
@@ -75,8 +75,61 @@ pub enum ServiceDescription {
         tags_required_to_place: Option<Box<models::NodeTagsDescription>>,
         #[serde(rename = "TagsRequiredToRun", skip_serializing_if = "Option::is_none")]
         tags_required_to_run: Option<Box<models::NodeTagsDescription>>,
+        /// The target replica set size as a number.
+        #[serde(rename = "TargetReplicaSetSize")]
+        target_replica_set_size: i32,
+        /// The minimum replica set size as a number.
+        #[serde(rename = "MinReplicaSetSize")]
+        min_replica_set_size: i32,
+        /// A flag indicating whether this is a persistent service which stores states on the local disk. If it is then the value of this property is true, if not it is false.
+        #[serde(rename = "HasPersistedState")]
+        has_persisted_state: bool,
+        /// Flags indicating whether other properties are set. Each of the associated properties corresponds to a flag, specified below, which, if set, indicate that the property is specified. This property can be a combination of those flags obtained using bitwise 'OR' operator. For example, if the provided value is 6 then the flags for QuorumLossWaitDuration (2) and StandByReplicaKeepDuration(4) are set.  - None - Does not indicate any other properties are set. The value is zero. - ReplicaRestartWaitDuration - Indicates the ReplicaRestartWaitDuration property is set. The value is 1. - QuorumLossWaitDuration - Indicates the QuorumLossWaitDuration property is set. The value is 2. - StandByReplicaKeepDuration - Indicates the StandByReplicaKeepDuration property is set. The value is 4. - ServicePlacementTimeLimit - Indicates the ServicePlacementTimeLimit property is set. The value is 8. - DropSourceReplicaOnMove - Indicates the DropSourceReplicaOnMove property is set. The value is 16.
+        #[serde(rename = "Flags", skip_serializing_if = "Option::is_none")]
+        flags: Option<i32>,
+        /// The duration, in seconds, between when a replica goes down and when a new replica is created.
+        #[serde(
+            rename = "ReplicaRestartWaitDurationSeconds",
+            skip_serializing_if = "Option::is_none"
+        )]
+        replica_restart_wait_duration_seconds: Option<i64>,
+        /// The maximum duration, in seconds, for which a partition is allowed to be in a state of quorum loss.
+        #[serde(
+            rename = "QuorumLossWaitDurationSeconds",
+            skip_serializing_if = "Option::is_none"
+        )]
+        quorum_loss_wait_duration_seconds: Option<i64>,
+        /// The definition on how long StandBy replicas should be maintained before being removed.
+        #[serde(
+            rename = "StandByReplicaKeepDurationSeconds",
+            skip_serializing_if = "Option::is_none"
+        )]
+        stand_by_replica_keep_duration_seconds: Option<i64>,
+        /// The duration for which replicas can stay InBuild before reporting that build is stuck.
+        #[serde(
+            rename = "ServicePlacementTimeLimitSeconds",
+            skip_serializing_if = "Option::is_none"
+        )]
+        service_placement_time_limit_seconds: Option<i64>,
+        /// Indicates whether to drop source Secondary replica even if the target replica has not finished build. If desired behavior is to drop it as soon as possible the value of this property is true, if not it is false.
+        #[serde(
+            rename = "DropSourceReplicaOnMove",
+            skip_serializing_if = "Option::is_none"
+        )]
+        drop_source_replica_on_move: Option<bool>,
+        #[serde(
+            rename = "ReplicaLifecycleDescription",
+            skip_serializing_if = "Option::is_none"
+        )]
+        replica_lifecycle_description: Option<Box<models::ReplicaLifecycleDescription>>,
+        /// The auxiliary replica count as a number. To use Auxiliary replicas, the following must be true: AuxiliaryReplicaCount < (TargetReplicaSetSize+1)/2 and TargetReplicaSetSize >=3.
+        #[serde(
+            rename = "AuxiliaryReplicaCount",
+            skip_serializing_if = "Option::is_none"
+        )]
+        auxiliary_replica_count: Option<i32>,
     },
-    #[serde(rename = "StatelessServiceDescription")]
+    #[serde(rename = "Stateless")]
     StatelessServiceDescription {
         /// The name of the application, including the 'fabric:' URI scheme.
         #[serde(rename = "ApplicationName", skip_serializing_if = "Option::is_none")]
@@ -136,6 +189,38 @@ pub enum ServiceDescription {
         tags_required_to_place: Option<Box<models::NodeTagsDescription>>,
         #[serde(rename = "TagsRequiredToRun", skip_serializing_if = "Option::is_none")]
         tags_required_to_run: Option<Box<models::NodeTagsDescription>>,
+        /// The instance count.
+        #[serde(rename = "InstanceCount")]
+        instance_count: i32,
+        /// MinInstanceCount is the minimum number of instances that must be up to meet the EnsureAvailability safety check during operations like upgrade or deactivate node. The actual number that is used is max( MinInstanceCount, ceil( MinInstancePercentage/100.0 * InstanceCount) ). Note, if InstanceCount is set to -1, during MinInstanceCount computation -1 is first converted into the number of nodes on which the instances are allowed to be placed according to the placement constraints on the service.
+        #[serde(rename = "MinInstanceCount", skip_serializing_if = "Option::is_none")]
+        min_instance_count: Option<i32>,
+        /// MinInstancePercentage is the minimum percentage of InstanceCount that must be up to meet the EnsureAvailability safety check during operations like upgrade or deactivate node. The actual number that is used is max( MinInstanceCount, ceil( MinInstancePercentage/100.0 * InstanceCount) ). Note, if InstanceCount is set to -1, during MinInstancePercentage computation, -1 is first converted into the number of nodes on which the instances are allowed to be placed according to the placement constraints on the service.
+        #[serde(
+            rename = "MinInstancePercentage",
+            skip_serializing_if = "Option::is_none"
+        )]
+        min_instance_percentage: Option<i32>,
+        /// Flags indicating whether other properties are set. Each of the associated properties corresponds to a flag, specified below, which, if set, indicate that the property is specified. This property can be a combination of those flags obtained using bitwise 'OR' operator. For example, if the provided value is 1 then the flags for InstanceCloseDelayDuration is set.  - None - Does not indicate any other properties are set. The value is zero. - InstanceCloseDelayDuration - Indicates the InstanceCloseDelayDuration property is set. The value is 1. - InstanceRestartWaitDuration - Indicates the InstanceRestartWaitDurationSeconds property is set. The value is 2.
+        #[serde(rename = "Flags", skip_serializing_if = "Option::is_none")]
+        flags: Option<i32>,
+        /// Duration in seconds, to wait before a stateless instance is closed, to allow the active requests to drain gracefully. This would be effective when the instance is closing during the application/cluster upgrade and disabling node. The endpoint exposed on this instance is removed prior to starting the delay, which prevents new connections to this instance. In addition, clients that have subscribed to service endpoint change events(https://docs.microsoft.com/dotnet/api/system.fabric.fabricclient.servicemanagementclient.registerservicenotificationfilterasync), can do the following upon receiving the endpoint removal notification:     - Stop sending new requests to this instance.     - Close existing connections after in-flight requests have completed.     - Connect to a different instance of the service partition for future requests. Note, the default value of InstanceCloseDelayDuration is 0, which indicates that there won't be any delay or removal of the endpoint prior to closing the instance.
+        #[serde(
+            rename = "InstanceCloseDelayDurationSeconds",
+            skip_serializing_if = "Option::is_none"
+        )]
+        instance_close_delay_duration_seconds: Option<i64>,
+        #[serde(
+            rename = "InstanceLifecycleDescription",
+            skip_serializing_if = "Option::is_none"
+        )]
+        instance_lifecycle_description: Option<Box<models::InstanceLifecycleDescription>>,
+        /// When a stateless instance goes down, this timer starts. When it expires Service Fabric will create a new instance on any node in the cluster.  This configuration is to reduce unnecessary creation of a new instance in situations where the instance going down is likely to recover in a short time. For example, during an upgrade. The default value is 0, which indicates that when stateless instance goes down, Service Fabric will immediately start building its replacement.
+        #[serde(
+            rename = "InstanceRestartWaitDurationSeconds",
+            skip_serializing_if = "Option::is_none"
+        )]
+        instance_restart_wait_duration_seconds: Option<i64>,
     },
 }
 
@@ -158,6 +243,17 @@ impl Default for ServiceDescription {
             scaling_policies: Default::default(),
             tags_required_to_place: Default::default(),
             tags_required_to_run: Default::default(),
+            target_replica_set_size: Default::default(),
+            min_replica_set_size: Default::default(),
+            has_persisted_state: Default::default(),
+            flags: Default::default(),
+            replica_restart_wait_duration_seconds: Default::default(),
+            quorum_loss_wait_duration_seconds: Default::default(),
+            stand_by_replica_keep_duration_seconds: Default::default(),
+            service_placement_time_limit_seconds: Default::default(),
+            drop_source_replica_on_move: Default::default(),
+            replica_lifecycle_description: Default::default(),
+            auxiliary_replica_count: Default::default(),
         }
     }
 }

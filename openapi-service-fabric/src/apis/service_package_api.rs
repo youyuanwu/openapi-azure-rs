@@ -99,7 +99,7 @@ pub async fn deploy_service_package_to_node(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
@@ -119,7 +119,7 @@ pub async fn get_deployed_service_package_health(
     node_name: &str,
     application_id: &str,
     service_package_name: &str,
-    events_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
     timeout: Option<i64>,
 ) -> Result<models::DeployedServicePackageHealth, Error<GetDeployedServicePackageHealthError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -155,7 +155,7 @@ pub async fn get_deployed_service_package_health(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -181,7 +181,7 @@ pub async fn get_deployed_service_package_health_using_policy(
     node_name: &str,
     application_id: &str,
     service_package_name: &str,
-    events_health_state_filter: Option<i32>,
+    events_health_state_filter: Option<u32>,
     timeout: Option<i64>,
     application_health_policy: Option<models::ApplicationHealthPolicy>,
 ) -> Result<
@@ -225,7 +225,7 @@ pub async fn get_deployed_service_package_health_using_policy(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -286,7 +286,7 @@ pub async fn get_deployed_service_package_info_list(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
@@ -314,7 +314,7 @@ pub async fn get_deployed_service_package_info_list_by_name(
     service_package_name: &str,
     timeout: Option<i64>,
 ) -> Result<
-    Vec<models::DeployedServicePackageInfo>,
+    Option<Vec<models::DeployedServicePackageInfo>>,
     Error<GetDeployedServicePackageInfoListByNameError>,
 > {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -339,6 +339,9 @@ pub async fn get_deployed_service_package_info_list_by_name(
     let resp = configuration.client.execute(req).await?;
 
     let status = resp.status();
+    if status.as_u16() == 204 {
+        return Ok(None);
+    }
     let content_type = resp
         .headers()
         .get("content-type")
@@ -346,10 +349,10 @@ pub async fn get_deployed_service_package_info_list_by_name(
         .unwrap_or("application/octet-stream");
     let content_type = super::ContentType::from(content_type);
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         let content = resp.text().await?;
         match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Json => serde_json::from_str(&content).map(Some).map_err(Error::from),
             ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `Vec&lt;models::DeployedServicePackageInfo&gt;`"))),
             ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `Vec&lt;models::DeployedServicePackageInfo&gt;`")))),
         }
@@ -407,7 +410,7 @@ pub async fn report_deployed_service_package_health(
 
     let status = resp.status();
 
-    if !status.is_client_error() && !status.is_server_error() {
+    if status.is_success() {
         Ok(())
     } else {
         let content = resp.text().await?;
