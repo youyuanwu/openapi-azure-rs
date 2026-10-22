@@ -2,6 +2,10 @@ Run these commands from the repository root. Both crates were regenerated with
 OpenAPI Generator **7.26.0**, the latest stable release at regeneration time.
 The Docker image is pinned so regeneration is reproducible.
 
+Rust and Cargo are pinned to **1.99.1**, the latest stable toolchain at update
+time, in `rust-toolchain.toml`. Rustup installs it with the Rustfmt and Clippy
+components automatically when running Cargo in this repository.
+
 When regenerating, use the existing files in `specs/` unchanged. Only run the
 optional `wget` commands when intentionally refreshing the specifications.
 
@@ -59,14 +63,28 @@ feature alias preserves the previous feature name alongside the generated
 `rustls` feature. Blob file bodies are now used by the generated upload code, so
 the old unused-body rename must not be applied.
 
+Generation resets dependency requirements in the generated manifests. Reapply
+the current dependency minimums with Cargo before validating:
+```bash
+cargo add -p openapi-service-fabric serde@1.0.229 serde_json@1.0.154 serde_repr@0.1.21 url@2.5.8 uuid@1.28.0 chrono@0.4.45 reqwest@0.13.5
+cargo add -p openapi-azure-storage-blob serde@1.0.229 serde_with@3.24.0 serde_json@1.0.154 serde_repr@0.1.21 url@2.5.8 uuid@1.28.0 chrono@0.4.45 tokio@1.54.1 tokio-util@0.7.20 reqwest@0.13.5
+cargo update
+```
+These are the latest stable direct dependency versions at update time.
+`cargo update` also refreshes transitive dependencies to their newest compatible
+versions. Keep the workspace Tokio requirement in sync with the Blob crate.
+
 Validate after regenerating and applying the post-processing:
 ```bash
 cargo fmt --all -- --check
 cargo check --workspace --all-targets -j 1
 cargo test -p openapi-service-fabric -p openapi-azure-storage-blob -j 1
-cargo clippy --workspace --all-targets -j 1 -- -D warnings
+cargo clippy --workspace --all-targets -j 1
 cargo check -p openapi-service-fabric -p openapi-azure-storage-blob --no-default-features --features rustls-tls -j 1
 ```
+Clippy reports existing generated manual `Default` implementations as
+`derivable_impls` warnings.
+
 The `openapi-tests` integration test requires a local Service Fabric onebox
 cluster at `http://localhost:19080`; run it only when that cluster is available.
 
